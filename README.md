@@ -48,8 +48,8 @@ Backup the content of the database on internal storage so that later it can be u
 
 ## Prerequisite for building apk
 ### Source code
-- Clone the project with `git clone git@github.com:fusionjack/Adhell3.git adhell3` OR
-- Download the source code as a zip file: https://github.com/fusionjack/Adhell3/archive/master.zip
+- Clone the project with `git clone git@gitlab.com:fusionjack/adhell3.git adhell3` OR
+- Download the source code as a zip file: https://gitlab.com/fusionjack/adhell3/repository/master/archive.zip
 - Set `applicationId` with a valid package name in `app\build.gradle`, e.g.: com.dhf.erz58384
 
 ### Android Studio
