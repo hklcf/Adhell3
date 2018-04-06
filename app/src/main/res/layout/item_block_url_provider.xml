@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+                android:descendantFocusability="blocksDescendants">
+
+    <TextView
+        android:id="@+id/blockUrlProviderTextView"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:text="@string/adaway_hosts"
+        android:textColor="#000000" />
+
+    <TextView
+        android:id="@+id/blockUrlCountTextView"
+        android:layout_width="50dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/blockUrlProviderTextView"
+        android:layout_marginBottom="5dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:lines="1"
+        android:singleLine="true"
+        android:text="@string/_2597" />
+
+    <CheckBox
+        android:id="@+id/urlProviderCheckBox"
+        android:button="@drawable/checkbox"
+        android:layout_width="wrap_content"
+        android:layout_height="24dp"
+        android:layout_alignTop="@+id/blockUrlProviderTextView"
+        android:layout_toLeftOf="@+id/blockUrlProviderTextView"
+        android:layout_toStartOf="@+id/blockUrlProviderTextView"
+        android:layout_margin="5dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:scaleX="1.50"
+        android:scaleY="1.50"/>
+
+    <ImageView
+        android:id="@+id/deleteUrlProviderImageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:layout_alignTop="@+id/blockUrlProviderTextView"
+        android:layout_toLeftOf="@+id/urlProviderCheckBox"
+        android:layout_toStartOf="@+id/urlProviderCheckBox"
+        android:contentDescription="@string/delete_url"
+        android:scaleX="1.50"
+        android:scaleY="1.50"
+        android:src="@drawable/ic_delete_black_24dp" />
+
+    <TextView
+        android:id="@+id/lastUpdatedTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:layout_marginStart="15dp"
+        android:layout_below="@+id/blockUrlProviderTextView"
+        android:layout_toEndOf="@+id/blockUrlCountTextView"
+        android:layout_toRightOf="@+id/blockUrlCountTextView"
+        android:text="@string/_2017_06_30_16_00_00" />
+
+</RelativeLayout>

@@ -1,0 +1,18 @@
+<tabs>
+    <tab
+        icon="@drawable/ic_home_black_24dp"
+        id="@+id/blockerTab"
+        title="@string/blocker_fragment_title"/>
+    <tab
+        icon="@drawable/ic_visibility_off_black_24dp"
+        id="@+id/packageDisablerTab"
+        title="@string/package_disabler_bottombar_title"/>
+    <tab
+        icon="@drawable/ic_signal_cellular_no_sim_black_24dp"
+        id="@+id/mobileRestricterTab"
+        title="@string/mobile_restricter_bottombar_title"/>
+    <tab
+        icon="@drawable/ic_lock_black_24dp"
+        id="@+id/appPermissionsTab"
+        title="@string/app_permissions_tab_title"/>
+</tabs>

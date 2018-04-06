@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.percent.PercentRelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/editAlert"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:text="@string/editAlert"
+        android:textColor="#000000"/>
+
+    <EditText
+        android:id="@+id/whitelistUrlEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/editAlert"
+        android:layout_toLeftOf="@+id/addWhitelistUrl"
+        android:layout_toStartOf="@+id/addWhitelistUrl"
+        android:layout_margin="5dp"
+        android:inputType="textUri"/>
+
+    <Button
+        android:id="@+id/addWhitelistUrl"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/editAlert"
+        android:layout_margin="5dp"
+        android:text="@string/whitelist_ad_url"/>
+
+    <ListView
+        android:id="@+id/urlList"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/whitelistUrlEditText"
+        android:layout_margin="5dp"
+        android:scrollbars="vertical">
+
+    </ListView>
+
+</android.support.percent.PercentRelativeLayout>

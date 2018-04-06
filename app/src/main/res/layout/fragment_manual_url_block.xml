@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.percent.PercentRelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/noteTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:text="@string/to_take_effect_turn_off_turn_on_adhell_after_editing_list"
+        android:textColor="#000000"/>
+
+    <EditText
+        android:id="@+id/addBlockedUrlEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/noteTextView"
+        android:layout_toLeftOf="@+id/addCustomBlockedUrlButton"
+        android:layout_toStartOf="@+id/addCustomBlockedUrlButton"
+        android:layout_margin="5dp"
+        android:inputType="textUri"/>
+
+    <Button
+        android:id="@+id/addCustomBlockedUrlButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/noteTextView"
+        android:text="@string/block"/>
+
+    <ListView
+        android:id="@+id/customUrlsListView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="5dp"
+        android:layout_below="@+id/addBlockedUrlEditText">
+
+    </ListView>
+</android.support.percent.PercentRelativeLayout>
