@@ -18,27 +18,22 @@ import android.widget.ListView;
 import android.widget.Switch;
 import android.widget.Toast;
 
-import com.fusionjack.adhell3.App;
 import com.fusionjack.adhell3.R;
 import com.fusionjack.adhell3.adapter.AppInfoAdapter;
 import com.fusionjack.adhell3.db.AppDatabase;
 import com.fusionjack.adhell3.db.entity.AppInfo;
 import com.fusionjack.adhell3.db.entity.RestrictedPackage;
 import com.fusionjack.adhell3.utils.AdhellAppIntegrity;
+import com.fusionjack.adhell3.utils.AdhellFactory;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
-
-import javax.inject.Inject;
 
 import static com.fusionjack.adhell3.fragments.LoadAppAsyncTask.SORTED_RESTRICTED;
 import static com.fusionjack.adhell3.fragments.LoadAppAsyncTask.SORTED_RESTRICTED_ALPHABETICALLY;
 import static com.fusionjack.adhell3.fragments.LoadAppAsyncTask.SORTED_RESTRICTED_INSTALL_TIME;
 
 public class MobileRestricterFragment extends Fragment {
-    @Inject
-    AppDatabase appDatabase;
-
     private Context context;
     private int sortState;
     private int layout;
@@ -50,7 +45,6 @@ public class MobileRestricterFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        App.get().getAppComponent().inject(this);
         context = getContext();
         appFlag = AppFlag.createRestrictedFlag();
         sortState = SORTED_RESTRICTED_ALPHABETICALLY;
@@ -74,7 +68,7 @@ public class MobileRestricterFragment extends Fragment {
         installedAppsView.setOnItemClickListener((AdapterView<?> adView, View view2, int position, long id) -> {
             AppInfoAdapter adapter = (AppInfoAdapter) adView.getAdapter();
             String packageName = adapter.getItem(position).packageName;
-            new SetAppAsyncTask(packageName, view2, appDatabase).execute();
+            new SetAppAsyncTask(packageName, view2).execute();
         });
 
         SwipeRefreshLayout swipeContainer = view.findViewById(R.id.swipeContainer);
@@ -139,6 +133,7 @@ public class MobileRestricterFragment extends Fragment {
 
     private void enableAllPackages() {
         AsyncTask.execute(() -> {
+            AppDatabase appDatabase = AdhellFactory.getInstance().getAppDatabase();
             List<AppInfo> restrictedAppList = appDatabase.applicationInfoDao().getMobileRestrictedApps();
             for (AppInfo app : restrictedAppList) {
                 app.mobileRestricted = false;
@@ -154,10 +149,10 @@ public class MobileRestricterFragment extends Fragment {
         private AppDatabase appDatabase;
         private String packageName;
 
-        SetAppAsyncTask(String packageName, View view, AppDatabase appDatabase) {
+        SetAppAsyncTask(String packageName, View view) {
             this.viewWeakReference = new WeakReference<>(view);
             this.packageName = packageName;
-            this.appDatabase = appDatabase;
+            this.appDatabase = AdhellFactory.getInstance().getAppDatabase();
         }
 
         @Override

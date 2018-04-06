@@ -35,10 +35,6 @@ public class AdhellPermissionInfoFragment extends Fragment {
     private AppCompatActivity parentActivity;
     private SharedAppPermissionViewModel sharedAppPermissionViewModel;
     private FragmentManager fragmentManager;
-    private AppDatabase appDatabase;
-
-    @Inject
-    PackageManager packageManager;
 
     public AdhellPermissionInfoFragment() {
     }
@@ -46,8 +42,6 @@ public class AdhellPermissionInfoFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        App.get().getAppComponent().inject(this);
-        appDatabase = AppDatabase.getAppDatabase(getContext());
 
         parentActivity = (AppCompatActivity) getActivity();
         boolean isPermissionGranted = (this.getContext()
@@ -73,7 +67,7 @@ public class AdhellPermissionInfoFragment extends Fragment {
         }
         sharedAppPermissionViewModel = ViewModelProviders.of(getActivity()).get(SharedAppPermissionViewModel.class);
         fragmentManager = getActivity().getSupportFragmentManager();
-        adhellPermissionInfos = AdhellPermissionInfo.createPermissions(appDatabase, packageManager);
+        adhellPermissionInfos = AdhellPermissionInfo.createPermissions();
         View view = inflater.inflate(R.layout.fragment_adhell_permission_info, container, false);
         RecyclerView permissionInfoRecyclerView = view.findViewById(R.id.permissionInfoRecyclerView);
         AdhellPermissionInfoAdapter adhellPermissionInfoAdapter = new AdhellPermissionInfoAdapter(this.getContext(), adhellPermissionInfos);

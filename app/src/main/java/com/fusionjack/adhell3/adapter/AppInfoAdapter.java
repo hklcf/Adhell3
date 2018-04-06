@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.fusionjack.adhell3.R;
 import com.fusionjack.adhell3.db.entity.AppInfo;
 import com.fusionjack.adhell3.fragments.AppFlag;
+import com.fusionjack.adhell3.utils.AdhellFactory;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
@@ -79,7 +80,7 @@ public class AppInfoAdapter extends BaseAdapter {
             convertView.findViewById(R.id.systemOrNot).setVisibility(View.GONE);
         }
         try {
-            holder.imageH.setImageDrawable(appFlag.getPackageManager().getApplicationIcon(appInfo.packageName));
+            holder.imageH.setImageDrawable(AdhellFactory.getInstance().getPackageManager().getApplicationIcon(appInfo.packageName));
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }

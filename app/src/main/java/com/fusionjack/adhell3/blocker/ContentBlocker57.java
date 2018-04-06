@@ -6,6 +6,7 @@ import android.util.Log;
 import android.util.Patterns;
 
 import com.fusionjack.adhell3.App;
+import com.fusionjack.adhell3.utils.AdhellFactory;
 import com.sec.enterprise.AppIdentity;
 import com.sec.enterprise.firewall.DomainFilterRule;
 import com.sec.enterprise.firewall.Firewall;
@@ -97,7 +98,7 @@ public class ContentBlocker57 implements ContentBlocker {
         domainFilterRule.setDns2(dns2);
         List<DomainFilterRule> rules = new ArrayList<>();
         rules.add(domainFilterRule);
-        contentBlocker56.mFirewall.addDomainFilterRules(rules);
+        AdhellFactory.getInstance().getFirewall().addDomainFilterRules(rules);
         Log.d(TAG, "DNS1: " + domainFilterRule.getDns1());
         Log.d(TAG, "DNS2: " + domainFilterRule.getDns2());
     }

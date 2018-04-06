@@ -8,6 +8,7 @@ import android.widget.ListView;
 import com.fusionjack.adhell3.adapter.AppInfoAdapter;
 import com.fusionjack.adhell3.db.AppDatabase;
 import com.fusionjack.adhell3.db.entity.AppInfo;
+import com.fusionjack.adhell3.utils.AdhellFactory;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
@@ -52,7 +53,7 @@ public class LoadAppAsyncTask extends AsyncTask<Void, Void, List<AppInfo>> {
     }
 
     private List<AppInfo> getListFromDb() {
-        AppDatabase appDatabase = appFlag.getAppDatabase();
+        AppDatabase appDatabase = AdhellFactory.getInstance().getAppDatabase();
         String filterText = '%' + text + '%';
         switch (sortState) {
             case SORTED_DISABLED_ALPHABETICALLY:

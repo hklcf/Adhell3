@@ -7,6 +7,7 @@ import android.os.AsyncTask;
 
 import com.fusionjack.adhell3.db.AppDatabase;
 import com.fusionjack.adhell3.db.entity.AppInfo;
+import com.fusionjack.adhell3.utils.AdhellFactory;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -25,21 +26,21 @@ public class AdhellPermissionInfo {
         this.label = label;
     }
 
-    public static List<AdhellPermissionInfo> createPermissions(AppDatabase appDatabase, PackageManager packageManager) {
+    public static List<AdhellPermissionInfo> createPermissions() {
         if (permissionList != null && permissionList.size() > 0) {
             return permissionList;
         }
         try {
-            permissionList = new CreatePermissionsAsyncTask(appDatabase, packageManager).execute().get();
+            permissionList = new CreatePermissionsAsyncTask().execute().get();
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
         }
         return permissionList;
     }
 
-    public static List<AppInfo> getAppsByPermission(String permissionName, AppDatabase appDatabase, PackageManager packageManager) {
+    public static List<AppInfo> getAppsByPermission(String permissionName) {
         try {
-            return new GetAppsByPermissionAsyncTask(permissionName, appDatabase, packageManager).execute().get();
+            return new GetAppsByPermissionAsyncTask(permissionName).execute().get();
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
         }
@@ -51,9 +52,9 @@ public class AdhellPermissionInfo {
         private AppDatabase appDatabase;
         private List<AdhellPermissionInfo> permissionList = new ArrayList<>();
 
-        CreatePermissionsAsyncTask(AppDatabase appDatabase, PackageManager packageManager) {
-            this.packageManager = packageManager;
-            this.appDatabase = appDatabase;
+        CreatePermissionsAsyncTask() {
+            this.packageManager = AdhellFactory.getInstance().getPackageManager();
+            this.appDatabase = AdhellFactory.getInstance().getAppDatabase();
         }
 
         @Override
@@ -100,10 +101,10 @@ public class AdhellPermissionInfo {
         private PackageManager packageManager;
         private List<AppInfo> permissionsApps = new ArrayList<>();
 
-        GetAppsByPermissionAsyncTask(String permissionName, AppDatabase appDatabase, PackageManager packageManager) {
+        GetAppsByPermissionAsyncTask(String permissionName) {
             this.permissionName = permissionName;
-            this.appDatabase = appDatabase;
-            this.packageManager = packageManager;
+            this.appDatabase = AdhellFactory.getInstance().getAppDatabase();
+            this.packageManager = AdhellFactory.getInstance().getPackageManager();
         }
 
         @Override

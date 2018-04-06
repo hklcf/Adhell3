@@ -1,16 +1,15 @@
 package com.fusionjack.adhell3.blocker;
 
 import android.app.enterprise.FirewallPolicy;
-import android.support.annotation.Nullable;
 import android.util.Log;
 
-import com.fusionjack.adhell3.App;
 import com.fusionjack.adhell3.db.AppDatabase;
 import com.fusionjack.adhell3.db.entity.BlockUrl;
 import com.fusionjack.adhell3.db.entity.BlockUrlProvider;
 import com.fusionjack.adhell3.db.entity.UserBlockUrl;
 import com.fusionjack.adhell3.db.entity.WhiteUrl;
 import com.fusionjack.adhell3.utils.AdhellAppIntegrity;
+import com.fusionjack.adhell3.utils.AdhellFactory;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -19,21 +18,17 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.inject.Inject;
-
 public class ContentBlocker20 implements ContentBlocker {
     private static ContentBlocker20 mInstance = null;
     private final String LOG_TAG = ContentBlocker20.class.getCanonicalName();
 
-    @Nullable
-    @Inject
-    FirewallPolicy firewallPolicy;
-    @Inject
-    AppDatabase appDatabase;
+    private FirewallPolicy firewallPolicy;
+    private AppDatabase appDatabase;
     private int urlBlockLimit = 10;
 
     private ContentBlocker20() {
-        App.get().getAppComponent().inject(this);
+        this.appDatabase = AdhellFactory.getInstance().getAppDatabase();
+        this.firewallPolicy = AdhellFactory.getInstance().getFirewallPolicy();
     }
 
     public static ContentBlocker20 getInstance() {

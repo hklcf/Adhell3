@@ -22,7 +22,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.fusionjack.adhell3.App;
 import com.fusionjack.adhell3.R;
 import com.fusionjack.adhell3.blocker.ContentBlocker;
 import com.fusionjack.adhell3.blocker.ContentBlocker56;
@@ -33,14 +32,13 @@ import com.fusionjack.adhell3.db.entity.AppPermission;
 import com.fusionjack.adhell3.db.entity.BlockUrl;
 import com.fusionjack.adhell3.db.entity.BlockUrlProvider;
 import com.fusionjack.adhell3.db.entity.DisabledPackage;
+import com.fusionjack.adhell3.utils.AdhellFactory;
 import com.fusionjack.adhell3.utils.BlockUrlUtils;
 import com.fusionjack.adhell3.utils.DeviceAdminInteractor;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
-import javax.inject.Inject;
 
 public class BlockerFragment extends Fragment {
     private static final String TAG = BlockerFragment.class.getCanonicalName();
@@ -51,15 +49,6 @@ public class BlockerFragment extends Fragment {
     private Button reportButton;
     private TextView isSupportedTextView;
     private ContentBlocker contentBlocker;
-    private AppDatabase appDatabase;
-
-    @Nullable
-    @Inject
-    ApplicationPolicy appPolicy;
-
-    @Nullable
-    @Inject
-    ApplicationPermissionControlPolicy appControlPolicy;
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -70,10 +59,8 @@ public class BlockerFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        App.get().getAppComponent().inject(this);
         fragmentManager = getActivity().getSupportFragmentManager();
         parentActivity = (AppCompatActivity) getActivity();
-        appDatabase = AppDatabase.getAppDatabase(getContext());
     }
 
     @Override
@@ -91,7 +78,7 @@ public class BlockerFragment extends Fragment {
                 new BackupDatabaseAsyncTask(getActivity()).execute();
                 break;
             case R.id.restore_database:
-                new RestoreDatabaseAsyncTask(this, getActivity(), appDatabase, appPolicy, appControlPolicy).execute();
+                new RestoreDatabaseAsyncTask(this, getActivity()).execute();
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -129,7 +116,7 @@ public class BlockerFragment extends Fragment {
 
         mPolicyChangeButton.setOnClickListener(v -> {
             Log.d(TAG, "Adhell switch button has been clicked");
-            new SetFirewallAsyncTask(this, getActivity(), appDatabase).execute();
+            new SetFirewallAsyncTask(this, getActivity()).execute();
         });
 
         if (contentBlocker.isEnabled() &&
@@ -176,9 +163,9 @@ public class BlockerFragment extends Fragment {
         private AppDatabase appDatabase;
         private ContentBlocker contentBlocker;
 
-        SetFirewallAsyncTask(BlockerFragment fragment, Activity activity, AppDatabase appDatabase) {
+        SetFirewallAsyncTask(BlockerFragment fragment, Activity activity) {
             this.fragment = fragment;
-            this.appDatabase = appDatabase;
+            this.appDatabase = AdhellFactory.getInstance().getAppDatabase();
             this.dialog = new ProgressDialog(activity);
             this.dialog.setCancelable(false);
             builder = new AlertDialog.Builder(activity);
@@ -316,15 +303,13 @@ public class BlockerFragment extends Fragment {
         private ApplicationPolicy appPolicy;
         private ApplicationPermissionControlPolicy appControlPolicy;
 
-        RestoreDatabaseAsyncTask(BlockerFragment fragment, Activity activity,
-                                 AppDatabase appDatabase, ApplicationPolicy appPolicy,
-                                 ApplicationPermissionControlPolicy appControlPolicy) {
+        RestoreDatabaseAsyncTask(BlockerFragment fragment, Activity activity) {
             this.fragment = fragment;
             this.builder = new AlertDialog.Builder(activity);
             this.dialog = new ProgressDialog(activity);
-            this.appDatabase = appDatabase;
-            this.appPolicy = appPolicy;
-            this.appControlPolicy = appControlPolicy;
+            this.appDatabase = AdhellFactory.getInstance().getAppDatabase();
+            this.appPolicy = AdhellFactory.getInstance().getAppPolicy();
+            this.appControlPolicy = AdhellFactory.getInstance().getAppControlPolicy();
         }
 
         @Override

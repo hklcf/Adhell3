@@ -1,11 +1,10 @@
 package com.fusionjack.adhell3.blocker;
 
-import android.support.annotation.Nullable;
-import com.fusionjack.adhell3.App;
 import com.fusionjack.adhell3.db.AppDatabase;
 import com.fusionjack.adhell3.db.entity.AppInfo;
 import com.fusionjack.adhell3.db.entity.UserBlockUrl;
 import com.fusionjack.adhell3.db.entity.WhiteUrl;
+import com.fusionjack.adhell3.utils.AdhellFactory;
 import com.fusionjack.adhell3.utils.BlockUrlPatternsMatch;
 import com.fusionjack.adhell3.utils.BlockUrlUtils;
 import com.fusionjack.adhell3.utils.LogUtils;
@@ -15,20 +14,17 @@ import com.sec.enterprise.firewall.Firewall;
 import com.sec.enterprise.firewall.FirewallResponse;
 import com.sec.enterprise.firewall.FirewallRule;
 
-import javax.inject.Inject;
 import java.util.*;
 
 public class ContentBlocker56 implements ContentBlocker {
     private static ContentBlocker56 mInstance = null;
 
-    @Nullable
-    @Inject
-    Firewall mFirewall;
-    @Inject
-    AppDatabase appDatabase;
+    private Firewall firewall;
+    private AppDatabase appDatabase;
 
     private ContentBlocker56() {
-        App.get().getAppComponent().inject(this);
+        this.appDatabase = AdhellFactory.getInstance().getAppDatabase();
+        this.firewall = AdhellFactory.getInstance().getFirewall();
     }
 
     public static ContentBlocker56 getInstance() {
@@ -47,18 +43,18 @@ public class ContentBlocker56 implements ContentBlocker {
 
     @Override
     public boolean enableBlocker() {
-        if (mFirewall == null) {
+        if (firewall == null) {
             return false;
         }
 
         try {
-            if (!mFirewall.isFirewallEnabled()) {
+            if (!firewall.isFirewallEnabled()) {
                 LogUtils.getInstance().writeInfo("\nEnabling firewall...");
-                mFirewall.enableFirewall(true);
+                firewall.enableFirewall(true);
             }
-            if (!mFirewall.isDomainFilterReportEnabled()) {
+            if (!firewall.isDomainFilterReportEnabled()) {
                 LogUtils.getInstance().writeInfo("Enabling firewall report...");
-                mFirewall.enableDomainFilterReport(true);
+                firewall.enableDomainFilterReport(true);
             }
         } catch (SecurityException e) {
             LogUtils.getInstance().writeError("Failed to enable firewall: " + e.getMessage(), e);
@@ -202,25 +198,25 @@ public class ContentBlocker56 implements ContentBlocker {
 
     @Override
     public boolean disableBlocker() {
-        if (mFirewall == null) {
+        if (firewall == null) {
             return false;
         }
 
         FirewallResponse[] response;
         try {
             // Clear IP rules
-            response = mFirewall.clearRules(Firewall.FIREWALL_ALL_RULES);
+            response = firewall.clearRules(Firewall.FIREWALL_ALL_RULES);
             LogUtils.getInstance().writeInfo(response == null ? "No response" : response[0].getMessage());
 
             // Clear domain filter rules
-            response = mFirewall.removeDomainFilterRules(DomainFilterRule.CLEAR_ALL);
+            response = firewall.removeDomainFilterRules(DomainFilterRule.CLEAR_ALL);
             LogUtils.getInstance().writeInfo(response == null ? "No response" : response[0].getMessage());
 
-            if (mFirewall.isFirewallEnabled()) {
-                mFirewall.enableFirewall(false);
+            if (firewall.isFirewallEnabled()) {
+                firewall.enableFirewall(false);
             }
-            if (mFirewall.isDomainFilterReportEnabled()) {
-                mFirewall.enableDomainFilterReport(false);
+            if (firewall.isDomainFilterReportEnabled()) {
+                firewall.enableDomainFilterReport(false);
             }
         } catch (SecurityException ex) {
             LogUtils.getInstance().writeError("Failed to remove firewall rules", ex);
@@ -231,18 +227,18 @@ public class ContentBlocker56 implements ContentBlocker {
 
     @Override
     public boolean isEnabled() {
-        return mFirewall != null && mFirewall.isFirewallEnabled();
+        return firewall != null && firewall.isFirewallEnabled();
     }
 
     private void addDomainFilterRules(List<DomainFilterRule> domainRules) throws Exception {
-        if (mFirewall == null) {
+        if (firewall == null) {
             throw new Exception("Knox Firewall is not initialized");
         }
 
         LogUtils.getInstance().writeInfo("Adding domain filter rule to Knox Firewall...");
         FirewallResponse[] response;
         try {
-            response = mFirewall.addDomainFilterRules(domainRules);
+            response = firewall.addDomainFilterRules(domainRules);
             if (response == null) {
                 throw new Exception("There was no response from Knox Firewall");
             } else {
@@ -258,14 +254,14 @@ public class ContentBlocker56 implements ContentBlocker {
     }
 
     private void addFirewallRules(FirewallRule[] firewallRules) throws Exception {
-        if (mFirewall == null) {
+        if (firewall == null) {
             throw new Exception("Knox Firewall is not initialized");
         }
 
         LogUtils.getInstance().writeInfo("Adding firewall rule to Knox Firewall...");
         FirewallResponse[] response;
         try {
-            response = mFirewall.addRules(firewallRules);
+            response = firewall.addRules(firewallRules);
             if (response == null) {
                 throw new Exception("There was no response from Knox Firewall");
             } else {

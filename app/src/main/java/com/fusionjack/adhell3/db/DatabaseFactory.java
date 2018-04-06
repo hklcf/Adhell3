@@ -4,7 +4,6 @@ import android.os.Environment;
 import android.util.JsonReader;
 import android.util.JsonWriter;
 
-import com.fusionjack.adhell3.App;
 import com.fusionjack.adhell3.db.entity.AppInfo;
 import com.fusionjack.adhell3.db.entity.AppPermission;
 import com.fusionjack.adhell3.db.entity.BlockUrlProvider;
@@ -14,6 +13,7 @@ import com.fusionjack.adhell3.db.entity.RestrictedPackage;
 import com.fusionjack.adhell3.db.entity.UserBlockUrl;
 import com.fusionjack.adhell3.db.entity.WhiteUrl;
 import com.fusionjack.adhell3.utils.AdhellAppIntegrity;
+import com.fusionjack.adhell3.utils.AdhellFactory;
 import com.fusionjack.adhell3.utils.DeviceAdminInteractor;
 
 import java.io.File;
@@ -29,17 +29,13 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import javax.inject.Inject;
-
 public final class DatabaseFactory {
     private static final String BACKUP_FILENAME = "adhell_backup.txt";
     private static DatabaseFactory instance;
-
-    @Inject
-    AppDatabase appDatabase;
+    private AppDatabase appDatabase;
 
     private DatabaseFactory() {
-        App.get().getAppComponent().inject(this);
+        this.appDatabase = AdhellFactory.getInstance().getAppDatabase();
     }
 
     public static DatabaseFactory getInstance() {

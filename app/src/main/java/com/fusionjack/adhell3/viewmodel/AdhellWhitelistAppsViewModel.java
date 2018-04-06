@@ -6,15 +6,13 @@ import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 
-import com.fusionjack.adhell3.App;
 import com.fusionjack.adhell3.db.AppDatabase;
 import com.fusionjack.adhell3.db.entity.AppInfo;
 import com.fusionjack.adhell3.db.entity.FirewallWhitelistedPackage;
 import com.fusionjack.adhell3.utils.AdhellAppIntegrity;
+import com.fusionjack.adhell3.utils.AdhellFactory;
 
 import java.util.List;
-
-import javax.inject.Inject;
 
 import io.reactivex.Maybe;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -22,14 +20,12 @@ import io.reactivex.schedulers.Schedulers;
 
 public class AdhellWhitelistAppsViewModel extends AndroidViewModel {
 
-    @Inject
-    AppDatabase appDatabase;
-
     private LiveData<List<AppInfo>> appInfos;
+    private AppDatabase appDatabase;
 
     public AdhellWhitelistAppsViewModel(Application application) {
         super(application);
-        App.get().getAppComponent().inject(this);
+        this.appDatabase = AdhellFactory.getInstance().getAppDatabase();
     }
 
     public LiveData<List<AppInfo>> getSortedAppInfo() {

@@ -10,16 +10,12 @@ import com.fusionjack.adhell3.db.entity.AppInfo;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.inject.Inject;
-
 public class AppsListDBInitializer {
     private static AppsListDBInitializer instance;
-
-    @Inject
-    AppDatabase appDatabase;
+    private AppDatabase appDatabase;
 
     private AppsListDBInitializer() {
-        App.get().getAppComponent().inject(this);
+        this.appDatabase = AdhellFactory.getInstance().getAppDatabase();
     }
 
     public static AppsListDBInitializer getInstance() {
@@ -45,7 +41,7 @@ public class AppsListDBInitializer {
             appInfo.id = id++;
             appInfo.appName = packageManager.getApplicationLabel(applicationInfo).toString();
             appInfo.packageName = applicationInfo.packageName;
-            appInfo.system = (applicationInfo.flags & mask) != 000;
+            appInfo.system = (applicationInfo.flags & mask) != 0;
             try {
                 appInfo.installTime = packageManager.getPackageInfo(applicationInfo.packageName, 0).firstInstallTime;
             } catch (PackageManager.NameNotFoundException e) {

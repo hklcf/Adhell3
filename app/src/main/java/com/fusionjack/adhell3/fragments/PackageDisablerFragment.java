@@ -2,10 +2,8 @@ package com.fusionjack.adhell3.fragments;
 
 import android.app.enterprise.ApplicationPolicy;
 import android.content.Context;
-import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -21,35 +19,22 @@ import android.widget.ListView;
 import android.widget.Switch;
 import android.widget.Toast;
 
-import com.fusionjack.adhell3.App;
 import com.fusionjack.adhell3.R;
 import com.fusionjack.adhell3.adapter.AppInfoAdapter;
 import com.fusionjack.adhell3.db.AppDatabase;
 import com.fusionjack.adhell3.db.entity.AppInfo;
 import com.fusionjack.adhell3.db.entity.DisabledPackage;
 import com.fusionjack.adhell3.utils.AdhellAppIntegrity;
+import com.fusionjack.adhell3.utils.AdhellFactory;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
-
-import javax.inject.Inject;
 
 import static com.fusionjack.adhell3.fragments.LoadAppAsyncTask.SORTED_DISABLED;
 import static com.fusionjack.adhell3.fragments.LoadAppAsyncTask.SORTED_DISABLED_ALPHABETICALLY;
 import static com.fusionjack.adhell3.fragments.LoadAppAsyncTask.SORTED_DISABLED_INSTALL_TIME;
 
 public class PackageDisablerFragment extends Fragment {
-
-    @Nullable
-    @Inject
-    ApplicationPolicy appPolicy;
-
-    @Inject
-    AppDatabase appDatabase;
-
-    @Inject
-    PackageManager packageManager;
-
     private Context context;
     private int sortState;
     private int layout;
@@ -61,7 +46,6 @@ public class PackageDisablerFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        App.get().getAppComponent().inject(this);
         context = getContext();
         appFlag = AppFlag.createDisablerFlag();
         sortState = SORTED_DISABLED_ALPHABETICALLY;
@@ -84,7 +68,7 @@ public class PackageDisablerFragment extends Fragment {
         installedAppsView.setOnItemClickListener((AdapterView<?> adView, View view2, int position, long id) -> {
             AppInfoAdapter disablerAppAdapter = (AppInfoAdapter) adView.getAdapter();
             String packageName = disablerAppAdapter.getItem(position).packageName;
-            new SetAppAsyncTask(packageName, view2, appDatabase, appPolicy).execute();
+            new SetAppAsyncTask(packageName, view2).execute();
         });
 
         SwipeRefreshLayout swipeContainer = view.findViewById(R.id.swipeContainer);
@@ -150,10 +134,12 @@ public class PackageDisablerFragment extends Fragment {
 
     private void enableAllPackages() {
         AsyncTask.execute(() -> {
+            ApplicationPolicy appPolicy = AdhellFactory.getInstance().getAppPolicy();
             if (appPolicy == null) {
                 return;
             }
 
+            AppDatabase appDatabase = AdhellFactory.getInstance().getAppDatabase();
             List<AppInfo> disabledAppList = appDatabase.applicationInfoDao().getDisabledApps();
             for (AppInfo app : disabledAppList) {
                 app.disabled = false;
@@ -171,11 +157,11 @@ public class PackageDisablerFragment extends Fragment {
         private ApplicationPolicy appPolicy;
         private String packageName;
 
-        SetAppAsyncTask(String packageName, View view, AppDatabase appDatabase, ApplicationPolicy appPolicy) {
+        SetAppAsyncTask(String packageName, View view) {
             this.viewWeakReference = new WeakReference<>(view);
             this.packageName = packageName;
-            this.appDatabase = appDatabase;
-            this.appPolicy = appPolicy;
+            this.appDatabase = AdhellFactory.getInstance().getAppDatabase();
+            this.appPolicy = AdhellFactory.getInstance().getAppPolicy();
         }
 
         @Override

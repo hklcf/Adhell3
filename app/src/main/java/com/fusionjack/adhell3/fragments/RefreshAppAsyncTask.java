@@ -13,6 +13,7 @@ import com.fusionjack.adhell3.db.entity.DisabledPackage;
 import com.fusionjack.adhell3.db.entity.FirewallWhitelistedPackage;
 import com.fusionjack.adhell3.db.entity.RestrictedPackage;
 import com.fusionjack.adhell3.utils.AdhellAppIntegrity;
+import com.fusionjack.adhell3.utils.AdhellFactory;
 import com.fusionjack.adhell3.utils.AppsListDBInitializer;
 
 import java.lang.ref.WeakReference;
@@ -35,17 +36,17 @@ public class RefreshAppAsyncTask extends AsyncTask<Void, Void, Void> {
     @Override
     protected Void doInBackground(Void... voids) {
         // Get first disabled, restricted and whitelisted apps before they get deleted
-        AppDatabase appDatabase = appFlag.getAppDatabase();
+        AppDatabase appDatabase = AdhellFactory.getInstance().getAppDatabase();
         List<AppInfo> disabledApps = appDatabase.applicationInfoDao().getDisabledApps();
         List<AppInfo> restrictedApps = appDatabase.applicationInfoDao().getMobileRestrictedApps();
         List<FirewallWhitelistedPackage> whitelistedApps = appDatabase.firewallWhitelistedPackageDao().getAll();
 
         // Delete all apps info
         appDatabase.applicationInfoDao().deleteAll();
-        AppsListDBInitializer.getInstance().fillPackageDb(appFlag.getPackageManager());
+        AppsListDBInitializer.getInstance().fillPackageDb(AdhellFactory.getInstance().getPackageManager());
 
         // Disable apps
-        ApplicationPolicy appPolicy = appFlag.getAppPolicy();
+        ApplicationPolicy appPolicy = AdhellFactory.getInstance().getAppPolicy();
         appDatabase.disabledPackageDao().deleteAll();
         List<DisabledPackage> disabledPackages = new ArrayList<>();
         for (AppInfo oldAppInfo : disabledApps) {
