@@ -1,12 +1,12 @@
 package com.fusionjack.adhell3.adapter;
 
 import android.content.Context;
-import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,19 +16,28 @@ import android.widget.TextView;
 
 import com.fusionjack.adhell3.R;
 import com.fusionjack.adhell3.db.entity.ReportBlockedUrl;
+import com.fusionjack.adhell3.utils.AppCache;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Map;
 
 public class ReportBlockedUrlAdapter extends ArrayAdapter<ReportBlockedUrl> {
-    private static final String TAG = ReportBlockedUrlAdapter.class.getCanonicalName();
-    private PackageManager packageManager;
+    private Map<String, Drawable> appIcons;
+    private Map<String, String> appNames;
 
     private static final SimpleDateFormat dateFormatter = new SimpleDateFormat("HH:mm:ss");
 
     public ReportBlockedUrlAdapter(@NonNull Context context, @NonNull List<ReportBlockedUrl> objects) {
         super(context, 0, objects);
-        packageManager = getContext().getPackageManager();
+        Handler handler = new Handler(Looper.getMainLooper()) {
+            @Override
+            public void handleMessage(Message msg) {
+                notifyDataSetChanged();
+            }
+        };
+        appIcons = AppCache.getInstance(context, handler).getIcons();
+        appNames = AppCache.getInstance(context, handler).getNames();
     }
 
     @NonNull
@@ -47,26 +56,13 @@ public class ReportBlockedUrlAdapter extends ArrayAdapter<ReportBlockedUrl> {
         TextView blockedDomainUrlTextView = convertView.findViewById(R.id.blockedDomainUrlTextView);
         TextView blockedDomainTimeTextView = convertView.findViewById(R.id.blockedDomainTimeTextView);
 
-        String packageName = reportBlockedUrl.packageName;
-        Drawable icon = null;
-        try {
-            icon = packageManager.getApplicationIcon(packageName);
-        } catch (PackageManager.NameNotFoundException e) {
-            Log.e(TAG, "Failed to getAll application icon.", e);
+        String appName = appNames.get(reportBlockedUrl.packageName);
+        Drawable icon = appIcons.get(reportBlockedUrl.packageName);
+        if (icon == null) {
+            icon = getContext().getResources().getDrawable(android.R.drawable.sym_def_app_icon);
         }
-
-        ApplicationInfo ai;
-        try {
-            ai = packageManager.getApplicationInfo(packageName, 0);
-        } catch (final PackageManager.NameNotFoundException e) {
-            ai = null;
-        }
-        String applicationName = (String) (ai != null ? packageManager.getApplicationLabel(ai) : "(unknown)");
-
-        if (icon != null) {
-            blockedDomainIconImageView.setImageDrawable(icon);
-        }
-        blockedDomainAppNameTextView.setText(applicationName);
+        blockedDomainIconImageView.setImageDrawable(icon);
+        blockedDomainAppNameTextView.setText(appName == null ? "(unknown)" : appName);
         blockedDomainUrlTextView.setText(reportBlockedUrl.url);
         blockedDomainTimeTextView.setText(dateFormatter.format(reportBlockedUrl.blockDate));
 

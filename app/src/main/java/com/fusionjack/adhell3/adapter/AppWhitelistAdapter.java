@@ -1,7 +1,10 @@
 package com.fusionjack.adhell3.adapter;
 
 import android.content.Context;
-import android.content.pm.PackageManager;
+import android.graphics.drawable.Drawable;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -16,22 +19,30 @@ import android.widget.TextView;
 
 import com.fusionjack.adhell3.R;
 import com.fusionjack.adhell3.db.entity.AppInfo;
+import com.fusionjack.adhell3.utils.AppCache;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 
 public class AppWhitelistAdapter extends ArrayAdapter<AppInfo> {
     private static final String TAG = AppWhitelistAdapter.class.getCanonicalName();
     private List<AppInfo> appInfos;
     private List<AppInfo> mAppInfoOriginal;
-    private PackageManager mPackageManager;
+    private Map<String, Drawable> appIcons;
 
     public AppWhitelistAdapter(@NonNull Context context, @NonNull List<AppInfo> appInfos) {
         super(context, 0, appInfos);
-        mPackageManager = getContext().getPackageManager();
         this.appInfos = appInfos;
         mAppInfoOriginal = appInfos;
+        Handler handler = new Handler(Looper.getMainLooper()) {
+            @Override
+            public void handleMessage(Message msg) {
+                notifyDataSetChanged();
+            }
+        };
+        this.appIcons = AppCache.getInstance(context, handler).getIcons();
     }
 
     @Override
@@ -68,11 +79,11 @@ public class AppWhitelistAdapter extends ArrayAdapter<AppInfo> {
             } else {
                 systemOrNot.setVisibility(View.GONE);
             }
-            try {
-                appIcon.setImageDrawable(mPackageManager.getApplicationIcon(appInfo.packageName));
-            } catch (PackageManager.NameNotFoundException e) {
-                Log.e(TAG, "Failed to get application icon", e);
+            Drawable icon = appIcons.get(appInfo.packageName);
+            if (icon == null) {
+                icon = getContext().getResources().getDrawable(android.R.drawable.sym_def_app_icon);
             }
+            appIcon.setImageDrawable(icon);
             adhellWhitelistApp.setChecked(!appInfo.adhellWhitelisted);
         }
         return convertView;

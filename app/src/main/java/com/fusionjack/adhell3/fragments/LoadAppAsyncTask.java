@@ -27,12 +27,18 @@ public class LoadAppAsyncTask extends AsyncTask<Void, Void, List<AppInfo>> {
     private int sortState;
     private int layout;
     private AppFlag appFlag;
+    private boolean reload;
 
     LoadAppAsyncTask(String text, int sortState, int layout, AppFlag appFlag, Context context) {
+        this(text, sortState, layout, appFlag, false, context);
+    }
+
+    LoadAppAsyncTask(String text, int sortState, int layout, AppFlag appFlag, boolean reload, Context context) {
         this.text = text;
         this.sortState = sortState;
         this.layout = layout;
         this.appFlag = appFlag;
+        this.reload = reload;
         this.contextReference = new WeakReference<>(context);
     }
 
@@ -45,7 +51,7 @@ public class LoadAppAsyncTask extends AsyncTask<Void, Void, List<AppInfo>> {
     protected void onPostExecute(List<AppInfo> packageList) {
         Context context = contextReference.get();
         if (context != null) {
-            AppInfoAdapter adapter = new AppInfoAdapter(packageList, appFlag, context);
+            AppInfoAdapter adapter = new AppInfoAdapter(packageList, appFlag, reload, context);
             ListView listView = ((Activity)context).findViewById(layout);
             listView.setAdapter(adapter);
             listView.invalidateViews();

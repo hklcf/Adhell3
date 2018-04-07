@@ -48,7 +48,7 @@ public class AdhellPermissionInAppsFragment extends Fragment {
             if (permissionInfo != null) {
                 getActivity().setTitle(permissionInfo.name);
                 List<AppInfo> appInfos = AdhellPermissionInfo.getAppsByPermission(permissionInfo.name);
-                AdhellPermissionInAppsAdapter adhellPermissionInAppsAdapter = new AdhellPermissionInAppsAdapter(appInfos);
+                AdhellPermissionInAppsAdapter adhellPermissionInAppsAdapter = new AdhellPermissionInAppsAdapter(appInfos, this.getContext());
                 adhellPermissionInAppsAdapter.currentPermissionName = permissionInfo.name;
                 adhellPermissionInAppsAdapter.updatePermissionBlacklistedPackages();
                 permissionInAppsRecyclerView.setAdapter(adhellPermissionInAppsAdapter);
