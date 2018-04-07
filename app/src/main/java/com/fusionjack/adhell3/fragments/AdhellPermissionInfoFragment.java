@@ -16,16 +16,14 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.DividerItemDecoration;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ListView;
 
 import com.fusionjack.adhell3.R;
 import com.fusionjack.adhell3.adapter.AdhellPermissionInfoAdapter;
-import com.fusionjack.adhell3.adapter.ItemClickSupport;
 import com.fusionjack.adhell3.db.AppDatabase;
 import com.fusionjack.adhell3.db.entity.AppInfo;
 import com.fusionjack.adhell3.model.AdhellPermissionInfo;
@@ -61,22 +59,19 @@ public class AdhellPermissionInfoFragment extends Fragment {
         }
 
         View view = inflater.inflate(R.layout.fragment_adhell_permission_info, container, false);
-        List<AdhellPermissionInfo> permissionList = AdhellPermissionInfo.getPermissionList();
-        if (permissionList == null) {
+        List<AdhellPermissionInfo> permissionInfos = AdhellPermissionInfo.getPermissionList();
+        if (permissionInfos == null) {
             new CreatePermissionsAsyncTask(getContext(), getActivity()).execute();
         } else {
-            RecyclerView permissionInfoRecyclerView = view.findViewById(R.id.permissionInfoRecyclerView);
-            AdhellPermissionInfoAdapter adhellPermissionInfoAdapter = new AdhellPermissionInfoAdapter(permissionList);
-            permissionInfoRecyclerView.setAdapter(adhellPermissionInfoAdapter);
-            permissionInfoRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-            RecyclerView.ItemDecoration itemDecoration = new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL);
-            permissionInfoRecyclerView.addItemDecoration(itemDecoration);
+            ListView listView = view.findViewById(R.id.permissionInfoRecyclerView);
+            AdhellPermissionInfoAdapter adapter = new AdhellPermissionInfoAdapter(getContext(), permissionInfos);
+            listView.setAdapter(adapter);
 
             FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
             SharedAppPermissionViewModel viewModel = ViewModelProviders.of(getActivity()).get(SharedAppPermissionViewModel.class);
-            ItemClickSupport.addTo(permissionInfoRecyclerView).setOnItemClickListener(
-                    (recyclerView, position, v) -> {
-                        AdhellPermissionInfo permissionInfo = permissionList.get(position);
+            listView.setOnItemClickListener(
+                    (AdapterView<?> adView, View view2, int position, long id) -> {
+                        AdhellPermissionInfo permissionInfo = permissionInfos.get(position);
                         viewModel.select(permissionInfo);
 
                         Bundle bundle = new Bundle();
@@ -163,26 +158,23 @@ public class AdhellPermissionInfoFragment extends Fragment {
         }
 
         @Override
-        protected void onPostExecute(List<AdhellPermissionInfo> adhellPermissionInfos) {
+        protected void onPostExecute(List<AdhellPermissionInfo> permissionInfos) {
             if (dialog.isShowing()) {
                 dialog.dismiss();
             }
 
             Context context = contextReference.get();
             if (context != null) {
-                RecyclerView permissionInfoRecyclerView = ((Activity)context).findViewById(R.id.permissionInfoRecyclerView);
-                AdhellPermissionInfoAdapter adhellPermissionInfoAdapter = new AdhellPermissionInfoAdapter(adhellPermissionInfos);
-                permissionInfoRecyclerView.setAdapter(adhellPermissionInfoAdapter);
-                permissionInfoRecyclerView.setLayoutManager(new LinearLayoutManager(context));
-                RecyclerView.ItemDecoration itemDecoration = new DividerItemDecoration(context, DividerItemDecoration.VERTICAL);
-                permissionInfoRecyclerView.addItemDecoration(itemDecoration);
+                ListView listView = ((Activity)context).findViewById(R.id.permissionInfoRecyclerView);
+                AdhellPermissionInfoAdapter adapter = new AdhellPermissionInfoAdapter(context, permissionInfos);
+                listView.setAdapter(adapter);
 
                 FragmentActivity activity = activityReference.get();
                 FragmentManager fragmentManager = activity.getSupportFragmentManager();
                 SharedAppPermissionViewModel viewModel = ViewModelProviders.of(activity).get(SharedAppPermissionViewModel.class);
-                ItemClickSupport.addTo(permissionInfoRecyclerView).setOnItemClickListener(
-                        (recyclerView, position, v) -> {
-                            AdhellPermissionInfo permissionInfo = adhellPermissionInfos.get(position);
+                listView.setOnItemClickListener(
+                        (AdapterView<?> adView, View view2, int position, long id) -> {
+                            AdhellPermissionInfo permissionInfo = permissionInfos.get(position);
                             viewModel.select(permissionInfo);
 
                             Bundle bundle = new Bundle();
