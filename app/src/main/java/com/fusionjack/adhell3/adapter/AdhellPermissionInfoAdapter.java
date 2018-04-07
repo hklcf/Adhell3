@@ -13,11 +13,9 @@ import com.fusionjack.adhell3.model.AdhellPermissionInfo;
 import java.util.List;
 
 public class AdhellPermissionInfoAdapter extends RecyclerView.Adapter<AdhellPermissionInfoAdapter.ViewHolder> {
-    private Context mContext;
     private List<AdhellPermissionInfo> mAdhellPermissionInfos;
 
-    public AdhellPermissionInfoAdapter(Context context, List<AdhellPermissionInfo> adhellPermissionInfos) {
-        mContext = context;
+    public AdhellPermissionInfoAdapter(List<AdhellPermissionInfo> adhellPermissionInfos) {
         mAdhellPermissionInfos = adhellPermissionInfos;
     }
 
