@@ -4,7 +4,8 @@ public class AppFlag {
 
     public enum Flag {
         DISABLER_FLAG,
-        RESTRICTED_FLAG
+        RESTRICTED_FLAG,
+        WHITELISTED_FLAG
     }
 
     private Flag flag;
@@ -19,6 +20,10 @@ public class AppFlag {
 
     public static AppFlag createRestrictedFlag() {
         return new AppFlag(Flag.RESTRICTED_FLAG);
+    }
+
+    public static AppFlag createWhitelistedFlag() {
+        return new AppFlag(Flag.WHITELISTED_FLAG);
     }
 
     public Flag getFlag() {

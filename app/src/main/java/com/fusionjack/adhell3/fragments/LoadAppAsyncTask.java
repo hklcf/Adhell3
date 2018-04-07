@@ -21,6 +21,7 @@ public class LoadAppAsyncTask extends AsyncTask<Void, Void, List<AppInfo>> {
     static final int SORTED_RESTRICTED_ALPHABETICALLY = 3;
     static final int SORTED_RESTRICTED_INSTALL_TIME = 4;
     static final int SORTED_RESTRICTED = 5;
+    static final int SORTED_WHITELISTED = 6;
 
     private WeakReference<Context> contextReference;
     private String text;
@@ -92,6 +93,11 @@ public class LoadAppAsyncTask extends AsyncTask<Void, Void, List<AppInfo>> {
                     return appDatabase.applicationInfoDao().getEnableAppsByMobileRestricted();
                 }
                 return appDatabase.applicationInfoDao().getEnableAppsByMobileRestricted(filterText);
+            case SORTED_WHITELISTED:
+                if (text.length() == 0) {
+                    return appDatabase.applicationInfoDao().getAllSortedByWhitelist();
+                }
+                return appDatabase.applicationInfoDao().getAllAppsWithStrInName(filterText);
         }
         return null;
     }

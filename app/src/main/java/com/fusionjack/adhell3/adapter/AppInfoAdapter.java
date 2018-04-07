@@ -88,6 +88,9 @@ public class AppInfoAdapter extends BaseAdapter {
             case RESTRICTED_FLAG:
                 checked = appInfo.mobileRestricted;
                 break;
+            case WHITELISTED_FLAG:
+                checked = appInfo.adhellWhitelisted;
+                break;
         }
         holder.switchH.setChecked(!checked);
 

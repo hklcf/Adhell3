@@ -70,7 +70,7 @@ public class AppSettingsFragment extends Fragment {
             {
                 Log.d(TAG, "Allow Apps button click in Fragment1");
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                fragmentTransaction.replace(R.id.fragmentContainer, new AppListFragment());
+                fragmentTransaction.replace(R.id.fragmentContainer, new WhitelistAppFragment());
                 fragmentTransaction.addToBackStack("main_to_editApp");
                 fragmentTransaction.commit();
             });

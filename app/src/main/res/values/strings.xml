@@ -128,4 +128,5 @@
     <string name="mobile_restricter_info">To take effect, turn off and turn on Adhell after restricting apps</string>
     <string name="backup_database">Backup database</string>
     <string name="restore_database">Restore database</string>
+    <string name="whitelisted_app_info">To take effect, turn off and turn on Adhell after whitelisting apps</string>
 </resources>

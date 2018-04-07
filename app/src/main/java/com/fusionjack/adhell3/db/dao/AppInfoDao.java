@@ -1,6 +1,5 @@
 package com.fusionjack.adhell3.db.dao;
 
-import android.arch.lifecycle.LiveData;
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.OnConflictStrategy;
@@ -36,7 +35,7 @@ public interface AppInfoDao {
     List<AppInfo> getWhitelistedApps();
 
     @Query("SELECT * FROM AppInfo WHERE disabled = 0 ORDER BY adhellWhitelisted DESC, appName ASC")
-    LiveData<List<AppInfo>> getAllSortedByWhitelist();
+    List<AppInfo> getAllSortedByWhitelist();
 
     @Query("SELECT * FROM AppInfo WHERE system = 0 AND disabled = 0 ORDER BY appName ASC")
     List<AppInfo> getUserApps();
