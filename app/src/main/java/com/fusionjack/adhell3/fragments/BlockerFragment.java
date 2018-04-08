@@ -6,6 +6,9 @@ import android.app.enterprise.ApplicationPermissionControlPolicy;
 import android.app.enterprise.ApplicationPolicy;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -32,6 +35,7 @@ import com.fusionjack.adhell3.db.entity.AppPermission;
 import com.fusionjack.adhell3.db.entity.BlockUrl;
 import com.fusionjack.adhell3.db.entity.BlockUrlProvider;
 import com.fusionjack.adhell3.db.entity.DisabledPackage;
+import com.fusionjack.adhell3.dialogfragment.FirewallDialogFragment;
 import com.fusionjack.adhell3.utils.AdhellFactory;
 import com.fusionjack.adhell3.utils.BlockUrlUtils;
 import com.fusionjack.adhell3.utils.DeviceAdminInteractor;
@@ -116,7 +120,7 @@ public class BlockerFragment extends Fragment {
 
         mPolicyChangeButton.setOnClickListener(v -> {
             Log.d(TAG, "Adhell switch button has been clicked");
-            new SetFirewallAsyncTask(this, getActivity()).execute();
+            new SetFirewallAsyncTask(this, fragmentManager).execute();
         });
 
         if (contentBlocker.isEnabled() &&
@@ -156,100 +160,52 @@ public class BlockerFragment extends Fragment {
         }
     }
 
-    private static class SetFirewallAsyncTask extends AsyncTask<Void, String, String> {
-        private ProgressDialog dialog;
-        private BlockerFragment fragment;
-        private AlertDialog.Builder builder;
-        private AppDatabase appDatabase;
+    private static class SetFirewallAsyncTask extends AsyncTask<Void, Void, Void> {
+        private FragmentManager fragmentManager;
+        private FirewallDialogFragment fragment;
+        private BlockerFragment parentFragment;
         private ContentBlocker contentBlocker;
+        private Handler handler;
 
-        SetFirewallAsyncTask(BlockerFragment fragment, Activity activity) {
-            this.fragment = fragment;
-            this.appDatabase = AdhellFactory.getInstance().getAppDatabase();
-            this.dialog = new ProgressDialog(activity);
-            this.dialog.setCancelable(false);
-            builder = new AlertDialog.Builder(activity);
+        SetFirewallAsyncTask(BlockerFragment parentFragment, FragmentManager fragmentManager) {
+            this.parentFragment = parentFragment;
+            this.fragmentManager = fragmentManager;
             this.contentBlocker = DeviceAdminInteractor.getInstance().getContentBlocker();
+
+            this.handler = new Handler(Looper.getMainLooper()) {
+                @Override
+                public void handleMessage(Message msg) {
+                    fragment.appendText(msg.obj.toString());
+                }
+            };
         }
 
         @Override
         protected void onPreExecute() {
             if (contentBlocker.isEnabled()) {
-                dialog.setMessage("Disabling Adhell...");
+                fragment = FirewallDialogFragment.newInstance("Disabling Adhell...");
             } else {
-                dialog.setMessage("Enabling Adhell...");
+                fragment = FirewallDialogFragment.newInstance("Enabling Adhell...");
             }
-            dialog.show();
+            fragment.setCancelable(false);
+            fragment.show(fragmentManager, "dialog_firewall");
         }
 
         @Override
-        protected void onProgressUpdate(String... values) {
-            dialog.setMessage(values[0]);
-        }
-
-        @Override
-        protected String doInBackground(Void... args) {
+        protected Void doInBackground(Void... args) {
+            contentBlocker.setHandler(handler);
             if (contentBlocker.isEnabled()) {
                 contentBlocker.disableBlocker();
             } else {
-                try {
-                    publishProgress("Processing custom rules...");
-                    contentBlocker.processCustomRules();
-                } catch (Exception e) {
-                    contentBlocker.disableBlocker();
-                    return "Failed on processing custom rules: " + e.getMessage();
-                }
-
-                try {
-                    publishProgress("Processing mobile restricted apps...");
-                    contentBlocker.processMobileRestrictedApps();
-                } catch (Exception e) {
-                    contentBlocker.disableBlocker();
-                    return "Failed on processing mobile restricted apps: " + e.getMessage();
-                }
-
-                try {
-                    publishProgress("Processing white-listed apps...");
-                    contentBlocker.processWhitelistedApps();
-                } catch (Exception e) {
-                    contentBlocker.disableBlocker();
-                    return "Failed on processing white-listed apps: " + e.getMessage();
-                }
-
-                try {
-                    publishProgress("Processing white-listed domains...");
-                    contentBlocker.processWhitelistedDomains();
-                } catch (Exception e) {
-                    contentBlocker.disableBlocker();
-                    return "Failed on processing white-listed domains: " + e.getMessage();
-                }
-
-                try {
-                    int size = BlockUrlUtils.getUniqueBlockedUrls(appDatabase).size();
-                    publishProgress("Processing " + size + " blocked domains...");
-                    contentBlocker.processBlockedDomains();
-                } catch (Exception e) {
-                    contentBlocker.disableBlocker();
-                    return "Failed on processing blocked domains: " + e.getMessage();
-                }
-
                 contentBlocker.enableBlocker();
             }
             return null;
         }
 
         @Override
-        protected void onPostExecute(String message) {
-            if (dialog.isShowing()) {
-                dialog.dismiss();
-            }
-            fragment.updateUserInterface();
-
-            if (message != null) {
-                builder.setMessage(message);
-                builder.setTitle("Error");
-                builder.show();
-            }
+        protected void onPostExecute(Void aVoid) {
+            fragment.enableCloseButton();
+            parentFragment.updateUserInterface();
         }
     }
 

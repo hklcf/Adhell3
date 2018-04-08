@@ -1,5 +1,6 @@
 package com.fusionjack.adhell3.utils;
 
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.webkit.URLUtil;
 
@@ -65,7 +66,7 @@ public class BlockUrlUtils {
                 .replaceAll("^(www)([0-9]{0,3})?(\\.)","");
     }
 
-    public static Set<String> getUniqueBlockedUrls(AppDatabase appDatabase) {
+    public static Set<String> getUniqueBlockedUrls(AppDatabase appDatabase, Handler handler, boolean enableLog) {
         Set<String> denyList = new HashSet<>();
 
         // Process user-defined blocked URLs
@@ -75,24 +76,33 @@ public class BlockUrlUtils {
             if (userBlockUrl.url.indexOf('|') == -1) {
                 final String url = BlockUrlPatternsMatch.getValidatedUrl(userBlockUrl.url);
                 denyList.add(url);
-                LogUtils.getInstance().writeInfo("UserBlockUrl: " + url);
+                if (enableLog) {
+                    LogUtils.getInstance().writeInfo("UserBlockUrl: " + url, handler);
+                }
                 userBlockUrlCount++;
             }
         }
-        LogUtils.getInstance().writeInfo("User blocked URL size: " + userBlockUrlCount);
+        if (enableLog) {
+            LogUtils.getInstance().writeInfo("User blocked URL size: " + userBlockUrlCount, handler);
+        }
 
         // Process all blocked URL providers
         List<BlockUrlProvider> blockUrlProviders = appDatabase.blockUrlProviderDao().getBlockUrlProviderBySelectedFlag(1);
         for (BlockUrlProvider blockUrlProvider : blockUrlProviders) {
             List<BlockUrl> blockUrls = appDatabase.blockUrlDao().getUrlsByProviderId(blockUrlProvider.id);
-            LogUtils.getInstance().writeInfo("Included url provider: " + blockUrlProvider.url + ", size: " + blockUrls.size());
+            if (enableLog) {
+                LogUtils.getInstance().writeInfo("Included url provider: " + blockUrlProvider.url + ", size: " + blockUrls.size(), handler);
+            }
 
             for (BlockUrl blockUrl : blockUrls) {
                 denyList.add(BlockUrlPatternsMatch.getValidatedUrl(blockUrl.url));
             }
         }
 
-        LogUtils.getInstance().writeInfo("Total unique domains to block: " + denyList.size());
+        if (enableLog) {
+            LogUtils.getInstance().writeInfo("Total unique domains to block: " + denyList.size(), handler);
+        }
+
         return denyList;
     }
 

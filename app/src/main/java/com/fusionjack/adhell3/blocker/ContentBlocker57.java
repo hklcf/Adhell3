@@ -2,6 +2,7 @@ package com.fusionjack.adhell3.blocker;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Handler;
 import android.util.Log;
 import android.util.Patterns;
 
@@ -68,28 +69,8 @@ public class ContentBlocker57 implements ContentBlocker {
     }
 
     @Override
-    public void processCustomRules() throws Exception {
-        contentBlocker56.processCustomRules();
-    }
-
-    @Override
-    public void processMobileRestrictedApps() throws Exception {
-        contentBlocker56.processMobileRestrictedApps();
-    }
-
-    @Override
-    public void processWhitelistedApps() throws Exception {
-        contentBlocker56.processWhitelistedApps();
-    }
-
-    @Override
-    public void processWhitelistedDomains() throws Exception {
-        contentBlocker56.processWhitelistedDomains();
-    }
-
-    @Override
-    public void processBlockedDomains() throws Exception {
-        contentBlocker56.processBlockedDomains();
+    public void setHandler(Handler handler) {
+        contentBlocker56.setHandler(handler);
     }
 
     public void setDns(String dns1, String dns2) {

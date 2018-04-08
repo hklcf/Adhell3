@@ -1,6 +1,7 @@
 package com.fusionjack.adhell3.blocker;
 
 import android.app.enterprise.FirewallPolicy;
+import android.os.Handler;
 import android.util.Log;
 
 import com.fusionjack.adhell3.db.AppDatabase;
@@ -99,30 +100,8 @@ public class ContentBlocker20 implements ContentBlocker {
     }
 
     @Override
-    public void processCustomRules() throws Exception {
-
+    public void setHandler(Handler handler) {
     }
-
-    @Override
-    public void processMobileRestrictedApps() throws Exception {
-
-    }
-
-    @Override
-    public void processWhitelistedApps() throws Exception {
-
-    }
-
-    @Override
-    public void processWhitelistedDomains() throws Exception {
-
-    }
-
-    @Override
-    public void processBlockedDomains() throws Exception {
-
-    }
-
 
     private List<String> getDenyUrl() {
         Log.d(LOG_TAG, "Entering prepareUrls");

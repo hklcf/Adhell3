@@ -1,6 +1,8 @@
 package com.fusionjack.adhell3.utils;
 
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 
 import java.io.BufferedOutputStream;
@@ -44,12 +46,20 @@ public class LogUtils {
         closed = true;
     }
 
-    public void writeInfo(String text) {
+    public void writeInfo(String text, Handler handler) {
+        if (handler != null) {
+            Message message = handler.obtainMessage(0, text);
+            message.sendToTarget();
+        }
         Log.i(TAG, text);
         writeText(text);
     }
 
-    public void writeError(String text, Throwable e) {
+    public void writeError(String text, Throwable e, Handler handler) {
+        if (handler != null) {
+            Message message = handler.obtainMessage(0, text);
+            message.sendToTarget();
+        }
         Log.e(TAG, text, e);
         writeText(text);
     }
