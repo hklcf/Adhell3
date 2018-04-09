@@ -14,6 +14,7 @@ import android.webkit.URLUtil;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.fusionjack.adhell3.App;
@@ -38,7 +39,6 @@ public class CustomBlockUrlProviderFragment extends Fragment {
     private static final String TAG = CustomBlockUrlProviderFragment.class.getCanonicalName();
     private AppDatabase mDb;
     private EditText blockUrlProviderEditText;
-    private Button addBlockUrlProviderButton;
     private ListView blockListView;
     private FragmentManager fragmentManager;
 
@@ -52,9 +52,13 @@ public class CustomBlockUrlProviderFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_custom_url_provider, container, false);
-        blockUrlProviderEditText = (EditText) view.findViewById(R.id.blockUrlProviderEditText);
-        addBlockUrlProviderButton = (Button) view.findViewById(R.id.addBlockUrlProviderButton);
-        blockListView = (ListView) view.findViewById(R.id.blockUrlProviderListView);
+        blockUrlProviderEditText = view.findViewById(R.id.blockUrlProviderEditText);
+        Button addBlockUrlProviderButton = view.findViewById(R.id.addBlockUrlProviderButton);
+        blockListView = view.findViewById(R.id.blockUrlProviderListView);
+
+        TextView hintTextView = view.findViewById(R.id.customUrlProviderExpTextView);
+        String strFormat = getResources().getString(R.string.custom_url_provider_message);
+        hintTextView.setText(String.format(strFormat, AdhellAppIntegrity.BLOCK_URL_LIMIT));
 
         blockListView.setOnItemClickListener((parent, view1, position, id) -> {
             Maybe.fromCallable(() -> {
@@ -78,10 +82,8 @@ public class CustomBlockUrlProviderFragment extends Fragment {
                     .subscribe();
         });
 
-        Button updateBlockUrlProvidersButton = (Button) view.findViewById(R.id.updateBlockUrlProvidersButton);
+        Button updateBlockUrlProvidersButton = view.findViewById(R.id.updateBlockUrlProvidersButton);
         updateBlockUrlProvidersButton.setOnClickListener(v -> {
-            // TODO: getAll all
-            // TODO: then loop and delete and update
             Maybe.fromCallable(() -> {
                 List<BlockUrlProvider> blockUrlProviders = mDb.blockUrlProviderDao().getAll2();
                 mDb.blockUrlDao().deleteAll();

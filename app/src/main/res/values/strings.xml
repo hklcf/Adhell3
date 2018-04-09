@@ -94,7 +94,7 @@
     <string name="app_list_sorted_by_date">List is sorted by installation time</string>
     <string name="app_list_sorted_by_alphabet">List is sorted alphabetically</string>
     <string name="custom_url_provider_message">
-        You can add your own hosts link either remote or local.\nYou can block up to 15 000 urls.\nAdhell already has decent standard package so in general you don\'t need to add additional host list.\nRemote: https://adaway.org/hosts.txt\nLocal on internal storage: file:///mnt/sdcard/hosts.txt
+        You can add your own hosts link either remote or local.\nYou can block up to %1$d urls.\nAdhell already has decent standard package so in general you don\'t need to add additional host list.\nRemote: https://adaway.org/hosts.txt\nLocal on internal storage: file:///mnt/sdcard/hosts.txt
     </string>
     <string name="your_device_running_old_knox_version">
         Your device running old version of Knox. So this function may work unstable. Sorry

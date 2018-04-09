@@ -10,6 +10,7 @@ import com.fusionjack.adhell3.utils.AdhellFactory;
 import com.fusionjack.adhell3.utils.BlockUrlPatternsMatch;
 import com.fusionjack.adhell3.utils.BlockUrlUtils;
 import com.fusionjack.adhell3.utils.LogUtils;
+import com.google.common.collect.Lists;
 import com.sec.enterprise.AppIdentity;
 import com.sec.enterprise.firewall.DomainFilterRule;
 import com.sec.enterprise.firewall.Firewall;
@@ -184,15 +185,12 @@ public class ContentBlocker56 implements ContentBlocker {
                 if (tokens.countTokens() == 2) {
                     final String packageName = tokens.nextToken();
                     final String url = tokens.nextToken();
-                    final AppIdentity appIdentity = new AppIdentity(packageName, null);
                     LogUtils.getInstance().writeInfo("PackageName: " + packageName + ", WhiteUrl: " + url, handler);
 
-                    List<String> whiteList = new ArrayList<>();
-                    whiteList.add(url);
-
-                    List<DomainFilterRule> rules = new ArrayList<>();
-                    rules.add(new DomainFilterRule(appIdentity, new ArrayList<>(denyList), whiteList));
-                    addDomainFilterRules(rules);
+                    final AppIdentity appIdentity = new AppIdentity(packageName, null);
+                    List<String> allowList = new ArrayList<>();
+                    allowList.add(url);
+                    processDomains(appIdentity, new ArrayList<>(denyList), allowList);
                 }
             }
         }
@@ -218,10 +216,21 @@ public class ContentBlocker56 implements ContentBlocker {
         LogUtils.getInstance().writeInfo("\nProcessing blocked domains...", handler);
 
         Set<String> denyList = BlockUrlUtils.getUniqueBlockedUrls(appDatabase, handler, true);
-        List<DomainFilterRule> rules = new ArrayList<>();
-        AppIdentity appIdentity = new AppIdentity("*", null);
-        rules.add(new DomainFilterRule(appIdentity, new ArrayList<>(denyList), new ArrayList<>()));
-        addDomainFilterRules(rules);
+        final AppIdentity appIdentity = new AppIdentity("*", null);
+        processDomains(appIdentity, new ArrayList<>(denyList), new ArrayList<>());
+    }
+
+    private void processDomains(AppIdentity appIdentity, List<String> denyList, List<String> allowList) throws Exception {
+        int start = 0;
+        List<List<String>> chunks = Lists.partition(denyList, 5000);
+        for (List<String> chunk : chunks) {
+            LogUtils.getInstance().writeInfo("\nProcessing " + start + " to " + (start + chunk.size()) + " domains...", handler);
+            start += chunk.size();
+
+            List<DomainFilterRule> rules = new ArrayList<>();
+            rules.add(new DomainFilterRule(appIdentity, chunk, allowList));
+            addDomainFilterRules(rules);
+        }
     }
 
     @Override
