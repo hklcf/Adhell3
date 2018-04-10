@@ -15,16 +15,11 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.fusionjack.adhell3.R;
-import com.fusionjack.adhell3.blocker.ContentBlocker57;
-import com.fusionjack.adhell3.utils.DeviceAdminInteractor;
 
 public class DnsChangeDialogFragment extends DialogFragment {
 
     private EditText mDns1EditText;
     private EditText mDns2EditText;
-    private Button mSetDnsButton;
-    private Button mCancelButton;
-    private Button restoreDefaultDnsButton;
 
     public DnsChangeDialogFragment() {
     }
@@ -47,8 +42,8 @@ public class DnsChangeDialogFragment extends DialogFragment {
     @Override
     public void onViewCreated(View view, @Nullable final Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mDns1EditText = (EditText) view.findViewById(R.id.dns_address_1);
-        mDns2EditText = (EditText) view.findViewById(R.id.dns_address_2);
+        mDns1EditText = view.findViewById(R.id.dns_address_1);
+        mDns2EditText = view.findViewById(R.id.dns_address_2);
         final SharedPreferences sharedPreferences = view.getContext().getSharedPreferences("dnsAddresses", Context.MODE_PRIVATE);
         if (sharedPreferences.contains("dns1") && sharedPreferences.contains("dns2")) {
             Toast.makeText(view.getContext(), getString(R.string.loading_saved_dns), Toast.LENGTH_SHORT).show();
@@ -56,9 +51,9 @@ public class DnsChangeDialogFragment extends DialogFragment {
             mDns2EditText.setText(sharedPreferences.getString("dns2", "0.0.0.0"));
         }
 
-        mSetDnsButton = (Button) view.findViewById(R.id.changeDnsOkButton);
-        mCancelButton = (Button) view.findViewById(R.id.changeDnsCancelButton);
-        restoreDefaultDnsButton = (Button) view.findViewById(R.id.restoreDefaultDnsButton);
+        Button mSetDnsButton = view.findViewById(R.id.changeDnsOkButton);
+        Button mCancelButton = view.findViewById(R.id.changeDnsCancelButton);
+        Button restoreDefaultDnsButton = view.findViewById(R.id.restoreDefaultDnsButton);
 
         mDns1EditText.requestFocus();
         getDialog().getWindow().setSoftInputMode(
@@ -72,16 +67,13 @@ public class DnsChangeDialogFragment extends DialogFragment {
                 Toast.makeText(v.getContext(), getString(R.string.check_input_dns), Toast.LENGTH_LONG).show();
                 return;
             }
-            ContentBlocker57 contentBlocker57 = (ContentBlocker57) DeviceAdminInteractor.getInstance().getContentBlocker();
-            if (contentBlocker57 != null && !contentBlocker57.isEnabled()) {
-                Toast.makeText(v.getContext(), getString(R.string.enable_adhell_for_dns), Toast.LENGTH_LONG).show();
-            }
-            contentBlocker57.setDns(dns1, dns2);
-            Toast.makeText(v.getContext(), getString(R.string.changed_dns), Toast.LENGTH_LONG).show();
+
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putString("dns1", dns1);
             editor.putString("dns2", dns2);
             editor.apply();
+            Toast.makeText(v.getContext(), getString(R.string.changed_dns), Toast.LENGTH_LONG).show();
+
             dismiss();
         });
 
@@ -92,9 +84,8 @@ public class DnsChangeDialogFragment extends DialogFragment {
             editor.remove("dns1");
             editor.remove("dns2");
             editor.apply();
-            ContentBlocker57 contentBlocker57 = (ContentBlocker57) DeviceAdminInteractor.getInstance().getContentBlocker();
-            contentBlocker57.disableBlocker();
             Toast.makeText(v.getContext(), getString(R.string.restored_dns), Toast.LENGTH_LONG).show();
+
             dismiss();
         });
 

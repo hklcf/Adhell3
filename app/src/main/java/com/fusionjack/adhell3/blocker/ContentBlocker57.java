@@ -2,11 +2,13 @@ package com.fusionjack.adhell3.blocker;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Handler;
 import android.util.Log;
 import android.util.Patterns;
 
 import com.fusionjack.adhell3.App;
+import com.fusionjack.adhell3.db.entity.AppInfo;
 import com.fusionjack.adhell3.utils.AdhellFactory;
 import com.fusionjack.adhell3.utils.LogUtils;
 import com.sec.enterprise.AppIdentity;
@@ -76,20 +78,33 @@ public class ContentBlocker57 implements ContentBlocker {
         contentBlocker56.setHandler(handler);
     }
 
-    public void setDns(String dns1, String dns2) {
-        LogUtils.getInstance().writeInfo("\nSetting DNS...", handler);
+    private void setDns(String dns1, String dns2) {
+        LogUtils.getInstance().writeInfo("\nProcessing DNS...", handler);
 
-        DomainFilterRule domainFilterRule = new DomainFilterRule(new AppIdentity(Firewall.FIREWALL_ALL_PACKAGES, null));
-        domainFilterRule.setDns1(dns1);
-        domainFilterRule.setDns2(dns2);
         List<DomainFilterRule> rules = new ArrayList<>();
-        rules.add(domainFilterRule);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            // Blacklist Google Play Store from using DNS as apparently it doesn't let download anything on Oreo
+            List<AppInfo> appInfos = AdhellFactory.getInstance().getAppDatabase().applicationInfoDao().getAll();
+            for (AppInfo appInfo : appInfos) {
+                final String packageName = appInfo.packageName;
+                if (packageName != null && !packageName.equalsIgnoreCase("com.android.vending")) {
+                    DomainFilterRule rule = new DomainFilterRule(new AppIdentity(appInfo.packageName, null));
+                    rule.setDns1(dns1);
+                    rule.setDns2(dns2);
+                    rules.add(rule);
+                }
+            }
+        } else {
+            DomainFilterRule rule = new DomainFilterRule(new AppIdentity(Firewall.FIREWALL_ALL_PACKAGES, null));
+            rule.setDns1(dns1);
+            rule.setDns2(dns2);
+            rules.add(rule);
+        }
+
         try {
             AdhellFactory.getInstance().addDomainFilterRules(rules, handler);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        LogUtils.getInstance().writeInfo("DNS1: " + domainFilterRule.getDns1(), handler);
-        LogUtils.getInstance().writeInfo("DNS2: " + domainFilterRule.getDns2(), handler);
     }
 }

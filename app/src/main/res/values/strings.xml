@@ -79,11 +79,11 @@
     <string name="package_disabler_bottombar_title">Package disabler</string>
     <string name="to_be_done">This feature is under development</string>
     <string name="last_day_blocked">"Last 24 hours blocked: "</string>
-    <string name="loading_saved_dns">Loading saved dns addresses</string>
+    <string name="loading_saved_dns">Loading saved DNS addresses</string>
     <string name="check_input_dns">Check your input data</string>
     <string name="enable_adhell_for_dns">Adhell Must be enabled</string>
-    <string name="changed_dns">Dns addresses has been changed"</string>
-    <string name="restored_dns">DNS has been restored to defaults. You should to enable Adhellagain.</string>
+    <string name="changed_dns">DNS addresses has been set. Please turn off and turn on Adhell."</string>
+    <string name="restored_dns">DNS has been restored to defaults. Please turn off and turn on Adhell.</string>
     <string name="add_provider">Add Url Provider</string>
     <string name="adaway_hosts" translatable="false">https://adaway.org/hosts.txt</string>
     <string name="_2597" translatable="false">2597</string>
