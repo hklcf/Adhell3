@@ -24,6 +24,7 @@ import com.fusionjack.adhell3.fragments.MobileRestricterFragment;
 import com.fusionjack.adhell3.fragments.PackageDisablerFragment;
 import com.fusionjack.adhell3.utils.AdhellAppIntegrity;
 import com.fusionjack.adhell3.utils.DeviceAdminInteractor;
+import com.fusionjack.adhell3.utils.LogUtils;
 import com.roughike.bottombar.BottomBar;
 
 public class MainActivity extends AppCompatActivity {
@@ -146,6 +147,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         Log.d(TAG, "Destroying activity");
+        LogUtils.getInstance().close();
     }
 
     private void onTabSelected(int tabId) {
