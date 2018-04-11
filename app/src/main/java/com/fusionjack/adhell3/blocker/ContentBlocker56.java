@@ -106,6 +106,7 @@ public class ContentBlocker56 implements ContentBlocker {
                     firewallRules[0].setApplication(new AppIdentity(packageName, null));
 
                     AdhellFactory.getInstance().addFirewallRules(firewallRules, handler);
+                    ++count;
                 }
             }
         }
