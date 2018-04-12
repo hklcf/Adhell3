@@ -2,31 +2,31 @@
     <string name="app_name" translatable="false">AdHell 3</string>
     <string name="wait">Wait…</string>
     <string name="Reports">Reports</string>
-    <string name="about">App for Samsung smartphones that blocks ads and trackers in Chrome. Website loading increases up to 100%!</string>
+    <string name="about">App for Samsung phones that can block domains, disable packages, manage permissions, prevent mobile data use, and more</string>
     <string name="isSupported">Wait</string>
     <string name="only_samsung">Only Samsung</string>
-    <string name="phone_not_supported">This device not supported FOR NOW</string>
+    <string name="phone_not_supported">This device is not currently supported</string>
     <string name="preference_policy">policy-preference</string>
     <string name="isPolicyEnabled">isPolicyEnabled</string>
     <string name="block_enabled">Adhell enabled. You are safe now</string>
     <string name="block_disabled">Adhell disabled</string>
     <string name="enable_blocker">Enable content blocker</string>
     <string name="disable_blocker">Disable Adhell</string>
-    <string name="works_whit_samsung">This device not supported. Works with Samsung only, at least for now</string>
-    <string name="android_version_not_supported">This Android version not supported</string>
+    <string name="works_with_samsung">This device is not supported. Adhell works with Samsung only</string>
+    <string name="android_version_not_supported">This Android version is not supported</string>
     <string name="please_wait">Please wait… Enabling Adhell</string>
     <string name="wait_deleting">Please wait… Disabling Adhell</string>
-    <string name="adhell_not_supported">Adhell does not supported on your device yet.</string>
+    <string name="adhell_not_supported">Adhell is not supported on your device yet.</string>
     <string name="edit">Edit</string>
     <string name="to_enable_adhell">
         This app uses the Device Administrator permission (android.permission.BIND_DEVICE_ADMIN).
-        \nTo enable Adhell you need to activate admin mode for app.
-        Adhell uses underlying Samsung instruments, and these instruments require Admin privilege.
+        \nTo enable Adhell you need to activate Admin mode for this app.
+        Adhell uses underlying Samsung APIs, and these APIs require Admin privilege.
     </string>
     <string name="turn_on_admin">Turn On Admin</string>
-    <string name="knox">To block ads Adhell uses Samsung Firewall, to use it please activate Samsung license. It is free.</string>
+    <string name="knox">To block ads Adhell uses Samsung Firewall; to use it please activate Samsung license. It is free.</string>
     <string name="activate_knox">Activate Knox</string>
-    <string name="no_internet_connection">It seems that your device is not connected to the internet</string>
+    <string name="no_internet_connection">It seems that your device is not connected to the Internet</string>
     <string name="failed_to_activate_knox_message">Knox license activation failed
     </string>
     <string name="activating_knox_license">Activating…</string>
@@ -37,9 +37,9 @@
     <string name="block_button_text_disabling">Disabling…</string>
     <string name="edit_block_list">Edit Blocked URLs/Rules</string>
     <string name="whitelist">Show Whitelist</string>
-    <string name="blocklist">Show Blocklist</string>
+    <string name="blacklist">Show Blacklist</string>
     <string name="back_to_main">Back to Main</string>
-    <string name="editAlert">To take effect, turn off and turn on Adhell after editing list.\n\nAn URL can contain wildcard, e.g. *facebook.com\nTo define URL for an individual app, please use this following format:\npackageName|url
+    <string name="editAlert">To take effect, turn off and turn on Adhell after editing list.\n\nA URL can contain wildcards, e.g. *facebook.com\nTo define a URL for an individual app, please use this format:\npackageName|url
     </string>
     <string name="allow_apps">Manage Whitelisted Apps</string>
     <string name="delete_app">Turn Off and Delete Adhell</string>
@@ -48,7 +48,7 @@
     <string name="applist">Show App List</string>
     <string name="list_filter">Filter</string>
     <string name="apply_filter">Filter</string>
-    <string name="applying_filter">Please Wait, Applying Filter</string>
+    <string name="applying_filter">Please Wait… Applying Filter</string>
     <string name="block_app_tab_label">Active Apps</string>
     <string name="allowed_app_tab_label">Excluded Apps</string>
     <string name="block_url_tab_label">Blocked URLs</string>
@@ -62,7 +62,7 @@
     <string name="google_dns_2" translatable="false">8.8.4.4</string>
     <string name="set_dns_button_text">Set DNS</string>
     <string name="cancel_text">Cancel</string>
-    <string name="note_that_adhell_must_be_enabled">Use it only if you know what DNS for and what
+    <string name="note_that_adhell_must_be_enabled">Use it only if you know what DNS is for and what
         benefits or problems editing could cause. Note that Adhell must be enabled.
     </string>
     <string name="restore_defaults">Restore Defaults</string>
@@ -72,7 +72,7 @@
     <string name="whitelist_ad_url">Whitelist</string>
     <string name="block_custom_urls">Block Custom Urls/Rules</string>
     <string name="to_take_effect_turn_off_turn_on_adhell_after_editing_list">
-        To take effect, turn off and turn on Adhell after editing list.\n\nAn URL can contain wildcard, e.g. *facebook.com\nTo define a firewall rule, please use this following format:\npackageName|ipAddress|port\nA rule example for blocking port 53 for Chrome app:\ncom.android.chrome|*|53
+        To take effect, turn off and turn on Adhell after editing list.\n\nA URL can contain wildcards, e.g. *facebook.com\nTo define a firewall rule, please use this format:\npackageName|ipAddress|port\nAn example rule for blocking port 53 in Chrome:\ncom.android.chrome|*|53
     </string>
     <string name="blocker_fragment_title" translatable="false">Adhell 3</string>
     <string name="package_disabler_fragment_title">Package disabler</string>
@@ -81,23 +81,23 @@
     <string name="last_day_blocked">"Last 24 hours blocked: "</string>
     <string name="loading_saved_dns">Loading saved DNS addresses</string>
     <string name="check_input_dns">Check your input data</string>
-    <string name="enable_adhell_for_dns">Adhell Must be enabled</string>
-    <string name="changed_dns">DNS addresses has been set. Please turn off and turn on Adhell."</string>
+    <string name="enable_adhell_for_dns">Adhell must be enabled</string>
+    <string name="changed_dns">DNS addresses have been set. Please turn off and turn on Adhell.</string>
     <string name="restored_dns">DNS has been restored to defaults. Please turn off and turn on Adhell.</string>
-    <string name="add_provider">Add Url Provider</string>
+    <string name="add_provider">Add Provider URL</string>
     <string name="adaway_hosts" translatable="false">https://adaway.org/hosts.txt</string>
     <string name="_2597" translatable="false">2597</string>
     <string name="show_custom_providers">Edit Custom Providers</string>
-    <string name="delete_url">Delete Url</string>
+    <string name="delete_url">Delete URL</string>
     <string name="update_all_providers">Update All Providers</string>
     <string name="_2017_06_30_16_00_00" translatable="false">2017-06-30 16:00:00</string>
     <string name="app_list_sorted_by_date">List is sorted by installation time</string>
     <string name="app_list_sorted_by_alphabet">List is sorted alphabetically</string>
     <string name="custom_url_provider_message">
-        You can add your own hosts link either remote or local.\nYou can block up to %1$d urls.\nAdhell already has decent standard package so in general you don\'t need to add additional host list.\nRemote: https://adaway.org/hosts.txt\nLocal on internal storage: file:///mnt/sdcard/hosts.txt
+        Adhell\'s standard package is generally sufficient, but you can also add your own links to remotely and locally stored hosts lists.\nAdhell can block up to %1$d URLs.\n\nRemote storage: https://adaway.org/hosts.txt\nInternal storage: file:///mnt/sdcard/hosts.txt
     </string>
     <string name="your_device_running_old_knox_version">
-        Your device running old version of Knox. So this function may work unstable. Sorry
+        Your device is running old version of Knox, so this function may be unstable. Sorry
     </string>
     <string name="adblock_whitelist">Adblocked Apps</string>
     <string name="application_icon">App Icon</string>
