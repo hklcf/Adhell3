@@ -20,7 +20,7 @@ public class ApplicationsListChangedReceiver extends BroadcastReceiver {
         AsyncTask.execute(() ->
         {
             AppDatabase appDatabase = AppDatabase.getAppDatabase(App.get().getApplicationContext());
-            List<AppInfo> packageList = appDatabase.applicationInfoDao().getAll();
+            List<AppInfo> packageList = appDatabase.applicationInfoDao().getAppsAlphabetically();
             if (packageList.size() == 0) {
                 return;
             }
@@ -34,11 +34,11 @@ public class ApplicationsListChangedReceiver extends BroadcastReceiver {
             String action = intent.getAction();
             if (action != null && !packageName.isEmpty()) {
                 if (action.equalsIgnoreCase("android.intent.action.PACKAGE_ADDED")) {
-                    appDatabase.applicationInfoDao().deleteAppInfoByPackageName(packageName);
+                    appDatabase.applicationInfoDao().deleteByPackageName(packageName);
                     appDatabase.applicationInfoDao().insert(AppsListDBInitializer.getInstance()
                             .generateAppInfo(context.getPackageManager(), packageName));
                 } else if (action.equalsIgnoreCase("android.intent.action.PACKAGE_REMOVED")) {
-                    appDatabase.applicationInfoDao().deleteAppInfoByPackageName(packageName);
+                    appDatabase.applicationInfoDao().deleteByPackageName(packageName);
                 }
             }
         });

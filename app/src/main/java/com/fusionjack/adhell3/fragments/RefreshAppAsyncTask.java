@@ -6,7 +6,6 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.support.v4.widget.SwipeRefreshLayout;
 
-import com.fusionjack.adhell3.R;
 import com.fusionjack.adhell3.db.AppDatabase;
 import com.fusionjack.adhell3.db.entity.AppInfo;
 import com.fusionjack.adhell3.db.entity.DisabledPackage;
@@ -22,13 +21,9 @@ import java.util.List;
 
 public class RefreshAppAsyncTask extends AsyncTask<Void, Void, Void> {
     private WeakReference<Context> contextReference;
-    private int sortState;
-    private int layout;
     private AppFlag appFlag;
 
-    RefreshAppAsyncTask(int sortState, int layout, AppFlag appFlag, Context context) {
-        this.sortState = sortState;
-        this.layout = layout;
+    RefreshAppAsyncTask(AppFlag appFlag, Context context) {
         this.appFlag = appFlag;
         this.contextReference = new WeakReference<>(context);
     }
@@ -51,7 +46,7 @@ public class RefreshAppAsyncTask extends AsyncTask<Void, Void, Void> {
         List<DisabledPackage> disabledPackages = new ArrayList<>();
         for (AppInfo oldAppInfo : disabledApps) {
             appPolicy.setEnableApplication(oldAppInfo.packageName);
-            AppInfo newAppInfo = appDatabase.applicationInfoDao().getByPackageName(oldAppInfo.packageName);
+            AppInfo newAppInfo = appDatabase.applicationInfoDao().getAppByPackageName(oldAppInfo.packageName);
             if (newAppInfo != null) {
                 newAppInfo.disabled = true;
                 appDatabase.applicationInfoDao().insert(newAppInfo);
@@ -69,7 +64,7 @@ public class RefreshAppAsyncTask extends AsyncTask<Void, Void, Void> {
         appDatabase.restrictedPackageDao().deleteAll();
         List<RestrictedPackage> restrictedPackages = new ArrayList<>();
         for (AppInfo oldAppInfo : restrictedApps) {
-            AppInfo newAppInfo = appDatabase.applicationInfoDao().getByPackageName(oldAppInfo.packageName);
+            AppInfo newAppInfo = appDatabase.applicationInfoDao().getAppByPackageName(oldAppInfo.packageName);
             if (newAppInfo != null) {
                 newAppInfo.mobileRestricted = true;
                 appDatabase.applicationInfoDao().insert(newAppInfo);
@@ -86,7 +81,7 @@ public class RefreshAppAsyncTask extends AsyncTask<Void, Void, Void> {
         appDatabase.firewallWhitelistedPackageDao().deleteAll();
         List<FirewallWhitelistedPackage> whitelistedPackages = new ArrayList<>();
         for (FirewallWhitelistedPackage oldAppInfo : whitelistedApps) {
-            AppInfo newAppInfo = appDatabase.applicationInfoDao().getByPackageName(oldAppInfo.packageName);
+            AppInfo newAppInfo = appDatabase.applicationInfoDao().getAppByPackageName(oldAppInfo.packageName);
             if (newAppInfo != null) {
                 newAppInfo.adhellWhitelisted = true;
                 appDatabase.applicationInfoDao().insert(newAppInfo);
@@ -106,10 +101,10 @@ public class RefreshAppAsyncTask extends AsyncTask<Void, Void, Void> {
     protected void onPostExecute(Void aVoid) {
         Context context = contextReference.get();
         if (context != null) {
-            SwipeRefreshLayout swipeContainer = ((Activity) context).findViewById(R.id.swipeContainer);
+            SwipeRefreshLayout swipeContainer = ((Activity) context).findViewById(appFlag.getRefreshLayout());
             swipeContainer.setRefreshing(false);
 
-            new LoadAppAsyncTask("", sortState, layout, appFlag, true, context).execute();
+            new LoadAppAsyncTask("", appFlag, true, context).execute();
         }
     }
 }

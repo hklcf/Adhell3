@@ -7,53 +7,27 @@
     android:orientation="vertical">
 
     <Button
-        android:id="@+id/editUrls"
-        app:layout_widthPercent="70%"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:layout_centerHorizontal="true"
-        android:text="@string/edit_block_list"/>
-
-    <Button
-        android:id="@+id/allowApps"
-        app:layout_widthPercent="70%"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/editUrls"
-        android:layout_centerHorizontal="true"
-        android:text="@string/allow_apps"/>
-
-    <Button
-        android:id="@+id/changeDnsButton"
-        app:layout_widthPercent="70%"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/allowApps"
-        android:layout_centerHorizontal="true"
-        android:text="@string/change_dns_button"/>
-
-    <Button
         android:id="@+id/deleteApp"
         app:layout_widthPercent="70%"
+        android:layout_marginTop="10dp"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/changeDnsButton"
         android:layout_centerHorizontal="true"
         android:text="@string/delete_app"/>
 
-    <EditText
-        android:id="@+id/knox_key_editText"
+    <Button
+        android:id="@+id/backup_database"
         app:layout_widthPercent="70%"
         android:layout_height="wrap_content"
         android:layout_below="@+id/deleteApp"
-        android:ems="10"
-        android:hint="Knox Key"
         android:layout_centerHorizontal="true"
-        android:inputType="textPassword" />
+        android:text="@string/backup_database"/>
 
     <Button
-        android:id="@+id/submit_knox_key_button"
+        android:id="@+id/restore_database"
         app:layout_widthPercent="70%"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/knox_key_editText"
+        android:layout_below="@+id/backup_database"
         android:layout_centerHorizontal="true"
-        android:text="Submit Knox Key" />
+        android:text="@string/restore_database"/>
 
 </android.support.percent.PercentRelativeLayout>

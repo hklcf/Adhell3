@@ -75,8 +75,9 @@
         To take effect, turn off and turn on Adhell after editing list.\n\nA URL can contain wildcards, e.g. *facebook.com\nTo define a firewall rule, please use this format:\npackageName|ipAddress|port\nAn example rule for blocking port 53 in Chrome:\ncom.android.chrome|*|53
     </string>
     <string name="blocker_fragment_title" translatable="false">Adhell 3</string>
-    <string name="package_disabler_fragment_title">Package disabler</string>
-    <string name="package_disabler_bottombar_title">Package disabler</string>
+    <string name="package_disabler_fragment_title">Package Disabler</string>
+    <string name="apps_management_bottombar_title">Applications</string>
+    <string name="domains_bottombar_title">Domains</string>
     <string name="to_be_done">This feature is under development</string>
     <string name="last_day_blocked">"Last 24 hours blocked: "</string>
     <string name="loading_saved_dns">Loading saved DNS addresses</string>
@@ -109,7 +110,7 @@
     <string name="enabled_all_disabled" translatable="false">Enabling all disabled apps</string>
     <string name="app_list_sorted_by_disabled">Disabled apps are shown first</string>
     <string name="app_profiles_tab_title">Profiles</string>
-    <string name="app_permissions_tab_title">Permissions</string>
+    <string name="others_tab_title">Others</string>
     <string name="default_policy_name">Default Policy</string>
     <string name="last_modified">Last modified: {{lastModified}}</string>
     <string name="number_packages_disabled">{{numberOfDisabledPackages}} packages disabled</string>
@@ -122,11 +123,19 @@
     <string name="mobile_restricter_fragment_title">Mobile Restricter</string>
     <string name="sort_by_restricted">Sort by Restricted First</string>
     <string name="app_list_sorted_by_restricted">Restricted apps are shown first</string>
-    <string name="enabled_all_restricted">Enabling all restricted apps</string>
+    <string name="enabled_all_apps">Enabling all apps</string>
     <string name="show_blocked_urls">Show blocked URLs</string>
     <string name="total_blocked_urls">Total blocked URLs:&#160;</string>
     <string name="mobile_restricter_info">To take effect, turn off and turn on Adhell after restricting apps</string>
     <string name="backup_database">Backup database</string>
     <string name="restore_database">Restore database</string>
     <string name="whitelisted_app_info">To take effect, turn off and turn on Adhell after whitelisting apps</string>
+    <string name="whitelist_fragment_title">Whitelist Apps</string>
+    <string name="blacklist_url_fragment_title">Blacklist</string>
+    <string name="whitelist_url_fragment_title">Whitelist</string>
+    <string name="provider_url_fragment_title">Providers</string>
+    <string name="list_url_fragment_title">List</string>
+    <string name="permissions_fragment_title">App Permissions</string>
+    <string name="dns_fragment_title">DNS</string>
+    <string name="settings_fragment_title">Settings</string>
 </resources>

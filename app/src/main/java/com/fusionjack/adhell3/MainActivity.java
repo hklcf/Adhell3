@@ -1,7 +1,6 @@
 package com.fusionjack.adhell3;
 
 import android.content.Context;
-import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -18,10 +17,10 @@ import com.fusionjack.adhell3.dialogfragment.AdhellNotSupportedDialogFragment;
 import com.fusionjack.adhell3.dialogfragment.AdhellTurnOnDialogFragment;
 import com.fusionjack.adhell3.dialogfragment.NoInternetConnectionDialogFragment;
 import com.fusionjack.adhell3.fragments.AdhellNotSupportedFragment;
-import com.fusionjack.adhell3.fragments.AdhellPermissionInfoFragment;
+import com.fusionjack.adhell3.fragments.AppsFragment;
 import com.fusionjack.adhell3.fragments.BlockerFragment;
-import com.fusionjack.adhell3.fragments.MobileRestricterFragment;
-import com.fusionjack.adhell3.fragments.PackageDisablerFragment;
+import com.fusionjack.adhell3.fragments.DomainsFragment;
+import com.fusionjack.adhell3.fragments.OthersFragment;
 import com.fusionjack.adhell3.utils.AdhellAppIntegrity;
 import com.fusionjack.adhell3.utils.DeviceAdminInteractor;
 import com.fusionjack.adhell3.utils.LogUtils;
@@ -35,7 +34,6 @@ public class MainActivity extends AppCompatActivity {
     private AdhellNotSupportedDialogFragment adhellNotSupportedDialogFragment;
     private AdhellTurnOnDialogFragment adhellTurnOnDialogFragment;
     private NoInternetConnectionDialogFragment noInternetConnectionDialogFragment;
-    private BottomBar bottomBar;
 
     @Override
     public void onBackPressed() {
@@ -80,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
-        bottomBar = findViewById(R.id.bottomBar);
+        BottomBar bottomBar = findViewById(R.id.bottomBar);
         bottomBar.setTabTitleTextAppearance(R.style.bottomBarTextView);
         bottomBar.setOnTabSelectListener(tabId -> {
             if (!mAdminInteractor.isActiveAdmin()) {
@@ -135,12 +133,6 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
         Log.d(TAG, "Everything is okay");
-
-        Intent intent = getIntent();
-        boolean bxIntegration = intent.getBooleanExtra("bxIntegration", false);
-        if (bxIntegration) {
-            bottomBar.selectTabWithId(R.id.packageDisablerTab);
-        }
     }
 
     @Override
@@ -157,14 +149,14 @@ public class MainActivity extends AppCompatActivity {
             case R.id.blockerTab:
                 replacing = new BlockerFragment();
                 break;
-            case R.id.packageDisablerTab:
-                replacing = new PackageDisablerFragment();
+            case R.id.appsManagementTab:
+                replacing = new AppsFragment();
                 break;
-            case R.id.mobileRestricterTab:
-                replacing = new MobileRestricterFragment();
+            case R.id.domainsTab:
+                replacing = new DomainsFragment();
                 break;
-            case R.id.appPermissionsTab:
-                replacing = new AdhellPermissionInfoFragment();
+            case R.id.othersTab:
+                replacing = new OthersFragment();
                 break;
             default:
                 replacing = new BlockerFragment();

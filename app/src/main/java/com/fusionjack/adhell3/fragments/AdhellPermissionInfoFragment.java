@@ -63,7 +63,7 @@ public class AdhellPermissionInfoFragment extends Fragment {
         if (permissionInfos == null) {
             new CreatePermissionsAsyncTask(getContext(), getActivity()).execute();
         } else {
-            ListView listView = view.findViewById(R.id.permissionInfoRecyclerView);
+            ListView listView = view.findViewById(R.id.permissionInfoListView);
             AdhellPermissionInfoAdapter adapter = new AdhellPermissionInfoAdapter(getContext(), permissionInfos);
             listView.setAdapter(adapter);
 
@@ -165,7 +165,7 @@ public class AdhellPermissionInfoFragment extends Fragment {
 
             Context context = contextReference.get();
             if (context != null) {
-                ListView listView = ((Activity)context).findViewById(R.id.permissionInfoRecyclerView);
+                ListView listView = ((Activity)context).findViewById(R.id.permissionInfoListView);
                 AdhellPermissionInfoAdapter adapter = new AdhellPermissionInfoAdapter(context, permissionInfos);
                 listView.setAdapter(adapter);
 

@@ -226,7 +226,7 @@ public class AdhellAppIntegrity {
     }
 
     public void fillPackageDb() {
-        if (appDatabase.applicationInfoDao().getAll().size() > 0) {
+        if (appDatabase.applicationInfoDao().getAppsAlphabetically().size() > 0) {
             return;
         }
         AppsListDBInitializer.getInstance().fillPackageDb(packageManager);

@@ -4,15 +4,15 @@
         id="@+id/blockerTab"
         title="@string/blocker_fragment_title"/>
     <tab
-        icon="@drawable/ic_visibility_off_black_24dp"
-        id="@+id/packageDisablerTab"
-        title="@string/package_disabler_bottombar_title"/>
+        icon="@drawable/ic_business_black_24dp"
+        id="@+id/appsManagementTab"
+        title="@string/apps_management_bottombar_title"/>
     <tab
-        icon="@drawable/ic_signal_cellular_no_sim_black_24dp"
-        id="@+id/mobileRestricterTab"
-        title="@string/mobile_restricter_bottombar_title"/>
+        icon="@drawable/ic_public_black_24dp"
+        id="@+id/domainsTab"
+        title="@string/domains_bottombar_title"/>
     <tab
-        icon="@drawable/ic_lock_black_24dp"
-        id="@+id/appPermissionsTab"
-        title="@string/app_permissions_tab_title"/>
+        icon="@drawable/ic_dashboard_black_24dp"
+        id="@+id/othersTab"
+        title="@string/others_tab_title"/>
 </tabs>

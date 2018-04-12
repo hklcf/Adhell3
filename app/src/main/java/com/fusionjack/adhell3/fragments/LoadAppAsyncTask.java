@@ -25,19 +25,15 @@ public class LoadAppAsyncTask extends AsyncTask<Void, Void, List<AppInfo>> {
 
     private WeakReference<Context> contextReference;
     private String text;
-    private int sortState;
-    private int layout;
     private AppFlag appFlag;
     private boolean reload;
 
-    LoadAppAsyncTask(String text, int sortState, int layout, AppFlag appFlag, Context context) {
-        this(text, sortState, layout, appFlag, false, context);
+    LoadAppAsyncTask(String text, AppFlag appFlag, Context context) {
+        this(text, appFlag, false, context);
     }
 
-    LoadAppAsyncTask(String text, int sortState, int layout, AppFlag appFlag, boolean reload, Context context) {
+    LoadAppAsyncTask(String text, AppFlag appFlag, boolean reload, Context context) {
         this.text = text;
-        this.sortState = sortState;
-        this.layout = layout;
         this.appFlag = appFlag;
         this.reload = reload;
         this.contextReference = new WeakReference<>(context);
@@ -53,34 +49,36 @@ public class LoadAppAsyncTask extends AsyncTask<Void, Void, List<AppInfo>> {
         Context context = contextReference.get();
         if (context != null) {
             AppInfoAdapter adapter = new AppInfoAdapter(packageList, appFlag, reload, context);
-            ListView listView = ((Activity)context).findViewById(layout);
-            listView.setAdapter(adapter);
-            listView.invalidateViews();
+            ListView listView = ((Activity)context).findViewById(appFlag.getLoadLayout());
+            if (listView != null) {
+                listView.setAdapter(adapter);
+                adapter.notifyDataSetChanged();
+            }
         }
     }
 
     private List<AppInfo> getListFromDb() {
         AppDatabase appDatabase = AdhellFactory.getInstance().getAppDatabase();
         String filterText = '%' + text + '%';
-        switch (sortState) {
+        switch (appFlag.getSortState()) {
             case SORTED_DISABLED_ALPHABETICALLY:
                 if (text.length() == 0) {
-                    return appDatabase.applicationInfoDao().getAll();
+                    return appDatabase.applicationInfoDao().getAppsAlphabetically();
                 }
-                return appDatabase.applicationInfoDao().getAllAppsWithStrInName(filterText);
+                return appDatabase.applicationInfoDao().getAppsAlphabetically(filterText);
             case SORTED_DISABLED_INSTALL_TIME:
                 if (text.length() == 0) {
-                    return appDatabase.applicationInfoDao().getAllRecentSort();
+                    return appDatabase.applicationInfoDao().getAppsInTimeOrder();
                 }
-                return appDatabase.applicationInfoDao().getAllAppsWithStrInNameTimeOrder(filterText);
+                return appDatabase.applicationInfoDao().getAppsInTimeOrder(filterText);
             case SORTED_DISABLED:
                 if (text.length() == 0) {
-                    return appDatabase.applicationInfoDao().getAllSortedByDisabled();
+                    return appDatabase.applicationInfoDao().getAppsInDisabledOrder();
                 }
-                return appDatabase.applicationInfoDao().getAllAppsWithStrInNameDisabledOrder(filterText);
+                return appDatabase.applicationInfoDao().getAppsInDisabledOrder(filterText);
             case SORTED_RESTRICTED_ALPHABETICALLY:
                 if (text.length() == 0) {
-                    return appDatabase.applicationInfoDao().getEnabledApps();
+                    return appDatabase.applicationInfoDao().getEnabledAppsAlphabetically();
                 }
                 return appDatabase.applicationInfoDao().getEnabledAppsAlphabetically(filterText);
             case SORTED_RESTRICTED_INSTALL_TIME:
@@ -90,14 +88,14 @@ public class LoadAppAsyncTask extends AsyncTask<Void, Void, List<AppInfo>> {
                 return appDatabase.applicationInfoDao().getEnabledAppsInTimeOrder(filterText);
             case SORTED_RESTRICTED:
                 if (text.length() == 0) {
-                    return appDatabase.applicationInfoDao().getEnableAppsByMobileRestricted();
+                    return appDatabase.applicationInfoDao().getAppsInMobileRestrictedOrder();
                 }
-                return appDatabase.applicationInfoDao().getEnableAppsByMobileRestricted(filterText);
+                return appDatabase.applicationInfoDao().getAppsInMobileRestrictedOrder(filterText);
             case SORTED_WHITELISTED:
                 if (text.length() == 0) {
-                    return appDatabase.applicationInfoDao().getAllSortedByWhitelist();
+                    return appDatabase.applicationInfoDao().getAppsInWhitelistedOrder();
                 }
-                return appDatabase.applicationInfoDao().getAllAppsWithStrInName(filterText);
+                return appDatabase.applicationInfoDao().getAppsInWhitelistedOrder(filterText);
         }
         return null;
     }

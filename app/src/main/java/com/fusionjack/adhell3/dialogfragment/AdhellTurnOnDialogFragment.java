@@ -54,7 +54,7 @@ public class AdhellTurnOnDialogFragment extends DialogFragment {
                 emmiter.onSuccess(knoxKey);
             } catch (Throwable e) {
                 emmiter.onError(e);
-                Log.e(TAG, "Failed to getAll knox key", e);
+                Log.e(TAG, "Failed to getAppsAlphabetically knox key", e);
             }
         });
     }

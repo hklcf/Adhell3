@@ -256,7 +256,7 @@ public final class DatabaseFactory {
         appDatabase.firewallWhitelistedPackageDao().insertAll(whitelistedPackages);
 
         for (FirewallWhitelistedPackage whitelistedPackage : whitelistedPackages) {
-            AppInfo appInfo = appDatabase.applicationInfoDao().getByPackageName(whitelistedPackage.packageName);
+            AppInfo appInfo = appDatabase.applicationInfoDao().getAppByPackageName(whitelistedPackage.packageName);
             if (appInfo != null) {
                 appInfo.adhellWhitelisted = true;
                 appDatabase.applicationInfoDao().update(appInfo);
@@ -293,7 +293,7 @@ public final class DatabaseFactory {
         appDatabase.disabledPackageDao().insertAll(disabledPackages);
 
         for (DisabledPackage disabledPackage : disabledPackages) {
-            AppInfo appInfo = appDatabase.applicationInfoDao().getByPackageName(disabledPackage.packageName);
+            AppInfo appInfo = appDatabase.applicationInfoDao().getAppByPackageName(disabledPackage.packageName);
             if (appInfo != null) {
                 appInfo.disabled = true;
                 appDatabase.applicationInfoDao().update(appInfo);
@@ -330,7 +330,7 @@ public final class DatabaseFactory {
         appDatabase.restrictedPackageDao().insertAll(restrictedPackages);
 
         for (RestrictedPackage restrictedPackage : restrictedPackages) {
-            AppInfo appInfo = appDatabase.applicationInfoDao().getByPackageName(restrictedPackage.packageName);
+            AppInfo appInfo = appDatabase.applicationInfoDao().getAppByPackageName(restrictedPackage.packageName);
             if (appInfo != null) {
                 appInfo.mobileRestricted = true;
                 appDatabase.applicationInfoDao().update(appInfo);

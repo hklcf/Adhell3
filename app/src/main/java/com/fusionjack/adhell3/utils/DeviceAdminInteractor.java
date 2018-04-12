@@ -191,7 +191,7 @@ public class DeviceAdminInteractor {
                     return ContentBlocker57.getInstance();
             }
         } catch (Throwable t) {
-            Log.e(TAG, "Failed to getAll ContentBlocker", t);
+            Log.e(TAG, "Failed to getAppsAlphabetically ContentBlocker", t);
             return null;
         }
     }
