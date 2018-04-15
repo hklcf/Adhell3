@@ -80,4 +80,6 @@ As for developer, the license needs to be renewed every 3 months. Don't forget t
 
 
 ## Credits
-Adhell3 is based on FiendFyre's Adhell2 which is heavily modified by me.
+Adhell3 is based on FiendFyre's Adhell2 which is heavily modified by me.<br/>
+### Icons
+https://material.io/icons
