@@ -80,9 +80,8 @@ public class AppsPageFragment extends Fragment {
         if (view != null) {
             ListView listView = view.findViewById(appFlag.getLoadLayout());
             listView.setOnItemClickListener((AdapterView<?> adView, View view2, int position, long id) -> {
-                AppInfoAdapter disablerAppAdapter = (AppInfoAdapter) adView.getAdapter();
-                String packageName = disablerAppAdapter.getItem(position).packageName;
-                new SetAppAsyncTask(packageName, view2, page).execute();
+                AppInfoAdapter adapter = (AppInfoAdapter) adView.getAdapter();
+                new SetAppAsyncTask(adapter, position, view2, page).execute();
             });
 
             SwipeRefreshLayout swipeContainer = view.findViewById(appFlag.getRefreshLayout());
@@ -184,13 +183,16 @@ public class AppsPageFragment extends Fragment {
         private WeakReference<View> viewWeakReference;
         private AppDatabase appDatabase;
         private ApplicationPolicy appPolicy;
-        private String packageName;
         private int page;
+        private int position;
+        private AppInfoAdapter adapter;
+        private AppInfo appInfo;
 
-        SetAppAsyncTask(String packageName, View view, int page) {
+        SetAppAsyncTask(AppInfoAdapter adapter, int position, View view, int page) {
             this.viewWeakReference = new WeakReference<>(view);
-            this.packageName = packageName;
             this.page = page;
+            this.adapter = adapter;
+            this.position = position;
             this.appDatabase = AdhellFactory.getInstance().getAppDatabase();
             this.appPolicy = AdhellFactory.getInstance().getAppPolicy();
         }
@@ -202,7 +204,8 @@ public class AppsPageFragment extends Fragment {
             }
 
             boolean state = false;
-            AppInfo appInfo = appDatabase.applicationInfoDao().getAppByPackageName(packageName);
+            String packageName = adapter.getItem(position).packageName;
+            appInfo = appDatabase.applicationInfoDao().getAppByPackageName(packageName);
             switch (page) {
                 case PACKAGE_DISABLER_PAGE:
                     appInfo.disabled = !appInfo.disabled;
@@ -254,6 +257,9 @@ public class AppsPageFragment extends Fragment {
         @Override
         protected void onPostExecute(Boolean state) {
             ((Switch) viewWeakReference.get().findViewById(R.id.switchDisable)).setChecked(!state);
+
+            adapter.setItem(position, appInfo);
+            adapter.notifyDataSetChanged();
         }
     }
 }

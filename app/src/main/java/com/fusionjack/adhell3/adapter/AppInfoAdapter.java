@@ -46,6 +46,10 @@ public class AppInfoAdapter extends BaseAdapter {
         }
     }
 
+    public void setItem(int position, AppInfo appInfo) {
+        applicationInfoList.set(position, appInfo);
+    }
+
     @Override
     public int getCount() {
         return this.applicationInfoList.size();
