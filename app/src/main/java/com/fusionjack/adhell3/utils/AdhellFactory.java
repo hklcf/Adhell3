@@ -3,12 +3,15 @@ package com.fusionjack.adhell3.utils;
 import android.app.enterprise.ApplicationPermissionControlPolicy;
 import android.app.enterprise.ApplicationPolicy;
 import android.app.enterprise.FirewallPolicy;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 
 import com.fusionjack.adhell3.App;
+import com.fusionjack.adhell3.R;
 import com.fusionjack.adhell3.db.AppDatabase;
 import com.sec.enterprise.firewall.DomainFilterRule;
 import com.sec.enterprise.firewall.Firewall;
@@ -90,6 +93,22 @@ public final class AdhellFactory {
 
     public SharedPreferences getSharedPreferences() {
         return sharedPreferences;
+    }
+
+    public AlertDialog createNotSupportedDialog(Context context) {
+        return new AlertDialog.Builder(context)
+                .setIcon(R.drawable.ic_error_black_24dp)
+                .setTitle(context.getString(R.string.not_supported_dialog_title))
+                .setMessage(context.getString(R.string.adhell_not_supported))
+                .show();
+    }
+
+    public AlertDialog createNoInternetConnectionDialog(Context context) {
+        return new AlertDialog.Builder(context)
+                .setIcon(R.drawable.ic_error_black_24dp)
+                .setTitle(context.getString(R.string.no_internet_connection_dialog_title))
+                .setMessage(context.getString(R.string.no_internet_connection))
+                .show();
     }
 
     public void addDomainFilterRules(List<DomainFilterRule> domainRules, Handler handler) throws Exception {
