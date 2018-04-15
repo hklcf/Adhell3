@@ -254,8 +254,12 @@ public class OthersPageFragment extends Fragment {
             for (String permissionName : sortedPermissionNameList) {
                 try {
                     PermissionInfo info = packageManager.getPermissionInfo(permissionName, PackageManager.GET_META_DATA);
-                    CharSequence description = info.loadDescription(packageManager);
-                    permissionList.add(new AdhellPermissionInfo(permissionName, description == null ? "No description" : description.toString()));
+                    if (AdhellPermissionInfo.includePermission(info.protectionLevel)) {
+                        CharSequence description = info.loadDescription(packageManager);
+                        permissionList.add(new AdhellPermissionInfo(permissionName,
+                                description == null ? "No description" : description.toString(),
+                                info.protectionLevel));
+                    }
                 } catch (PackageManager.NameNotFoundException ignored) {
                 }
             }

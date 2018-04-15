@@ -34,8 +34,10 @@ public class AdhellPermissionInfoAdapter extends ArrayAdapter<AdhellPermissionIn
 
         TextView permissionLabelTextView = convertView.findViewById(R.id.permissionLabelTextView);
         TextView permissionNameTextView = convertView.findViewById(R.id.permissionNameTextView);
+        TextView protectionLevelTextView = convertView.findViewById(R.id.protectionLevelTextView);
         permissionLabelTextView.setText(permissionInfo.label);
         permissionNameTextView.setText(permissionInfo.name);
+        protectionLevelTextView.setText(permissionInfo.getProtectionLevelLabel());
 
         return convertView;
     }

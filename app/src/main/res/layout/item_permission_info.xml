@@ -15,10 +15,24 @@
         android:textStyle="bold"/>
 
     <TextView
-        android:id="@+id/permissionLabelTextView"
+        android:id="@+id/protectionLevelTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/permissionNameTextView"
+        android:paddingStart="5dp"
+        android:paddingLeft="5dp"
+        android:paddingEnd="5dp"
+        android:paddingRight="5dp"
+        android:paddingBottom="5dp"
+        android:text="Dangerous"
+        android:textColor="#000"
+        android:textSize="@dimen/text_mizerable_size"/>
+
+    <TextView
+        android:id="@+id/permissionLabelTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/protectionLevelTextView"
         android:paddingStart="5dp"
         android:paddingLeft="5dp"
         android:paddingEnd="5dp"
