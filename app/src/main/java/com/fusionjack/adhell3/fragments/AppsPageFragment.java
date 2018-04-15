@@ -6,6 +6,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -132,51 +133,58 @@ public class AppsPageFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_enable_all:
-                Toast.makeText(getContext(), getString(R.string.enabled_all_apps), Toast.LENGTH_SHORT).show();
                 enableAllPackages();
         }
         return super.onOptionsItemSelected(item);
     }
 
     private void enableAllPackages() {
-        AsyncTask.execute(() -> {
-            AppFlag appFlag = null;
-            AppDatabase appDatabase = AdhellFactory.getInstance().getAppDatabase();
-            switch (page) {
-                case PACKAGE_DISABLER_PAGE:
-                    appFlag = AppFlag.createDisablerFlag();
-                    ApplicationPolicy appPolicy = AdhellFactory.getInstance().getAppPolicy();
-                    List<AppInfo> disabledAppList = appDatabase.applicationInfoDao().getDisabledApps();
-                    for (AppInfo app : disabledAppList) {
-                        app.disabled = false;
-                        appPolicy.setEnableApplication(app.packageName);
-                        appDatabase.applicationInfoDao().insert(app);
-                    }
-                    appDatabase.disabledPackageDao().deleteAll();
-                    break;
+        new AlertDialog.Builder(context)
+            .setTitle(getString(R.string.enable_apps_dialog_title))
+            .setMessage(getString(R.string.enable_apps_dialog_text))
+            .setIcon(R.drawable.ic_warning_black_24dp)
+            .setPositiveButton(android.R.string.yes, (dialog, whichButton) -> {
+                Toast.makeText(getContext(), getString(R.string.enabled_all_apps), Toast.LENGTH_SHORT).show();
+                AsyncTask.execute(() -> {
+                    AppFlag appFlag = null;
+                    AppDatabase appDatabase = AdhellFactory.getInstance().getAppDatabase();
+                    switch (page) {
+                        case PACKAGE_DISABLER_PAGE:
+                            appFlag = AppFlag.createDisablerFlag();
+                            ApplicationPolicy appPolicy = AdhellFactory.getInstance().getAppPolicy();
+                            List<AppInfo> disabledAppList = appDatabase.applicationInfoDao().getDisabledApps();
+                            for (AppInfo app : disabledAppList) {
+                                app.disabled = false;
+                                appPolicy.setEnableApplication(app.packageName);
+                                appDatabase.applicationInfoDao().insert(app);
+                            }
+                            appDatabase.disabledPackageDao().deleteAll();
+                            break;
 
-                case MOBILE_RESTRICTER_PAGE:
-                    appFlag = AppFlag.createRestrictedFlag();
-                    List<AppInfo> restrictedAppList = appDatabase.applicationInfoDao().getMobileRestrictedApps();
-                    for (AppInfo app : restrictedAppList) {
-                        app.mobileRestricted = false;
-                        appDatabase.applicationInfoDao().insert(app);
-                    }
-                    appDatabase.restrictedPackageDao().deleteAll();
-                    break;
+                        case MOBILE_RESTRICTER_PAGE:
+                            appFlag = AppFlag.createRestrictedFlag();
+                            List<AppInfo> restrictedAppList = appDatabase.applicationInfoDao().getMobileRestrictedApps();
+                            for (AppInfo app : restrictedAppList) {
+                                app.mobileRestricted = false;
+                                appDatabase.applicationInfoDao().insert(app);
+                            }
+                            appDatabase.restrictedPackageDao().deleteAll();
+                            break;
 
-                case WHITELIST_PAGE:
-                    appFlag = AppFlag.createWhitelistedFlag();
-                    List<AppInfo> whitelistedAppList = appDatabase.applicationInfoDao().getWhitelistedApps();
-                    for (AppInfo app : whitelistedAppList) {
-                        app.adhellWhitelisted = false;
-                        appDatabase.applicationInfoDao().insert(app);
+                        case WHITELIST_PAGE:
+                            appFlag = AppFlag.createWhitelistedFlag();
+                            List<AppInfo> whitelistedAppList = appDatabase.applicationInfoDao().getWhitelistedApps();
+                            for (AppInfo app : whitelistedAppList) {
+                                app.adhellWhitelisted = false;
+                                appDatabase.applicationInfoDao().insert(app);
+                            }
+                            appDatabase.firewallWhitelistedPackageDao().deleteAll();
+                            break;
                     }
-                    appDatabase.firewallWhitelistedPackageDao().deleteAll();
-                    break;
-            }
-            new LoadAppAsyncTask("", appFlag, getContext()).execute();
-        });
+                    new LoadAppAsyncTask("", appFlag, getContext()).execute();
+                });
+            })
+            .setNegativeButton(android.R.string.no, null).show();
     }
 
     private static class SetAppAsyncTask extends AsyncTask<Void, Void, Boolean> {

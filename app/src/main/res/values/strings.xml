@@ -138,4 +138,10 @@
     <string name="permissions_fragment_title">App Permissions</string>
     <string name="dns_fragment_title">DNS</string>
     <string name="settings_fragment_title">Settings</string>
+    <string name="enable_apps_dialog_title">Enable all apps</string>
+    <string name="enable_apps_dialog_text">Do you really want to enable all apps?</string>
+    <string name="backup_database_dialog_title">Backup database</string>
+    <string name="backup_database_dialog_text">This will replace your existing backup file if it exists. Are you sure?</string>
+    <string name="restore_database_dialog_title">Restore database</string>
+    <string name="restore_database_dialog_text">Do you really want to restore database? All your setup will be replaced.</string>
 </resources>

@@ -174,7 +174,7 @@ public class OthersPageFragment extends Fragment {
                 deleteAppButton.setOnClickListener(v -> new AlertDialog.Builder(context)
                     .setTitle(getString(R.string.delete_app_dialog_title))
                     .setMessage(getString(R.string.delete_app_dialog_text))
-                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .setIcon(R.drawable.ic_warning_black_24dp)
                     .setPositiveButton(android.R.string.yes, (dialog, whichButton) -> {
                         contentBlocker.disableBlocker();
                         ComponentName devAdminReceiver = new ComponentName(context, CustomDeviceAdminReceiver.class);
@@ -189,12 +189,26 @@ public class OthersPageFragment extends Fragment {
 
                 Button backupDatabaseButton = view.findViewById(R.id.backup_database);
                 backupDatabaseButton.setOnClickListener(view1 ->
-                        new BackupDatabaseAsyncTask(getActivity()).execute()
+                    new AlertDialog.Builder(context)
+                        .setTitle(getString(R.string.backup_database_dialog_title))
+                        .setMessage(getString(R.string.backup_database_dialog_text))
+                        .setIcon(R.drawable.ic_warning_black_24dp)
+                        .setPositiveButton(android.R.string.yes, (dialog, whichButton) ->
+                                new BackupDatabaseAsyncTask(getActivity()).execute()
+                        )
+                        .setNegativeButton(android.R.string.no, null).show()
                 );
 
                 Button restoreDatabaseButton = view.findViewById(R.id.restore_database);
                 restoreDatabaseButton.setOnClickListener(view2 ->
-                        new RestoreDatabaseAsyncTask(getActivity()).execute()
+                    new AlertDialog.Builder(context)
+                        .setTitle(getString(R.string.restore_database_dialog_title))
+                        .setMessage(getString(R.string.restore_database_dialog_text))
+                        .setIcon(R.drawable.ic_warning_black_24dp)
+                        .setPositiveButton(android.R.string.yes, (dialog, whichButton) ->
+                                new RestoreDatabaseAsyncTask(getActivity()).execute()
+                        )
+                        .setNegativeButton(android.R.string.no, null).show()
                 );
                 break;
         }
