@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.MenuItem;
 
 import com.fusionjack.adhell3.dialogfragment.AdhellTurnOnDialogFragment;
 import com.fusionjack.adhell3.fragments.AppsFragment;
@@ -67,6 +68,16 @@ public class MainActivity extends AppCompatActivity {
             adhellAppIntegrity.checkAdhellStandardPackage();
             adhellAppIntegrity.fillPackageDb();
         });
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                fragmentManager.popBackStack();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
