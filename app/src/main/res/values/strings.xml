@@ -2,22 +2,10 @@
     <string name="app_name" translatable="false">AdHell 3</string>
     <string name="wait">Wait…</string>
     <string name="Reports">Reports</string>
-    <string name="about">App for Samsung phones that can block domains, disable packages, manage permissions, prevent mobile data use, and more</string>
     <string name="isSupported">Wait</string>
-    <string name="only_samsung">Only Samsung</string>
-    <string name="phone_not_supported">This device is not currently supported</string>
-    <string name="preference_policy">policy-preference</string>
-    <string name="isPolicyEnabled">isPolicyEnabled</string>
     <string name="block_enabled">Adhell enabled. You are safe now</string>
     <string name="block_disabled">Adhell disabled</string>
-    <string name="enable_blocker">Enable content blocker</string>
-    <string name="disable_blocker">Disable Adhell</string>
-    <string name="works_with_samsung">This device is not supported. Adhell works with Samsung only</string>
-    <string name="android_version_not_supported">This Android version is not supported</string>
-    <string name="please_wait">Please wait… Enabling Adhell</string>
-    <string name="wait_deleting">Please wait… Disabling Adhell</string>
     <string name="adhell_not_supported">Adhell is not supported on your device yet.</string>
-    <string name="edit">Edit</string>
     <string name="to_enable_adhell">
         This app uses the Device Administrator permission (android.permission.BIND_DEVICE_ADMIN).
         \nTo enable Adhell you need to activate Admin mode for this app.
@@ -27,50 +15,24 @@
     <string name="knox">To block ads Adhell uses Samsung Firewall; to use it please activate Samsung license. It is free.</string>
     <string name="activate_knox">Activate Knox</string>
     <string name="no_internet_connection">It seems that your device is not connected to the Internet</string>
-    <string name="failed_to_activate_knox_message">Knox license activation failed
-    </string>
     <string name="activating_knox_license">Activating…</string>
-    <string name="knox_license_activated">Activated</string>
     <string name="block_button_text_turn_off">Turn Off</string>
     <string name="block_button_text_turn_on">Turn On</string>
-    <string name="block_button_text_enabling">Enabling…</string>
-    <string name="block_button_text_disabling">Disabling…</string>
-    <string name="edit_block_list">Edit Blocked URLs/Rules</string>
-    <string name="whitelist">Show Whitelist</string>
-    <string name="blacklist">Show Blacklist</string>
-    <string name="back_to_main">Back to Main</string>
     <string name="editAlert">To take effect, turn off and turn on Adhell after editing list.\n\nA URL can contain wildcards, e.g. *facebook.com\nTo define a URL for an individual app, please use this format:\npackageName|url
     </string>
-    <string name="allow_apps">Manage Whitelisted Apps</string>
     <string name="delete_app">Turn Off and Delete Adhell</string>
     <string name="delete_app_dialog_title">Delete app</string>
     <string name="delete_app_dialog_text">Do you really want to turn off and delete Adhell?</string>
-    <string name="applist">Show App List</string>
-    <string name="list_filter">Filter</string>
-    <string name="apply_filter">Filter</string>
-    <string name="applying_filter">Please Wait… Applying Filter</string>
-    <string name="block_app_tab_label">Active Apps</string>
-    <string name="allowed_app_tab_label">Excluded Apps</string>
-    <string name="block_url_tab_label">Blocked URLs</string>
-    <string name="allowed_url_tab_label">Allowed URLs</string>
-    <string name="test_report">Test report</string>
-    <string name="adhell_settings">Settings</string>
-    <string name="change_dns_button">Change DNS</string>
     <string name="dns_1_address">DNS 1 Address</string>
     <string name="dns_2_address">DNS 2 Address</string>
-    <string name="google_dns_1" translatable="false">8.8.8.8</string>
-    <string name="google_dns_2" translatable="false">8.8.4.4</string>
     <string name="set_dns_button_text">Set DNS</string>
-    <string name="cancel_text">Cancel</string>
     <string name="note_that_adhell_must_be_enabled">Use it only if you know what DNS is for and what
         benefits or problems editing could cause. Note that Adhell must be enabled.
     </string>
     <string name="restore_defaults">Restore Defaults</string>
     <string name="zero_dns" translatable="false">0.0.0.0</string>
     <string name="block">Block</string>
-    <string name="manage_standard_url_package">Whitelist Custom URLs</string>
     <string name="whitelist_ad_url">Whitelist</string>
-    <string name="block_custom_urls">Block Custom Urls/Rules</string>
     <string name="to_take_effect_turn_off_turn_on_adhell_after_editing_list">
         To take effect, turn off and turn on Adhell after editing list.\n\nA URL can contain wildcards, e.g. *facebook.com\nTo define a firewall rule, please use this format:\npackageName|ipAddress|port\nAn example rule for blocking port 53 in Chrome:\ncom.android.chrome|*|53
     </string>
@@ -78,53 +40,25 @@
     <string name="package_disabler_fragment_title">Package Disabler</string>
     <string name="apps_management_bottombar_title">Applications</string>
     <string name="domains_bottombar_title">Domains</string>
-    <string name="to_be_done">This feature is under development</string>
     <string name="last_day_blocked">"Last 24 hours blocked: "</string>
-    <string name="loading_saved_dns">Loading saved DNS addresses</string>
     <string name="check_input_dns">Check your input data</string>
-    <string name="enable_adhell_for_dns">Adhell must be enabled</string>
     <string name="changed_dns">DNS addresses have been set. Please turn off and turn on Adhell.</string>
     <string name="restored_dns">DNS has been restored to defaults. Please turn off and turn on Adhell.</string>
     <string name="add_provider">Add Provider URL</string>
     <string name="adaway_hosts" translatable="false">https://adaway.org/hosts.txt</string>
     <string name="_2597" translatable="false">2597</string>
-    <string name="show_custom_providers">Edit Custom Providers</string>
     <string name="delete_url">Delete URL</string>
     <string name="update_all_providers">Update All Providers</string>
     <string name="_2017_06_30_16_00_00" translatable="false">2017-06-30 16:00:00</string>
-    <string name="app_list_sorted_by_date">List is sorted by installation time</string>
-    <string name="app_list_sorted_by_alphabet">List is sorted alphabetically</string>
     <string name="custom_url_provider_message">
         Adhell\'s standard package is generally sufficient, but you can also add your own links to remotely and locally stored hosts lists.\nAdhell can block up to %1$d URLs.\n\nRemote storage: https://adaway.org/hosts.txt\nInternal storage: file:///mnt/sdcard/hosts.txt
     </string>
     <string name="your_device_running_old_knox_version">
         Your device is running old version of Knox, so this function may be unstable. Sorry
     </string>
-    <string name="adblock_whitelist">Adblocked Apps</string>
-    <string name="application_icon">App Icon</string>
-    <string name="billing_not_supported">Not Supported</string>
-    <string name="sort_by_alphabet">Sort Alphabetically</string>
-    <string name="sort_by_install_time">Sort by Install Time</string>
-    <string name="sort_by_disabled">Show Disabled First</string>
-    <string name="disabler_enable_all" translatable="false">Enable All Apps</string>
-    <string name="enabled_all_disabled" translatable="false">Enabling all disabled apps</string>
-    <string name="app_list_sorted_by_disabled">Disabled apps are shown first</string>
-    <string name="app_profiles_tab_title">Profiles</string>
     <string name="others_tab_title">Others</string>
-    <string name="default_policy_name">Default Policy</string>
-    <string name="last_modified">Last modified: {{lastModified}}</string>
-    <string name="number_packages_disabled">{{numberOfDisabledPackages}} packages disabled</string>
-    <string name="number_of_hosts">{{numberOfHosts}} host packages</string>
-    <string name="custom_domains_blocked">{{numberOfDomainsBlockedByUser}} custom domains blocked
-    </string>
-    <string name="number_of_domains_whitelisted">{{numberOfWhitelistedDomains}} domains whitelisted</string>
-    <string name="number_of_permissions_restricted">{{numberOfRestrictedPermissions}} permissions restricted</string>
-    <string name="mobile_restricter_bottombar_title">Mobile Restricter</string>
     <string name="mobile_restricter_fragment_title">Mobile Restricter</string>
-    <string name="sort_by_restricted">Sort by Restricted First</string>
-    <string name="app_list_sorted_by_restricted">Restricted apps are shown first</string>
     <string name="enabled_all_apps">Enabling all apps</string>
-    <string name="show_blocked_urls">Show blocked URLs</string>
     <string name="total_blocked_urls">Total blocked URLs:&#160;</string>
     <string name="mobile_restricter_info">To take effect, turn off and turn on Adhell after restricting apps</string>
     <string name="backup_database">Backup database</string>
