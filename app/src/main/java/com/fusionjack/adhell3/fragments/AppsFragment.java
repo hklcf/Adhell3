@@ -35,6 +35,7 @@ public class AppsFragment extends Fragment {
         TabLayout tabLayout = view.findViewById(R.id.apps_sliding_tabs);
         ViewPager viewPager = view.findViewById(R.id.apps_viewpager);
         viewPager.setAdapter(new AppsFragmentPagerAdapter(getChildFragmentManager(), getContext()));
+        viewPager.setOffscreenPageLimit(3);
         tabLayout.setupWithViewPager(viewPager);
         for (int i = 0; i < imageResId.length; i++) {
             tabLayout.getTabAt(i).setIcon(imageResId[i]);

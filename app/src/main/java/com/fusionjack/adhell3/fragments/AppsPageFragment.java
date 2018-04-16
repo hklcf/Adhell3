@@ -28,6 +28,7 @@ import com.fusionjack.adhell3.db.entity.FirewallWhitelistedPackage;
 import com.fusionjack.adhell3.db.entity.RestrictedPackage;
 import com.fusionjack.adhell3.utils.AdhellAppIntegrity;
 import com.fusionjack.adhell3.utils.AdhellFactory;
+import com.fusionjack.adhell3.utils.AppCache;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
@@ -90,6 +91,7 @@ public class AppsPageFragment extends Fragment {
                     new RefreshAppAsyncTask(appFlag, context).execute()
             );
 
+            AppCache.getInstance(context, null);
             new LoadAppAsyncTask("", appFlag, context).execute();
         }
 
@@ -111,6 +113,9 @@ public class AppsPageFragment extends Fragment {
 
             @Override
             public boolean onQueryTextChange(String text) {
+                if (searchView.isIconified()) {
+                    return false;
+                }
                 AppFlag appFlag = null;
                 switch (page) {
                     case PACKAGE_DISABLER_PAGE:
