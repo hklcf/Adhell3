@@ -1,6 +1,5 @@
 package com.fusionjack.adhell3.adapter;
 
-import android.app.Activity;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
@@ -27,10 +26,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
-
-import io.reactivex.Maybe;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
 
 public class BlockUrlProviderAdapter extends ArrayAdapter<BlockUrlProvider> {
 
@@ -79,14 +74,10 @@ public class BlockUrlProviderAdapter extends ArrayAdapter<BlockUrlProvider> {
             int position2 = (Integer) imageView.getTag();
             BlockUrlProvider blockUrlProvider2 = getItem(position2);
             if (blockUrlProvider2 != null) {
-                Maybe.fromCallable(() -> {
+                AsyncTask.execute(() -> {
                     AppDatabase mDb = AppDatabase.getAppDatabase(App.get().getApplicationContext());
                     mDb.blockUrlProviderDao().delete(blockUrlProvider2);
-                    return null;
-                })
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe();
+                });
             }
 
         });

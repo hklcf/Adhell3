@@ -19,13 +19,10 @@ import com.fusionjack.adhell3.blocker.ContentBlocker;
 import com.fusionjack.adhell3.blocker.ContentBlocker20;
 import com.fusionjack.adhell3.blocker.ContentBlocker56;
 import com.fusionjack.adhell3.blocker.ContentBlocker57;
-import com.google.gson.Gson;
 
 import java.io.File;
 
 import javax.inject.Inject;
-
-import okhttp3.OkHttpClient;
 
 public class DeviceAdminInteractor {
     private static final int RESULT_ENABLE = 42;
@@ -53,12 +50,6 @@ public class DeviceAdminInteractor {
 
     @Inject
     ComponentName componentName;
-
-    @Inject
-    Gson gson;
-
-    @Inject
-    OkHttpClient okHttpClient;
 
     private DeviceAdminInteractor() {
         App.get().getAppComponent().inject(this);
