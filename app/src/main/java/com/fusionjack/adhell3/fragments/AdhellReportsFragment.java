@@ -19,6 +19,7 @@ import com.fusionjack.adhell3.adapter.ReportBlockedUrlAdapter;
 import com.fusionjack.adhell3.db.AppDatabase;
 import com.fusionjack.adhell3.db.entity.ReportBlockedUrl;
 import com.fusionjack.adhell3.utils.AdhellFactory;
+import com.fusionjack.adhell3.utils.AppCache;
 import com.sec.enterprise.firewall.DomainFilterReport;
 import com.sec.enterprise.firewall.Firewall;
 
@@ -52,6 +53,8 @@ public class AdhellReportsFragment extends Fragment {
         SwipeRefreshLayout swipeContainer = view.findViewById(R.id.swipeContainer);
         swipeContainer.setOnRefreshListener(() -> new RefreshAsynckTask(getContext()).execute());
 
+        AppCache.getInstance(getContext(), null);
+
         new RefreshAsynckTask(getContext()).execute();
 
         return view;
@@ -60,12 +63,10 @@ public class AdhellReportsFragment extends Fragment {
     private static class RefreshAsynckTask extends AsyncTask<Void, Void, List<ReportBlockedUrl>> {
         private WeakReference<Context> contextReference;
         private Firewall firewall;
-        private AppDatabase appDatabase;
 
         RefreshAsynckTask(Context context) {
             this.contextReference = new WeakReference<>(context);
             this.firewall = AdhellFactory.getInstance().getFirewall();
-            this.appDatabase = AdhellFactory.getInstance().getAppDatabase();
         }
 
         @Override
@@ -77,6 +78,7 @@ public class AdhellReportsFragment extends Fragment {
             }
 
             long yesterday = yesterday();
+            AppDatabase appDatabase = AdhellFactory.getInstance().getAppDatabase();
             appDatabase.reportBlockedUrlDao().deleteBefore(yesterday);
 
             ReportBlockedUrl lastBlockedUrl = appDatabase.reportBlockedUrlDao().getLastBlockedDomain();
