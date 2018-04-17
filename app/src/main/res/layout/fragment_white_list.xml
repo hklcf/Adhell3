@@ -13,17 +13,17 @@
         android:textColor="#000000"/>
 
     <EditText
-        android:id="@+id/whitelistUrlEditText"
+        android:id="@+id/whiteUrlEditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/editAlert"
-        android:layout_toLeftOf="@+id/addWhitelistUrl"
-        android:layout_toStartOf="@+id/addWhitelistUrl"
+        android:layout_toLeftOf="@+id/addWhiteUrlButton"
+        android:layout_toStartOf="@+id/addWhiteUrlButton"
         android:layout_margin="5dp"
         android:inputType="textUri"/>
 
     <Button
-        android:id="@+id/addWhitelistUrl"
+        android:id="@+id/addWhiteUrlButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
@@ -33,13 +33,11 @@
         android:text="@string/whitelist_ad_url"/>
 
     <ListView
-        android:id="@+id/urlList"
+        android:id="@+id/whiteListView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/whitelistUrlEditText"
+        android:layout_below="@id/whiteUrlEditText"
         android:layout_margin="5dp"
-        android:scrollbars="vertical">
-
-    </ListView>
+        android:scrollbars="vertical"/>
 
 </android.support.percent.PercentRelativeLayout>

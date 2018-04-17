@@ -4,7 +4,7 @@
     android:layout_height="match_parent">
 
     <TextView
-        android:id="@+id/customUrlProviderExpTextView"
+        android:id="@+id/providerInfoTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="5dp"
@@ -12,39 +12,39 @@
         android:textColor="#000000"/>
 
     <EditText
-        android:id="@+id/blockUrlProviderEditText"
+        android:id="@+id/addProviderEditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/customUrlProviderExpTextView"
-        android:layout_toLeftOf="@+id/addBlockUrlProviderButton"
-        android:layout_toStartOf="@+id/addBlockUrlProviderButton"
+        android:layout_below="@id/providerInfoTextView"
+        android:layout_toLeftOf="@+id/addProviderButton"
+        android:layout_toStartOf="@+id/addProviderButton"
         android:layout_margin="5dp"
         android:inputType="textUri"
         android:singleLine="true" />
 
     <Button
-        android:id="@+id/addBlockUrlProviderButton"
+        android:id="@+id/addProviderButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:layout_below="@id/customUrlProviderExpTextView"
+        android:layout_below="@id/providerInfoTextView"
         android:layout_margin="5dp"
         android:text="@string/add_provider" />
 
     <Button
-        android:id="@+id/updateBlockUrlProvidersButton"
+        android:id="@+id/updateProviderButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/addBlockUrlProviderButton"
+        android:layout_below="@+id/addProviderButton"
         android:layout_margin="5dp"
         android:text="@string/update_all_providers" />
 
     <ListView
-        android:id="@+id/blockUrlProviderListView"
+        android:id="@+id/providerListView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/updateBlockUrlProvidersButton"
+        android:layout_below="@+id/updateProviderButton"
         android:layout_margin="5dp" />
 
 </RelativeLayout>

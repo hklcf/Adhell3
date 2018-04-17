@@ -13,17 +13,17 @@
         android:textColor="#000000"/>
 
     <EditText
-        android:id="@+id/addBlockedUrlEditText"
+        android:id="@+id/blackUrlEditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/noteTextView"
-        android:layout_toLeftOf="@+id/addCustomBlockedUrlButton"
-        android:layout_toStartOf="@+id/addCustomBlockedUrlButton"
+        android:layout_toLeftOf="@+id/addBlackUrlButton"
+        android:layout_toStartOf="@+id/addBlackUrlButton"
         android:layout_margin="5dp"
         android:inputType="textUri"/>
 
     <Button
-        android:id="@+id/addCustomBlockedUrlButton"
+        android:id="@+id/addBlackUrlButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="5dp"
@@ -33,11 +33,10 @@
         android:text="@string/block"/>
 
     <ListView
-        android:id="@+id/customUrlsListView"
+        android:id="@+id/blackListView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="5dp"
-        android:layout_below="@+id/addBlockedUrlEditText">
+        android:layout_below="@+id/blackUrlEditText" />
 
-    </ListView>
 </android.support.percent.PercentRelativeLayout>
