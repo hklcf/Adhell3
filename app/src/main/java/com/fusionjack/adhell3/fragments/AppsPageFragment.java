@@ -160,8 +160,10 @@ public class AppsPageFragment extends Fragment {
                             List<AppInfo> disabledAppList = appDatabase.applicationInfoDao().getDisabledApps();
                             for (AppInfo app : disabledAppList) {
                                 app.disabled = false;
-                                appPolicy.setEnableApplication(app.packageName);
-                                appDatabase.applicationInfoDao().insert(app);
+                                if (appPolicy != null) {
+                                    appPolicy.setEnableApplication(app.packageName);
+                                }
+                                appDatabase.applicationInfoDao().update(app);
                             }
                             appDatabase.disabledPackageDao().deleteAll();
                             break;
@@ -171,7 +173,7 @@ public class AppsPageFragment extends Fragment {
                             List<AppInfo> restrictedAppList = appDatabase.applicationInfoDao().getMobileRestrictedApps();
                             for (AppInfo app : restrictedAppList) {
                                 app.mobileRestricted = false;
-                                appDatabase.applicationInfoDao().insert(app);
+                                appDatabase.applicationInfoDao().update(app);
                             }
                             appDatabase.restrictedPackageDao().deleteAll();
                             break;
@@ -181,7 +183,7 @@ public class AppsPageFragment extends Fragment {
                             List<AppInfo> whitelistedAppList = appDatabase.applicationInfoDao().getWhitelistedApps();
                             for (AppInfo app : whitelistedAppList) {
                                 app.adhellWhitelisted = false;
-                                appDatabase.applicationInfoDao().insert(app);
+                                appDatabase.applicationInfoDao().update(app);
                             }
                             appDatabase.firewallWhitelistedPackageDao().deleteAll();
                             break;
@@ -225,7 +227,6 @@ public class AppsPageFragment extends Fragment {
                         appPolicy.setEnableApplication(packageName);
                         appDatabase.disabledPackageDao().deleteByPackageName(packageName);
                     }
-                    appDatabase.applicationInfoDao().insert(appInfo);
                     break;
 
                 case RESTRICTED_FLAG:
@@ -238,7 +239,6 @@ public class AppsPageFragment extends Fragment {
                     } else {
                         appDatabase.restrictedPackageDao().deleteByPackageName(packageName);
                     }
-                    appDatabase.applicationInfoDao().insert(appInfo);
                     break;
 
                 case WHITELISTED_FLAG:
@@ -251,9 +251,9 @@ public class AppsPageFragment extends Fragment {
                     } else {
                         appDatabase.firewallWhitelistedPackageDao().deleteByPackageName(packageName);
                     }
-                    appDatabase.applicationInfoDao().insert(appInfo);
                     break;
             }
+            appDatabase.applicationInfoDao().update(appInfo);
             return null;
         }
 
