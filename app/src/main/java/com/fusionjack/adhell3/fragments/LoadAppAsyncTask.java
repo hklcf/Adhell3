@@ -48,9 +48,9 @@ public class LoadAppAsyncTask extends AsyncTask<Void, Void, List<AppInfo>> {
     protected void onPostExecute(List<AppInfo> packageList) {
         Context context = contextReference.get();
         if (context != null) {
-            AppInfoAdapter adapter = new AppInfoAdapter(packageList, appFlag, reload, context);
             ListView listView = ((Activity)context).findViewById(appFlag.getLoadLayout());
             if (listView != null) {
+                AppInfoAdapter adapter = new AppInfoAdapter(packageList, appFlag, reload, context);
                 listView.setAdapter(adapter);
                 adapter.notifyDataSetChanged();
             }

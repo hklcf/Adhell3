@@ -102,7 +102,9 @@ public class RefreshAppAsyncTask extends AsyncTask<Void, Void, Void> {
         Context context = contextReference.get();
         if (context != null) {
             SwipeRefreshLayout swipeContainer = ((Activity) context).findViewById(appFlag.getRefreshLayout());
-            swipeContainer.setRefreshing(false);
+            if (swipeContainer != null) {
+                swipeContainer.setRefreshing(false);
+            }
 
             new LoadAppAsyncTask("", appFlag, true, context).execute();
         }

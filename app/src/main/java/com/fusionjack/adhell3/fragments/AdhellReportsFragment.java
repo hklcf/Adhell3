@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -30,19 +29,10 @@ import java.util.List;
 
 
 public class AdhellReportsFragment extends Fragment {
-    private AppCompatActivity parentActivity;
-
-    public AdhellReportsFragment() {
-    }
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        parentActivity = (AppCompatActivity) getActivity();
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        AppCompatActivity parentActivity = (AppCompatActivity) getActivity();
         parentActivity.setTitle("Reports");
         if (parentActivity.getSupportActionBar() != null) {
             parentActivity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -51,20 +41,20 @@ public class AdhellReportsFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_adhell_reports, container, false);
         SwipeRefreshLayout swipeContainer = view.findViewById(R.id.swipeContainer);
-        swipeContainer.setOnRefreshListener(() -> new RefreshAsynckTask(getContext()).execute());
+        swipeContainer.setOnRefreshListener(() -> new RefreshAsyncTask(getContext()).execute());
 
         AppCache.getInstance(getContext(), null);
 
-        new RefreshAsynckTask(getContext()).execute();
+        new RefreshAsyncTask(getContext()).execute();
 
         return view;
     }
 
-    private static class RefreshAsynckTask extends AsyncTask<Void, Void, List<ReportBlockedUrl>> {
+    private static class RefreshAsyncTask extends AsyncTask<Void, Void, List<ReportBlockedUrl>> {
         private WeakReference<Context> contextReference;
         private Firewall firewall;
 
-        RefreshAsynckTask(Context context) {
+        RefreshAsyncTask(Context context) {
             this.contextReference = new WeakReference<>(context);
             this.firewall = AdhellFactory.getInstance().getFirewall();
         }
@@ -103,16 +93,22 @@ public class AdhellReportsFragment extends Fragment {
         protected void onPostExecute(List<ReportBlockedUrl> reportBlockedUrls) {
             Context context = contextReference.get();
             if (context != null) {
-                TextView lastDayInfoTextView = ((Activity) context).findViewById(R.id.lastDayInfoTextView);
-                ListView blockedDomainsListView = ((Activity) context).findViewById(R.id.blockedDomainsListView);
-                SwipeRefreshLayout swipeContainer = ((Activity) context).findViewById(R.id.swipeContainer);
+                ListView listView = ((Activity) context).findViewById(R.id.blockedDomainsListView);
+                if (listView != null) {
+                    ReportBlockedUrlAdapter adapter = new ReportBlockedUrlAdapter(context, reportBlockedUrls);
+                    listView.setAdapter(adapter);
+                }
 
-                ReportBlockedUrlAdapter reportBlockedUrlAdapter = new ReportBlockedUrlAdapter(context, reportBlockedUrls);
-                blockedDomainsListView.setAdapter(reportBlockedUrlAdapter);
-                lastDayInfoTextView.setText(String.format("%s%s",
-                        context.getString(R.string.last_day_blocked), String.valueOf(reportBlockedUrls.size())));
-                reportBlockedUrlAdapter.notifyDataSetChanged();
-                swipeContainer.setRefreshing(false);
+                TextView lastDayInfoTextView = ((Activity) context).findViewById(R.id.lastDayInfoTextView);
+                if (lastDayInfoTextView != null) {
+                    lastDayInfoTextView.setText(String.format("%s%s",
+                            context.getString(R.string.last_day_blocked), String.valueOf(reportBlockedUrls.size())));
+                }
+
+                SwipeRefreshLayout swipeContainer = ((Activity) context).findViewById(R.id.swipeContainer);
+                if (swipeContainer != null) {
+                    swipeContainer.setRefreshing(false);
+                }
             }
         }
 

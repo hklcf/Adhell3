@@ -104,17 +104,22 @@ public class ProviderListPageFragment extends DomainsPageFragment {
         protected void onPostExecute(List<String> blockedUrls) {
             Context context = contextReference.get();
             if (context != null) {
-                ArrayAdapter<String> itemsAdapter = new ArrayAdapter<>(context,
-                        android.R.layout.simple_list_item_1, blockedUrls);
                 ListView listView = ((Activity)context).findViewById(R.id.blocked_url_list);
-                listView.setAdapter(itemsAdapter);
+                if (listView != null) {
+                    ArrayAdapter<String> itemsAdapter = new ArrayAdapter<>(context, android.R.layout.simple_list_item_1, blockedUrls);
+                    listView.setAdapter(itemsAdapter);
+                }
 
                 SwipeRefreshLayout swipeContainer = ((Activity) context).findViewById(R.id.providerListSwipeContainer);
-                swipeContainer.setRefreshing(false);
+                if (swipeContainer != null) {
+                    swipeContainer.setRefreshing(false);
+                }
 
                 TextView totalBlockedUrls = ((Activity)context).findViewById(R.id.total_blocked_urls);
-                totalBlockedUrls.setText(String.format("%s%s",
-                        context.getString(R.string.total_domains), String.valueOf(blockedUrls.size())));
+                if (totalBlockedUrls != null) {
+                    totalBlockedUrls.setText(String.format("%s%s",
+                            context.getString(R.string.total_domains), String.valueOf(blockedUrls.size())));
+                }
             }
         }
     }
@@ -147,11 +152,12 @@ public class ProviderListPageFragment extends DomainsPageFragment {
         protected void onPostExecute(List<String> list) {
             Context context = contextReference.get();
             if (context != null) {
-                ArrayAdapter<String> itemsAdapter = new ArrayAdapter<>(context,
-                        android.R.layout.simple_list_item_1, list);
                 ListView listView = ((Activity)context).findViewById(R.id.blocked_url_list);
-                listView.setAdapter(itemsAdapter);
-                itemsAdapter.notifyDataSetChanged();
+                if (listView != null) {
+                    ArrayAdapter<String> itemsAdapter = new ArrayAdapter<>(context, android.R.layout.simple_list_item_1, list);
+                    listView.setAdapter(itemsAdapter);
+                    itemsAdapter.notifyDataSetChanged();
+                }
             }
         }
     }

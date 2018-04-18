@@ -101,23 +101,25 @@ public class AdhellPermissionInAppsFragment extends Fragment {
         protected void onPostExecute(List<AppInfo> appInfos) {
             Context context = contextReference.get();
             if (context != null) {
-                FragmentActivity activity = activityReference.get();
-                SharedAppPermissionViewModel viewModel = ViewModelProviders.of(activity).get(SharedAppPermissionViewModel.class);
-                RecyclerView permissionInAppsRecyclerView = ((Activity) context).findViewById(R.id.permissionInAppsRecyclerView);
-                permissionInAppsRecyclerView.setLayoutManager(new LinearLayoutManager(context));
-                RecyclerView.ItemDecoration itemDecoration = new DividerItemDecoration(context, DividerItemDecoration.VERTICAL);
-                permissionInAppsRecyclerView.addItemDecoration(itemDecoration);
+                RecyclerView recyclerView = ((Activity) context).findViewById(R.id.permissionInAppsRecyclerView);
+                if (recyclerView != null) {
+                    recyclerView.setLayoutManager(new LinearLayoutManager(context));
+                    RecyclerView.ItemDecoration itemDecoration = new DividerItemDecoration(context, DividerItemDecoration.VERTICAL);
+                    recyclerView.addItemDecoration(itemDecoration);
 
-                viewModel.getSelected().observe(fragment, permissionInfo -> {
-                    if (permissionInfo != null) {
-                        activity.setTitle(permissionInfo.name);
-                        AdhellPermissionInAppsAdapter adapter = new AdhellPermissionInAppsAdapter(appInfos, context);
-                        adapter.currentPermissionName = permissionInfo.name;
-                        adapter.updatePermissionBlacklistedPackages();
-                        permissionInAppsRecyclerView.setAdapter(adapter);
-                        adapter.notifyDataSetChanged();
-                    }
-                });
+                    FragmentActivity activity = activityReference.get();
+                    SharedAppPermissionViewModel viewModel = ViewModelProviders.of(activity).get(SharedAppPermissionViewModel.class);
+                    viewModel.getSelected().observe(fragment, permissionInfo -> {
+                        if (permissionInfo != null) {
+                            activity.setTitle(permissionInfo.name);
+                            AdhellPermissionInAppsAdapter adapter = new AdhellPermissionInAppsAdapter(appInfos, context);
+                            adapter.currentPermissionName = permissionInfo.name;
+                            adapter.updatePermissionBlacklistedPackages();
+                            recyclerView.setAdapter(adapter);
+                            adapter.notifyDataSetChanged();
+                        }
+                    });
+                }
             }
         }
     }

@@ -291,15 +291,16 @@ public class OthersPageFragment extends Fragment {
             Context context = contextReference.get();
             if (context != null) {
                 ListView listView = ((Activity)context).findViewById(R.id.permissionInfoListView);
-                AdhellPermissionInfoAdapter adapter = new AdhellPermissionInfoAdapter(context, permissionInfos);
-                listView.setAdapter(adapter);
-
-                FragmentActivity activity = activityReference.get();
-                FragmentManager fragmentManager = activity.getSupportFragmentManager();
-                SharedAppPermissionViewModel viewModel = ViewModelProviders.of(activity).get(SharedAppPermissionViewModel.class);
-                listView.setOnItemClickListener(
+                if (listView != null) {
+                    AdhellPermissionInfoAdapter adapter = new AdhellPermissionInfoAdapter(context, permissionInfos);
+                    listView.setAdapter(adapter);
+                    listView.setOnItemClickListener(
                         (AdapterView<?> adView, View view2, int position, long id) -> {
                             AdhellPermissionInfo permissionInfo = permissionInfos.get(position);
+
+                            FragmentActivity activity = activityReference.get();
+                            FragmentManager fragmentManager = activity.getSupportFragmentManager();
+                            SharedAppPermissionViewModel viewModel = ViewModelProviders.of(activity).get(SharedAppPermissionViewModel.class);
                             viewModel.select(permissionInfo);
 
                             Bundle bundle = new Bundle();
@@ -312,10 +313,13 @@ public class OthersPageFragment extends Fragment {
                             fragmentTransaction.addToBackStack("permissionsInfo_permissionsInApp");
                             fragmentTransaction.commit();
                         }
-                );
+                    );
+                }
 
                 SwipeRefreshLayout swipeContainer = ((Activity) context).findViewById(R.id.swipeContainer);
-                swipeContainer.setRefreshing(false);
+                if (swipeContainer != null) {
+                    swipeContainer.setRefreshing(false);
+                }
             }
         }
     }
