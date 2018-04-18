@@ -67,7 +67,6 @@ public class DomainsPageFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        setHasOptionsMenu(true);
         View view = null;
         switch (page) {
             case BLACKLIST_PAGE:

@@ -29,6 +29,7 @@ public class DomainsFragment extends Fragment {
             parentActivity.getSupportActionBar().setDisplayHomeAsUpEnabled(false);
             parentActivity.getSupportActionBar().setHomeButtonEnabled(false);
         }
+        setHasOptionsMenu(true);
 
         View view = inflater.inflate(R.layout.fragment_domains, container, false);
 
