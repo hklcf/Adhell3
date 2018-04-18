@@ -8,7 +8,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="5dp"
-        android:text="@string/custom_url_provider_message"
+        android:text="@string/provider_info"
         android:textColor="#000000"/>
 
     <EditText

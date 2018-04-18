@@ -10,7 +10,7 @@
         android:layout_height="wrap_content"
         android:textSize="@dimen/text_small_size"
         android:textColor="#000000"
-        android:text="@string/note_that_adhell_must_be_enabled" />
+        android:text="@string/dns_info" />
 
     <EditText
         android:id="@+id/dns_address_1"

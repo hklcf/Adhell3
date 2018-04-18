@@ -169,7 +169,7 @@ public class DomainsPageFragment extends Fragment {
 
                 // Set URL limit
                 TextView hintTextView = view.findViewById(R.id.providerInfoTextView);
-                String strFormat = getResources().getString(R.string.custom_url_provider_message);
+                String strFormat = getResources().getString(R.string.provider_info);
                 hintTextView.setText(String.format(strFormat, AdhellAppIntegrity.BLOCK_URL_LIMIT));
 
                 // Add button

@@ -9,7 +9,7 @@
         android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:layout_margin="5dp"
-        android:text="@string/adaway_hosts"
+        android:text="https://adaway.org/hosts.txt"
         android:textColor="#000000" />
 
     <TextView
@@ -22,7 +22,7 @@
         android:layout_marginRight="5dp"
         android:lines="1"
         android:singleLine="true"
-        android:text="@string/_2597" />
+        android:text="2597" />
 
     <CheckBox
         android:id="@+id/urlProviderCheckBox"
@@ -60,6 +60,6 @@
         android:layout_below="@+id/blockUrlProviderTextView"
         android:layout_toEndOf="@+id/blockUrlCountTextView"
         android:layout_toRightOf="@+id/blockUrlCountTextView"
-        android:text="@string/_2017_06_30_16_00_00" />
+        android:text="2017-06-30 16:00:00" />
 
 </RelativeLayout>

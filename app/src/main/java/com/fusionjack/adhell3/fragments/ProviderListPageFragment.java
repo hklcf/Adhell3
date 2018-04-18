@@ -114,7 +114,7 @@ public class ProviderListPageFragment extends DomainsPageFragment {
 
                 TextView totalBlockedUrls = ((Activity)context).findViewById(R.id.total_blocked_urls);
                 totalBlockedUrls.setText(String.format("%s%s",
-                        context.getString(R.string.total_blocked_urls), String.valueOf(blockedUrls.size())));
+                        context.getString(R.string.total_domains), String.valueOf(blockedUrls.size())));
             }
         }
     }

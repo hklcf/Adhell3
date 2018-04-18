@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="5dp"
-        android:text="@string/total_blocked_urls"
+        android:text="@string/total_domains"
         android:textColor="#000000"/>
 
     <android.support.v4.widget.SwipeRefreshLayout
