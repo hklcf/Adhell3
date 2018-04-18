@@ -1,5 +1,6 @@
 package com.fusionjack.adhell3.fragments;
 
+import android.app.Activity;
 import android.app.enterprise.ApplicationPolicy;
 import android.content.Context;
 import android.os.AsyncTask;
@@ -16,7 +17,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.Switch;
 import android.widget.Toast;
 
 import com.fusionjack.adhell3.R;
@@ -83,7 +83,7 @@ public class AppsPageFragment extends Fragment {
             ListView listView = view.findViewById(appFlag.getLoadLayout());
             listView.setOnItemClickListener((AdapterView<?> adView, View view2, int position, long id) -> {
                 AppInfoAdapter adapter = (AppInfoAdapter) adView.getAdapter();
-                new SetAppAsyncTask(adapter, position, view2, page).execute();
+                new SetAppAsyncTask(adapter.getItem(position), appFlag, context).execute();
             });
 
             SwipeRefreshLayout swipeContainer = view.findViewById(appFlag.getRefreshLayout());
@@ -192,35 +192,28 @@ public class AppsPageFragment extends Fragment {
             .setNegativeButton(android.R.string.no, null).show();
     }
 
-    private static class SetAppAsyncTask extends AsyncTask<Void, Void, Boolean> {
-        private WeakReference<View> viewWeakReference;
-        private AppDatabase appDatabase;
-        private ApplicationPolicy appPolicy;
-        private int page;
-        private int position;
-        private AppInfoAdapter adapter;
+    private static class SetAppAsyncTask extends AsyncTask<Void, Void, Void> {
+        private AppFlag appFlag;
         private AppInfo appInfo;
+        private WeakReference<Context> contextWeakReference;
 
-        SetAppAsyncTask(AppInfoAdapter adapter, int position, View view, int page) {
-            this.viewWeakReference = new WeakReference<>(view);
-            this.page = page;
-            this.adapter = adapter;
-            this.position = position;
-            this.appDatabase = AdhellFactory.getInstance().getAppDatabase();
-            this.appPolicy = AdhellFactory.getInstance().getAppPolicy();
+        SetAppAsyncTask(AppInfo appInfo, AppFlag appFlag, Context context) {
+            this.appInfo = appInfo;
+            this.appFlag = appFlag;
+            this.contextWeakReference = new WeakReference<>(context);
         }
 
         @Override
-        protected Boolean doInBackground(Void... voids) {
+        protected Void doInBackground(Void... voids) {
+            ApplicationPolicy appPolicy = AdhellFactory.getInstance().getAppPolicy();
             if (appPolicy == null) {
-                return false;
+                return null;
             }
 
-            boolean state = false;
-            String packageName = adapter.getItem(position).packageName;
-            appInfo = appDatabase.applicationInfoDao().getAppByPackageName(packageName);
-            switch (page) {
-                case PACKAGE_DISABLER_PAGE:
+            AppDatabase appDatabase = AdhellFactory.getInstance().getAppDatabase();
+            String packageName = appInfo.packageName;
+            switch (appFlag.getFlag()) {
+                case DISABLER_FLAG:
                     appInfo.disabled = !appInfo.disabled;
                     if (appInfo.disabled) {
                         appPolicy.setDisableApplication(packageName);
@@ -233,10 +226,9 @@ public class AppsPageFragment extends Fragment {
                         appDatabase.disabledPackageDao().deleteByPackageName(packageName);
                     }
                     appDatabase.applicationInfoDao().insert(appInfo);
-                    state = appInfo.disabled;
                     break;
 
-                case MOBILE_RESTRICTER_PAGE:
+                case RESTRICTED_FLAG:
                     appInfo.mobileRestricted = !appInfo.mobileRestricted;
                     if (appInfo.mobileRestricted) {
                         RestrictedPackage restrictedPackage = new RestrictedPackage();
@@ -247,10 +239,9 @@ public class AppsPageFragment extends Fragment {
                         appDatabase.restrictedPackageDao().deleteByPackageName(packageName);
                     }
                     appDatabase.applicationInfoDao().insert(appInfo);
-                    state = appInfo.mobileRestricted;
                     break;
 
-                case WHITELIST_PAGE:
+                case WHITELISTED_FLAG:
                     appInfo.adhellWhitelisted = !appInfo.adhellWhitelisted;
                     if (appInfo.adhellWhitelisted) {
                         FirewallWhitelistedPackage whitelistedPackage = new FirewallWhitelistedPackage();
@@ -261,18 +252,22 @@ public class AppsPageFragment extends Fragment {
                         appDatabase.firewallWhitelistedPackageDao().deleteByPackageName(packageName);
                     }
                     appDatabase.applicationInfoDao().insert(appInfo);
-                    state = appInfo.adhellWhitelisted;
                     break;
             }
-            return state;
+            return null;
         }
 
         @Override
-        protected void onPostExecute(Boolean state) {
-            ((Switch) viewWeakReference.get().findViewById(R.id.switchDisable)).setChecked(!state);
-
-            adapter.setItem(position, appInfo);
-            adapter.notifyDataSetChanged();
+        protected void onPostExecute(Void aVoid) {
+            Context context = contextWeakReference.get();
+            if (context != null) {
+                ListView listView = ((Activity) context).findViewById(appFlag.getLoadLayout());
+                if (listView != null) {
+                    if (listView.getAdapter() instanceof AppInfoAdapter) {
+                        ((AppInfoAdapter) listView.getAdapter()).notifyDataSetChanged();
+                    }
+                }
+            }
         }
     }
 }
