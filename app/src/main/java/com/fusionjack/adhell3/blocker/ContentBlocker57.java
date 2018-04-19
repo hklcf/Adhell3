@@ -83,16 +83,15 @@ public class ContentBlocker57 implements ContentBlocker {
 
         List<DomainFilterRule> rules = new ArrayList<>();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            // Blacklist Google Play Store from using DNS as apparently it doesn't let download anything on Oreo
-            List<AppInfo> appInfos = AdhellFactory.getInstance().getAppDatabase().applicationInfoDao().getAppsAlphabetically();
+            // There are two known issues when enabling DNS on Oreo:
+            // * Google Play Store download doesn't work
+            // * MMS doesn't work
+            List<AppInfo> appInfos = AdhellFactory.getInstance().getAppDatabase().applicationInfoDao().getUserApps();
             for (AppInfo appInfo : appInfos) {
-                final String packageName = appInfo.packageName;
-                if (packageName != null && !packageName.equalsIgnoreCase("com.android.vending")) {
-                    DomainFilterRule rule = new DomainFilterRule(new AppIdentity(appInfo.packageName, null));
-                    rule.setDns1(dns1);
-                    rule.setDns2(dns2);
-                    rules.add(rule);
-                }
+                DomainFilterRule rule = new DomainFilterRule(new AppIdentity(appInfo.packageName, null));
+                rule.setDns1(dns1);
+                rule.setDns2(dns2);
+                rules.add(rule);
             }
         } else {
             DomainFilterRule rule = new DomainFilterRule(new AppIdentity(Firewall.FIREWALL_ALL_PACKAGES, null));
