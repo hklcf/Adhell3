@@ -85,8 +85,11 @@ public class AppInfoAdapter extends BaseAdapter {
             case DISABLER_FLAG:
                 checked = appInfo.disabled;
                 break;
-            case RESTRICTED_FLAG:
+            case MOBILE_RESTRICTED_FLAG:
                 checked = appInfo.mobileRestricted;
+                break;
+            case WIFI_RESTRICTED_FLAG:
+                checked = appInfo.wifiRestricted;
                 break;
             case WHITELISTED_FLAG:
                 checked = appInfo.adhellWhitelisted;

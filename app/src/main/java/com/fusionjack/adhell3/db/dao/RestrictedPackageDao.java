@@ -24,8 +24,11 @@ public interface RestrictedPackageDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(RestrictedPackage restrictedPackage);
 
-    @Query("DELETE FROM RestrictedPackage WHERE packageName = :packageName")
-    void deleteByPackageName(String packageName);
+    @Query("DELETE FROM RestrictedPackage WHERE packageName = :packageName AND type = :type")
+    void deleteByPackageName(String packageName, String type);
+
+    @Query("DELETE FROM RestrictedPackage WHERE type = :type")
+    void deleteByType(String type);
 
     @Query("DELETE FROM RestrictedPackage")
     void deleteAll();

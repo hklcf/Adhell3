@@ -9,7 +9,7 @@ import com.fusionjack.adhell3.R;
 import com.fusionjack.adhell3.fragments.AppsPageFragment;
 
 public class AppsFragmentPagerAdapter extends FragmentPagerAdapter {
-    private static final int PAGE_COUNT = 3;
+    private static final int PAGE_COUNT = 4;
     private String tabTitles[];
 
     public AppsFragmentPagerAdapter(FragmentManager fm, Context context) {
@@ -17,6 +17,7 @@ public class AppsFragmentPagerAdapter extends FragmentPagerAdapter {
         tabTitles = new String[] {
                 context.getString(R.string.package_disabler_fragment_title),
                 context.getString(R.string.mobile_restricter_fragment_title),
+                context.getString(R.string.wifi_restricter_fragment_title),
                 context.getString(R.string.whitelist_fragment_title) };
     }
 

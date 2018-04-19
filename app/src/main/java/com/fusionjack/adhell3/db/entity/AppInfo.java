@@ -38,4 +38,7 @@ public class AppInfo {
 
     @ColumnInfo(name = "mobileRestricted")
     public boolean mobileRestricted;
+
+    @ColumnInfo(name = "wifiRestricted")
+    public boolean wifiRestricted;
 }

@@ -40,6 +40,7 @@ import com.fusionjack.adhell3.db.migration.Migration_19_20;
 import com.fusionjack.adhell3.db.migration.Migration_20_21;
 import com.fusionjack.adhell3.db.migration.Migration_21_22;
 import com.fusionjack.adhell3.db.migration.Migration_22_23;
+import com.fusionjack.adhell3.db.migration.Migration_23_24;
 
 import java.io.File;
 
@@ -55,7 +56,7 @@ import java.io.File;
         ReportBlockedUrl.class,
         UserBlockUrl.class,
         WhiteUrl.class
-}, version = 23)
+}, version = 24)
 
 public abstract class AppDatabase extends RoomDatabase {
     private static final Migration MIGRATION_14_15 = new Migration_14_15(14, 15);
@@ -67,6 +68,7 @@ public abstract class AppDatabase extends RoomDatabase {
     private static final Migration MIGRATION_20_21 = new Migration_20_21(20, 21);
     private static final Migration MIGRATION_21_22 = new Migration_21_22(21, 22);
     private static final Migration MIGRATION_22_23 = new Migration_22_23(22, 23);
+    private static final Migration MIGRATION_23_24 = new Migration_23_24(23, 24);
     private static AppDatabase INSTANCE;
 
     public static final String DATABASE_FOLDER = "adhell3";
@@ -99,6 +101,7 @@ public abstract class AppDatabase extends RoomDatabase {
                             .addMigrations(MIGRATION_20_21)
                             .addMigrations(MIGRATION_21_22)
                             .addMigrations(MIGRATION_22_23)
+                            .addMigrations(MIGRATION_23_24)
                             .build();
         }
         return INSTANCE;

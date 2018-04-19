@@ -22,6 +22,9 @@ public class RestrictedPackage {
     @ColumnInfo(name = "packageName")
     public String packageName;
 
+    @ColumnInfo(name = "type")
+    public String type;
+
     @ColumnInfo(name = "policyPackageId")
     public String policyPackageId;
 

@@ -7,6 +7,7 @@ import android.os.AsyncTask;
 import android.support.v4.widget.SwipeRefreshLayout;
 
 import com.fusionjack.adhell3.db.AppDatabase;
+import com.fusionjack.adhell3.db.DatabaseFactory;
 import com.fusionjack.adhell3.db.entity.AppInfo;
 import com.fusionjack.adhell3.db.entity.DisabledPackage;
 import com.fusionjack.adhell3.db.entity.FirewallWhitelistedPackage;
@@ -33,7 +34,8 @@ public class RefreshAppAsyncTask extends AsyncTask<Void, Void, Void> {
         // Get first disabled, restricted and whitelisted apps before they get deleted
         AppDatabase appDatabase = AdhellFactory.getInstance().getAppDatabase();
         List<AppInfo> disabledApps = appDatabase.applicationInfoDao().getDisabledApps();
-        List<AppInfo> restrictedApps = appDatabase.applicationInfoDao().getMobileRestrictedApps();
+        List<AppInfo> mobileRestrictedApps = appDatabase.applicationInfoDao().getMobileRestrictedApps();
+        List<AppInfo> wifiRestrictedApps = appDatabase.applicationInfoDao().getWifiRestrictedApps();
         List<FirewallWhitelistedPackage> whitelistedApps = appDatabase.firewallWhitelistedPackageDao().getAll();
 
         // Delete all apps info
@@ -63,7 +65,7 @@ public class RefreshAppAsyncTask extends AsyncTask<Void, Void, Void> {
         // Restricted apps
         appDatabase.restrictedPackageDao().deleteAll();
         List<RestrictedPackage> restrictedPackages = new ArrayList<>();
-        for (AppInfo oldAppInfo : restrictedApps) {
+        for (AppInfo oldAppInfo : mobileRestrictedApps) {
             AppInfo newAppInfo = appDatabase.applicationInfoDao().getAppByPackageName(oldAppInfo.packageName);
             if (newAppInfo != null) {
                 newAppInfo.mobileRestricted = true;
@@ -71,6 +73,20 @@ public class RefreshAppAsyncTask extends AsyncTask<Void, Void, Void> {
 
                 RestrictedPackage restrictedPackage = new RestrictedPackage();
                 restrictedPackage.packageName = newAppInfo.packageName;
+                restrictedPackage.type = DatabaseFactory.MOBILE_RESTRICTED_TYPE;
+                restrictedPackage.policyPackageId = AdhellAppIntegrity.DEFAULT_POLICY_ID;
+                restrictedPackages.add(restrictedPackage);
+            }
+        }
+        for (AppInfo oldAppInfo : wifiRestrictedApps) {
+            AppInfo newAppInfo = appDatabase.applicationInfoDao().getAppByPackageName(oldAppInfo.packageName);
+            if (newAppInfo != null) {
+                newAppInfo.wifiRestricted = true;
+                appDatabase.applicationInfoDao().insert(newAppInfo);
+
+                RestrictedPackage restrictedPackage = new RestrictedPackage();
+                restrictedPackage.packageName = newAppInfo.packageName;
+                restrictedPackage.type = DatabaseFactory.WIFI_RESTRICTED_TYPE;
                 restrictedPackage.policyPackageId = AdhellAppIntegrity.DEFAULT_POLICY_ID;
                 restrictedPackages.add(restrictedPackage);
             }

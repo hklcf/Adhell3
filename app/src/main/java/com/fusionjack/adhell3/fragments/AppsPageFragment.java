@@ -22,6 +22,7 @@ import android.widget.Toast;
 import com.fusionjack.adhell3.R;
 import com.fusionjack.adhell3.adapter.AppInfoAdapter;
 import com.fusionjack.adhell3.db.AppDatabase;
+import com.fusionjack.adhell3.db.DatabaseFactory;
 import com.fusionjack.adhell3.db.entity.AppInfo;
 import com.fusionjack.adhell3.db.entity.DisabledPackage;
 import com.fusionjack.adhell3.db.entity.FirewallWhitelistedPackage;
@@ -41,7 +42,8 @@ public class AppsPageFragment extends Fragment {
 
     public static final int PACKAGE_DISABLER_PAGE = 0;
     public static final int MOBILE_RESTRICTER_PAGE = 1;
-    public static final int WHITELIST_PAGE = 2;
+    public static final int WIFI_RESTRICTER_PAGE = 2;
+    public static final int WHITELIST_PAGE = 3;
 
     public static AppsPageFragment newInstance(int page) {
         Bundle args = new Bundle();
@@ -70,7 +72,12 @@ public class AppsPageFragment extends Fragment {
 
             case MOBILE_RESTRICTER_PAGE:
                 view = inflater.inflate(R.layout.fragment_mobile_restricter, container, false);
-                appFlag = AppFlag.createRestrictedFlag();
+                appFlag = AppFlag.createMobileRestrictedFlag();
+                break;
+
+            case WIFI_RESTRICTER_PAGE:
+                view = inflater.inflate(R.layout.fragment_wifi_restricter, container, false);
+                appFlag = AppFlag.createWifiRestrictedFlag();
                 break;
 
             case WHITELIST_PAGE:
@@ -122,7 +129,10 @@ public class AppsPageFragment extends Fragment {
                         appFlag = AppFlag.createDisablerFlag();
                         break;
                     case MOBILE_RESTRICTER_PAGE:
-                        appFlag = AppFlag.createRestrictedFlag();
+                        appFlag = AppFlag.createMobileRestrictedFlag();
+                        break;
+                    case WIFI_RESTRICTER_PAGE:
+                        appFlag = AppFlag.createWifiRestrictedFlag();
                         break;
                     case WHITELIST_PAGE:
                         appFlag = AppFlag.createWhitelistedFlag();
@@ -169,13 +179,23 @@ public class AppsPageFragment extends Fragment {
                             break;
 
                         case MOBILE_RESTRICTER_PAGE:
-                            appFlag = AppFlag.createRestrictedFlag();
-                            List<AppInfo> restrictedAppList = appDatabase.applicationInfoDao().getMobileRestrictedApps();
-                            for (AppInfo app : restrictedAppList) {
+                            appFlag = AppFlag.createMobileRestrictedFlag();
+                            List<AppInfo> mobileAppList = appDatabase.applicationInfoDao().getMobileRestrictedApps();
+                            for (AppInfo app : mobileAppList) {
                                 app.mobileRestricted = false;
                                 appDatabase.applicationInfoDao().update(app);
                             }
-                            appDatabase.restrictedPackageDao().deleteAll();
+                            appDatabase.restrictedPackageDao().deleteByType(DatabaseFactory.MOBILE_RESTRICTED_TYPE);
+                            break;
+
+                        case WIFI_RESTRICTER_PAGE:
+                            appFlag = AppFlag.createWifiRestrictedFlag();
+                            List<AppInfo> wifiAppList = appDatabase.applicationInfoDao().getWifiRestrictedApps();
+                            for (AppInfo app : wifiAppList) {
+                                app.wifiRestricted = false;
+                                appDatabase.applicationInfoDao().update(app);
+                            }
+                            appDatabase.restrictedPackageDao().deleteByType(DatabaseFactory.WIFI_RESTRICTED_TYPE);
                             break;
 
                         case WHITELIST_PAGE:
@@ -229,15 +249,29 @@ public class AppsPageFragment extends Fragment {
                     }
                     break;
 
-                case RESTRICTED_FLAG:
+                case MOBILE_RESTRICTED_FLAG:
                     appInfo.mobileRestricted = !appInfo.mobileRestricted;
                     if (appInfo.mobileRestricted) {
                         RestrictedPackage restrictedPackage = new RestrictedPackage();
                         restrictedPackage.packageName = packageName;
+                        restrictedPackage.type = DatabaseFactory.MOBILE_RESTRICTED_TYPE;
                         restrictedPackage.policyPackageId = AdhellAppIntegrity.DEFAULT_POLICY_ID;
                         appDatabase.restrictedPackageDao().insert(restrictedPackage);
                     } else {
-                        appDatabase.restrictedPackageDao().deleteByPackageName(packageName);
+                        appDatabase.restrictedPackageDao().deleteByPackageName(packageName, DatabaseFactory.MOBILE_RESTRICTED_TYPE);
+                    }
+                    break;
+
+                case WIFI_RESTRICTED_FLAG:
+                    appInfo.wifiRestricted = !appInfo.wifiRestricted;
+                    if (appInfo.wifiRestricted) {
+                        RestrictedPackage restrictedPackage = new RestrictedPackage();
+                        restrictedPackage.packageName = packageName;
+                        restrictedPackage.type = DatabaseFactory.WIFI_RESTRICTED_TYPE;
+                        restrictedPackage.policyPackageId = AdhellAppIntegrity.DEFAULT_POLICY_ID;
+                        appDatabase.restrictedPackageDao().insert(restrictedPackage);
+                    } else {
+                        appDatabase.restrictedPackageDao().deleteByPackageName(packageName, DatabaseFactory.WIFI_RESTRICTED_TYPE);
                     }
                     break;
 

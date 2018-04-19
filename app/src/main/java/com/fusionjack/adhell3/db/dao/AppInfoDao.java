@@ -77,6 +77,17 @@ public interface AppInfoDao {
     List<AppInfo> getAppsInMobileRestrictedOrder(String str);
 
 
+    // Wifi restricted apps (only enabled apps)
+    @Query("SELECT * FROM AppInfo WHERE wifiRestricted = 1 AND disabled = 0")
+    List<AppInfo> getWifiRestrictedApps();
+
+    @Query("SELECT * FROM AppInfo WHERE disabled = 0 ORDER BY wifiRestricted DESC, appName ASC")
+    List<AppInfo> getAppsInWifiRestrictedOrder();
+
+    @Query("SELECT * FROM AppInfo WHERE (appName LIKE :str OR packageName LIKE :str) AND disabled = 0 ORDER BY wifiRestricted DESC, appName ASC")
+    List<AppInfo> getAppsInWifiRestrictedOrder(String str);
+
+
     // Whitelisted apps (only enabled apps)
     @Query("SELECT * FROM AppInfo WHERE adhellWhitelisted = 1 ORDER BY appName ASC")
     List<AppInfo> getWhitelistedApps();

@@ -12,13 +12,13 @@
 
     <android.support.v4.widget.SwipeRefreshLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/mobileSwipeContainer"
+        android:id="@+id/wifiSwipeContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/infoTextView">
 
     <ListView
-        android:id="@+id/mobile_apps_list"
+        android:id="@+id/wifi_apps_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="5dp"/>

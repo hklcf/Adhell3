@@ -63,6 +63,7 @@ public class ContentBlocker56 implements ContentBlocker {
         try {
             processCustomRules();
             processMobileRestrictedApps();
+            processWifiRestrictedApps();
             processWhitelistedApps();
             processWhitelistedDomains();
             processBlockedDomains();
@@ -132,6 +133,26 @@ public class ContentBlocker56 implements ContentBlocker {
         }
 
         AdhellFactory.getInstance().addFirewallRules(mobileRules, handler);
+    }
+
+    private void processWifiRestrictedApps() throws Exception {
+        LogUtils.getInstance().writeInfo("\nProcessing wifi restricted apps...", handler);
+
+        List<AppInfo> restrictedApps = appDatabase.applicationInfoDao().getWifiRestrictedApps();
+        LogUtils.getInstance().writeInfo("Restricted apps size: " + restrictedApps.size(), handler);
+        if (restrictedApps.size() == 0) {
+            return;
+        }
+
+        // Define DENY rules for wifi
+        FirewallRule[] wifiRules = new FirewallRule[restrictedApps.size()];
+        for (int i = 0; i < restrictedApps.size(); i++) {
+            wifiRules[i] = new FirewallRule(FirewallRule.RuleType.DENY, Firewall.AddressType.IPV4);
+            wifiRules[i].setNetworkInterface(Firewall.NetworkInterface.WIFI_DATA_ONLY);
+            wifiRules[i].setApplication(new AppIdentity(restrictedApps.get(i).packageName, null));
+        }
+
+        AdhellFactory.getInstance().addFirewallRules(wifiRules, handler);
     }
 
     private void processWhitelistedApps() throws Exception {

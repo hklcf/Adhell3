@@ -3,14 +3,16 @@ package com.fusionjack.adhell3.fragments;
 import com.fusionjack.adhell3.R;
 
 import static com.fusionjack.adhell3.fragments.LoadAppAsyncTask.SORTED_DISABLED;
-import static com.fusionjack.adhell3.fragments.LoadAppAsyncTask.SORTED_RESTRICTED;
+import static com.fusionjack.adhell3.fragments.LoadAppAsyncTask.SORTED_MOBILE_RESTRICTED;
 import static com.fusionjack.adhell3.fragments.LoadAppAsyncTask.SORTED_WHITELISTED;
+import static com.fusionjack.adhell3.fragments.LoadAppAsyncTask.SORTED_WIFI_RESTRICTED;
 
 public class AppFlag {
 
     public enum Flag {
         DISABLER_FLAG,
-        RESTRICTED_FLAG,
+        MOBILE_RESTRICTED_FLAG,
+        WIFI_RESTRICTED_FLAG,
         WHITELISTED_FLAG
     }
 
@@ -32,10 +34,16 @@ public class AppFlag {
         return new AppFlag(Flag.DISABLER_FLAG, SORTED_DISABLED, loadLayout, refreshLayout);
     }
 
-    public static AppFlag createRestrictedFlag() {
-        int loadLayout = R.id.enabled_apps_list;
-        int refreshLayout = R.id.restrictedSwipeContainer;
-        return new AppFlag(Flag.RESTRICTED_FLAG, SORTED_RESTRICTED, loadLayout, refreshLayout);
+    public static AppFlag createMobileRestrictedFlag() {
+        int loadLayout = R.id.mobile_apps_list;
+        int refreshLayout = R.id.mobileSwipeContainer;
+        return new AppFlag(Flag.MOBILE_RESTRICTED_FLAG, SORTED_MOBILE_RESTRICTED, loadLayout, refreshLayout);
+    }
+
+    public static AppFlag createWifiRestrictedFlag() {
+        int loadLayout = R.id.wifi_apps_list;
+        int refreshLayout = R.id.wifiSwipeContainer;
+        return new AppFlag(Flag.WIFI_RESTRICTED_FLAG, SORTED_WIFI_RESTRICTED, loadLayout, refreshLayout);
     }
 
     public static AppFlag createWhitelistedFlag() {

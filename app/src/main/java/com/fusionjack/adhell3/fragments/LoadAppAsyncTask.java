@@ -15,13 +15,10 @@ import java.util.List;
 
 public class LoadAppAsyncTask extends AsyncTask<Void, Void, List<AppInfo>> {
 
-    static final int SORTED_DISABLED_ALPHABETICALLY = 0;
-    static final int SORTED_DISABLED_INSTALL_TIME = 1;
-    static final int SORTED_DISABLED = 2;
-    static final int SORTED_RESTRICTED_ALPHABETICALLY = 3;
-    static final int SORTED_RESTRICTED_INSTALL_TIME = 4;
-    static final int SORTED_RESTRICTED = 5;
-    static final int SORTED_WHITELISTED = 6;
+    static final int SORTED_DISABLED = 0;
+    static final int SORTED_MOBILE_RESTRICTED = 1;
+    static final int SORTED_WIFI_RESTRICTED = 2;
+    static final int SORTED_WHITELISTED = 3;
 
     private WeakReference<Context> contextReference;
     private String text;
@@ -61,36 +58,21 @@ public class LoadAppAsyncTask extends AsyncTask<Void, Void, List<AppInfo>> {
         AppDatabase appDatabase = AdhellFactory.getInstance().getAppDatabase();
         String filterText = '%' + text + '%';
         switch (appFlag.getSortState()) {
-            case SORTED_DISABLED_ALPHABETICALLY:
-                if (text.length() == 0) {
-                    return appDatabase.applicationInfoDao().getAppsAlphabetically();
-                }
-                return appDatabase.applicationInfoDao().getAppsAlphabetically(filterText);
-            case SORTED_DISABLED_INSTALL_TIME:
-                if (text.length() == 0) {
-                    return appDatabase.applicationInfoDao().getAppsInTimeOrder();
-                }
-                return appDatabase.applicationInfoDao().getAppsInTimeOrder(filterText);
             case SORTED_DISABLED:
                 if (text.length() == 0) {
                     return appDatabase.applicationInfoDao().getAppsInDisabledOrder();
                 }
                 return appDatabase.applicationInfoDao().getAppsInDisabledOrder(filterText);
-            case SORTED_RESTRICTED_ALPHABETICALLY:
-                if (text.length() == 0) {
-                    return appDatabase.applicationInfoDao().getEnabledAppsAlphabetically();
-                }
-                return appDatabase.applicationInfoDao().getEnabledAppsAlphabetically(filterText);
-            case SORTED_RESTRICTED_INSTALL_TIME:
-                if (text.length() == 0) {
-                    return appDatabase.applicationInfoDao().getEnabledAppsInTimeOrder();
-                }
-                return appDatabase.applicationInfoDao().getEnabledAppsInTimeOrder(filterText);
-            case SORTED_RESTRICTED:
+            case SORTED_MOBILE_RESTRICTED:
                 if (text.length() == 0) {
                     return appDatabase.applicationInfoDao().getAppsInMobileRestrictedOrder();
                 }
                 return appDatabase.applicationInfoDao().getAppsInMobileRestrictedOrder(filterText);
+            case SORTED_WIFI_RESTRICTED:
+                if (text.length() == 0) {
+                    return appDatabase.applicationInfoDao().getAppsInWifiRestrictedOrder();
+                }
+                return appDatabase.applicationInfoDao().getAppsInWifiRestrictedOrder(filterText);
             case SORTED_WHITELISTED:
                 if (text.length() == 0) {
                     return appDatabase.applicationInfoDao().getAppsInWhitelistedOrder();

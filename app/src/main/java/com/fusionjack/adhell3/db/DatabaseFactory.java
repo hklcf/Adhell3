@@ -34,6 +34,9 @@ public final class DatabaseFactory {
     private static DatabaseFactory instance;
     private AppDatabase appDatabase;
 
+    public static final String MOBILE_RESTRICTED_TYPE = "mobile";
+    public static final String WIFI_RESTRICTED_TYPE = "wifi";
+
     private DatabaseFactory() {
         this.appDatabase = AdhellFactory.getInstance().getAppDatabase();
     }
@@ -162,6 +165,7 @@ public final class DatabaseFactory {
         for (RestrictedPackage restrictedPackage : restrictedPackages) {
             writer.beginObject();
             writer.name("packageName").value(restrictedPackage.packageName);
+            writer.name("type").value(restrictedPackage.type);
             writer.name("policyPackageId").value(restrictedPackage.policyPackageId == null ?
                     AdhellAppIntegrity.DEFAULT_POLICY_ID : restrictedPackage.policyPackageId);
             writer.endObject();
@@ -303,6 +307,7 @@ public final class DatabaseFactory {
 
     private void readRestrictedPackages(JsonReader reader) throws IOException {
         String packageName = "";
+        String type = "";
         String policyPackageId = "";
         List<RestrictedPackage> restrictedPackages = new ArrayList<>();
 
@@ -313,6 +318,8 @@ public final class DatabaseFactory {
                 String name = reader.nextName();
                 if (name.equalsIgnoreCase("packageName")) {
                     packageName = reader.nextString();
+                } else if (name.equalsIgnoreCase("type")) {
+                    type = reader.nextString();
                 } else if (name.equalsIgnoreCase("policyPackageId")) {
                     policyPackageId = reader.nextString();
                 }
@@ -321,6 +328,7 @@ public final class DatabaseFactory {
 
             RestrictedPackage restrictedPackage = new RestrictedPackage();
             restrictedPackage.packageName = packageName;
+            restrictedPackage.type = type.isEmpty() ? MOBILE_RESTRICTED_TYPE : type;
             restrictedPackage.policyPackageId = policyPackageId;
             restrictedPackages.add(restrictedPackage);
         }
