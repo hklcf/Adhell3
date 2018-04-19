@@ -9,11 +9,18 @@ import android.os.AsyncTask;
 import android.os.Handler;
 
 import com.fusionjack.adhell3.App;
+import com.google.common.collect.Lists;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.FutureTask;
 
 public class AppCache {
     private static AppCache instance;
@@ -77,25 +84,32 @@ public class AppCache {
         protected Void doInBackground(Void... args) {
             Context context = contextReference.get();
             if (context != null) {
-                String pckg = App.get().getApplicationContext().getPackageName();
                 PackageManager packageManager = AdhellFactory.getInstance().getPackageManager();
-                List<ApplicationInfo> applicationsInfo = packageManager.getInstalledApplications(PackageManager.GET_META_DATA);
-                for (ApplicationInfo applicationInfo : applicationsInfo) {
-                    if (applicationInfo.packageName.equals(pckg)) {
-                        continue;
-                    }
+                List<ApplicationInfo> appInfos = packageManager.getInstalledApplications(PackageManager.GET_META_DATA);
+                int appCount = appInfos.size();
+                int cpuCount = Runtime.getRuntime().availableProcessors() / 2;
+                ExecutorService executorService = Executors.newFixedThreadPool(cpuCount);
+                List<FutureTask<AppInfoResult>> tasks = new ArrayList<>();
 
-                    Drawable icon;
-                    try {
-                        icon = packageManager.getApplicationIcon(applicationInfo.packageName);
-                    } catch (PackageManager.NameNotFoundException e) {
-                        icon = context.getResources().getDrawable(android.R.drawable.sym_def_app_icon);
-                    }
-                    appsIcons.put(applicationInfo.packageName, icon);
-
-                    String appName = packageManager.getApplicationLabel(applicationInfo).toString();
-                    appsNames.put(applicationInfo.packageName, appName);
+                int distributedAppCount = (int) Math.ceil(appCount / (double) cpuCount);
+                List<List<ApplicationInfo>> chunks = Lists.partition(appInfos, distributedAppCount);
+                for (List<ApplicationInfo> chunk : chunks) {
+                    FutureTask<AppInfoResult> task = new FutureTask<>(new AppExecutor(chunk));
+                    tasks.add(task);
+                    executorService.execute(task);
                 }
+
+                for (FutureTask<AppInfoResult> task : tasks) {
+                    try {
+                        AppInfoResult result = task.get();
+                        appsIcons.putAll(result.getAppsIcons());
+                        appsNames.putAll(result.getAppsNames());
+                    } catch (InterruptedException | ExecutionException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                executorService.shutdown();
             }
             return null;
         }
@@ -108,6 +122,66 @@ public class AppCache {
             if (handler != null) {
                 handler.obtainMessage().sendToTarget();
             }
+        }
+    }
+
+    private static class AppExecutor implements Callable<AppInfoResult> {
+        private List<ApplicationInfo> appInfos;
+
+        AppExecutor(List<ApplicationInfo> appInfos) {
+            this.appInfos = appInfos;
+        }
+
+        @Override
+        public AppInfoResult call() throws Exception {
+            String pckg = App.get().getApplicationContext().getPackageName();
+            PackageManager packageManager = AdhellFactory.getInstance().getPackageManager();
+            AppInfoResult appInfoResult = new AppInfoResult();
+
+            for (ApplicationInfo applicationInfo : appInfos) {
+                if (applicationInfo.packageName.equals(pckg)) {
+                    continue;
+                }
+
+                Drawable icon;
+                try {
+                    icon = packageManager.getApplicationIcon(applicationInfo.packageName);
+                } catch (PackageManager.NameNotFoundException e) {
+                    icon = null;
+                }
+                appInfoResult.putAppIcon(applicationInfo.packageName, icon);
+
+                String appName = packageManager.getApplicationLabel(applicationInfo).toString();
+                appInfoResult.putAppName(applicationInfo.packageName, appName);
+            }
+
+            return appInfoResult;
+        }
+    }
+
+    private static class AppInfoResult {
+        private Map<String, Drawable> appsIcons;
+        private Map<String, String> appsNames;
+
+        AppInfoResult() {
+            this.appsIcons = new HashMap<>();
+            this.appsNames = new HashMap<>();
+        }
+
+        public void putAppIcon(String packageName, Drawable icon) {
+            appsIcons.put(packageName, icon);
+        }
+
+        public void putAppName(String packageName, String appName) {
+            appsNames.put(packageName, appName);
+        }
+
+        public Map<String, Drawable> getAppsIcons() {
+            return appsIcons;
+        }
+
+        public Map<String, String> getAppsNames() {
+            return appsNames;
         }
     }
 }
