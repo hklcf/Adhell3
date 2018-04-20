@@ -14,18 +14,17 @@
 
     <style name="ManagementTabLayout" parent="Widget.Design.TabLayout">
         <item name="tabMaxWidth">0dp</item>
-        <item name="tabIndicatorColor">?attr/colorAccent</item>
+        <item name="tabIndicatorColor">@color/colorAccent</item>
         <item name="tabIndicatorHeight">2dp</item>
         <item name="tabPaddingStart">5dp</item>
         <item name="tabPaddingEnd">5dp</item>
-        <item name="tabBackground">?attr/selectableItemBackground</item>
         <item name="tabTextAppearance">@style/ManagementTabTextAppearance</item>
-        <item name="tabSelectedTextColor">?android:textColorPrimary</item>
+        <item name="tabSelectedTextColor">@color/colorPrimaryDark</item>
     </style>
 
     <style name="ManagementTabTextAppearance" parent="TextAppearance.Design.Tab">
         <item name="android:textSize">12sp</item>
-        <item name="android:textColor">?android:textColorSecondary</item>
+        <item name="android:textColor">@color/colorPrimaryLight</item>
         <item name="textAllCaps">false</item>
     </style>
 
