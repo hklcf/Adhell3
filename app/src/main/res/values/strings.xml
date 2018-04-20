@@ -17,7 +17,7 @@
     <string name="activating_knox_license">Activating…</string>
     <string name="block_button_text_turn_off">Turn Off</string>
     <string name="block_button_text_turn_on">Turn On</string>
-    <string name="whitelist_info">Turn Adhell off and on for changes to take effect.\n\nA URL can contain wildcards, e.g. *facebook.com\nRule format to define a URL for a specific app:\n\tpackageName|url
+    <string name="whitelist_info">Turn Adhell off and on for changes to take effect.\n\nA domain can contain wildcards, e.g. *facebook.com\nRule format to define a domain for a specific app:\n\t\tpackageName|domain
     </string>
     <string name="delete_app">Disable and delete Adhell</string>
     <string name="delete_app_dialog_title">Delete Adhell</string>
@@ -33,7 +33,7 @@
     <string name="block">Block</string>
     <string name="whitelist_ad_url">Whitelist</string>
     <string name="blacklist_info">
-        Turn Adhell off and on for changes to take effect.\n\nA URL can contain wildcards, e.g. *facebook.com\nFirewall rule format: packageName|ipAddress|port\nRule example to block port 53 in Chrome:\n\tcom.android.chrome|*|53
+        Turn Adhell off and on for changes to take effect.\n\nA domain can contain wildcards, e.g. *facebook.com\nFirewall rule format:\n\t\tpackageName|ipAddress|port\nRule example to block port 53 in Chrome for all ip addresses:\n\t\tcom.android.chrome|*|53
     </string>
     <string name="blocker_fragment_title" translatable="false">Adhell 3</string>
     <string name="package_disabler_fragment_title">Package Disabler</string>
@@ -47,7 +47,7 @@
     <string name="delete_url">Delete URL</string>
     <string name="update_all_providers">Update Providers</string>
     <string name="provider_info">
-        In addition to Adhell\'s standard package, you can add links to remote and local hosts lists.\nAdhell can block up to %1$d unique URLs.\n\tRemote: https://adaway.org/hosts.txt\n\tInternal: file:///mnt/sdcard/hosts.txt
+        In addition to Adhell\'s standard package, you can add links to remote and local hosts lists.\nAdhell can block up to %1$d unique domains.\nRemote: https://adaway.org/hosts.txt\nInternal: file:///mnt/sdcard/hosts.txt
     </string>
     <string name="your_device_running_old_knox_version">
         Your device is running an old version of Knox, so this function may be unstable.
