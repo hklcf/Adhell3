@@ -5,17 +5,25 @@
 
     <TextView
         android:id="@+id/providerInfoTextView"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:text="@string/provider_info"
+        android:background="@drawable/border" />
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/editLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="5dp"
-        android:text="@string/provider_info"
-        android:textColor="#000000"/>
+        android:layout_marginTop="5dp"
+        android:padding="10dp"
+        android:layout_below="@+id/providerInfoTextView"
+        android:background="@drawable/border">
 
     <EditText
         android:id="@+id/addProviderEditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/providerInfoTextView"
         android:layout_toLeftOf="@+id/addProviderButton"
         android:layout_toStartOf="@+id/addProviderButton"
         android:layout_margin="5dp"
@@ -28,23 +36,23 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:layout_below="@id/providerInfoTextView"
-        android:layout_margin="5dp"
         android:text="@string/add_provider" />
 
     <Button
         android:id="@+id/updateProviderButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
         android:layout_below="@+id/addProviderButton"
-        android:layout_margin="5dp"
         android:text="@string/update_all_providers" />
+
+    </RelativeLayout>
 
     <ListView
         android:id="@+id/providerListView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/updateProviderButton"
-        android:layout_margin="5dp" />
+        android:layout_marginTop="5dp"
+        android:layout_below="@+id/editLayout"/>
 
 </RelativeLayout>

@@ -4,8 +4,10 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:textColor">@color/colorText</item>
         <item name="android:windowNoTitle">true</item>
         <item name="windowActionBar">true</item>
+        <item name="android:listViewStyle">@style/ListViewStyle</item>
     </style>
 
     <style name="bottomBarTextView" parent="@android:style/TextAppearance.Widget.TextView">
@@ -26,6 +28,14 @@
         <item name="android:textSize">12sp</item>
         <item name="android:textColor">@color/colorPrimaryLight</item>
         <item name="textAllCaps">false</item>
+    </style>
+
+    <style name="ListViewStyle" parent="@android:style/Widget.ListView">
+        <item name="android:divider">@color/colorBorder</item>
+        <item name="android:dividerHeight">1dp</item>
+        <item name="android:padding">10dp</item>
+        <item name="android:background">@drawable/border</item>
+        <item name="android:listSelector">@drawable/list_selector</item>
     </style>
 
 </resources>

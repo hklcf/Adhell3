@@ -43,7 +43,6 @@
         android:focusable="false"
         android:focusableInTouchMode="false"
         android:text="Adhell"
-        android:textColor="#000000"
         android:textStyle="bold"/>
 
     <TextView
@@ -61,7 +60,6 @@
         android:focusable="false"
         android:focusableInTouchMode="false"
         android:text="System"
-        android:textColor="#000000"
         android:textSize="12sp"
         android:textStyle="italic"/>
 
@@ -82,7 +80,6 @@
         android:focusable="false"
         android:focusableInTouchMode="false"
         android:lines="1"
-        android:text="com.android.google"
-        android:textColor="#000000"/>
+        android:text="com.android.google"/>
 
 </RelativeLayout>

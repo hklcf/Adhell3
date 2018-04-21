@@ -87,7 +87,7 @@ public class AdhellPermissionInAppsAdapter extends RecyclerView.Adapter<AdhellPe
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         Context context = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
-        View permissionInApp = inflater.inflate(R.layout.item_permission_in_app, parent, false);
+        View permissionInApp = inflater.inflate(R.layout.item_app_info, parent, false);
         return new AdhellPermissionInAppsAdapter.ViewHolder(permissionInApp);
     }
 
@@ -138,7 +138,7 @@ public class AdhellPermissionInAppsAdapter extends RecyclerView.Adapter<AdhellPe
             appNameTextView = itemView.findViewById(R.id.appName);
             appPackageNameTextView = itemView.findViewById(R.id.packName);
             systemOrNotTextView = itemView.findViewById(R.id.systemOrNot);
-            appPermissionSwitch = itemView.findViewById(R.id.appPermission);
+            appPermissionSwitch = itemView.findViewById(R.id.switchDisable);
             itemView.setOnClickListener(this);
         }
 

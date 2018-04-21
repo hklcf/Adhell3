@@ -8,7 +8,7 @@
     <string name="adhell_not_supported">Adhell is not yet supported on your device.</string>
     <string name="to_enable_adhell">
         To enable Adhell, you must activate Admin mode for this app.
-        Adhell uses Samsung APIs which require the Device Administrator permission.
+        \nAdhell uses Samsung APIs which require the Device Administrator permission.
     </string>
     <string name="turn_on_admin">Turn On Admin</string>
     <string name="knox">Adhell utilizes Samsung\'s Knox Firewall, which requires a free developer license key.</string>
@@ -17,10 +17,12 @@
     <string name="activating_knox_license">Activating…</string>
     <string name="block_button_text_turn_off">Turn Off</string>
     <string name="block_button_text_turn_on">Turn On</string>
-    <string name="whitelist_info">Turn Adhell off and on for changes to take effect.\n\n
-        Domains support wildcards, e.g. *facebook.com\n
-        Rule format to allow a domain in a specific app:\n
-        \t\tpackageName|domain
+    <string name="whitelist_info">
+        Whitelist domains
+        \nTurn Adhell off and on for changes to take effect.
+        \n\nDomains support wildcards, e.g. *facebook.com
+        \nRule format to allow a domain in a specific app:
+        \n\t\tpackageName|domain
     </string>
     <string name="delete_app">Disable and delete Adhell</string>
     <string name="delete_app_dialog_title">Delete Adhell</string>
@@ -33,15 +35,16 @@
     </string>
     <string name="restore_defaults">Restore Defaults</string>
     <string name="zero_dns" translatable="false">0.0.0.0</string>
-    <string name="block">Block</string>
-    <string name="whitelist_ad_url">Whitelist</string>
+    <string name="block">Add domain/rule</string>
+    <string name="whitelist_ad_url">Add domain</string>
     <string name="blacklist_info">
-        Turn Adhell off and on for changes to take effect.\n\n
-        Domains support wildcards, e.g. *facebook.com\n
-        Firewall rule format:\n
-        \t\tpackageName|ipAddress|port\n
-        E.g. block port 53 for all IP addresses in Chrome:\n
-        \t\tcom.android.chrome|*|53
+        Blacklist domains or define deny firewall rules
+        \nTurn Adhell off and on for changes to take effect.
+        \n\nDomains support wildcards, e.g. *facebook.com
+        \nFirewall rule format:
+        \n\t\tpackageName|ipAddress|port
+        \nE.g. block port 53 for all IP addresses in Chrome:
+        \n\t\tcom.android.chrome|*|53
     </string>
     <string name="blocker_fragment_title" translatable="false">Adhell 3</string>
     <string name="package_disabler_fragment_title">Package Disabler</string>
@@ -51,27 +54,41 @@
     <string name="check_input_dns">Check your input data.</string>
     <string name="changed_dns">DNS addresses have been set. Turn Adhell off and on to take effect.</string>
     <string name="restored_dns">DNS has been restored to defaults. Turn Adhell off and on to take effect.</string>
-    <string name="add_provider">Add Provider URL</string>
+    <string name="add_provider">Add Provider</string>
     <string name="delete_url">Delete URL</string>
     <string name="update_all_providers">Update Providers</string>
     <string name="provider_info">
-        In addition to Adhell\'s standard package, you can add links to remote and local hosts lists.\n
-        Adhell can block up to %1$d unique domains.\n
-        Remote: https://adaway.org/hosts.txt\n
-        Internal: file:///mnt/sdcard/hosts.txt
+        In addition to Adhell\'s standard package, you can add links to remote and local hosts lists.
+        \nAdhell can block up to %1$d unique domains.
+        \nRemote: https://adaway.org/hosts.txt
+        \nInternal: file:///mnt/sdcard/hosts.txt
     </string>
     <string name="your_device_running_old_knox_version">
         Your device is running an old version of Knox, so this function may be unstable.
     </string>
     <string name="others_tab_title">Others</string>
     <string name="mobile_restricter_fragment_title">Mobile Restricter</string>
-    <string name="wifi_restricter_fragment_title">Wifi Restricter</string>
+    <string name="wifi_restricter_fragment_title">Wi-Fi Restricter</string>
     <string name="enabled_all_apps">Enabling all apps…</string>
     <string name="total_domains">Total domains:&#160;</string>
-    <string name="mobile_restricter_info">Turn Adhell off and on for changes to take effect.</string>
+    <string name="package_disabler_info">
+        Manage which apps should be disabled from system entirely.
+        \nThe app is disabled immediately and it won\'t show up on app drawer.
+    </string>
+    <string name="mobile_restricter_info">
+        Manage which apps are allowed to use mobile data.
+        \nTurn Adhell off and on for changes to take effect.
+    </string>
+    <string name="wifi_restricter_info">
+        Manage which apps are allowed to use Wi-Fi data.
+        \nTurn Adhell off and on for changes to take effect.
+    </string>
+    <string name="whitelisted_app_info">
+        Manage which apps should be whitelisted from ads blocker.
+        \nTurn Adhell off and on for changes to take effect.
+    </string>
     <string name="backup_database">Backup database</string>
     <string name="restore_database">Restore database</string>
-    <string name="whitelisted_app_info">Turn Adhell off and on for changes to take effect.</string>
     <string name="whitelist_fragment_title">Whitelist Apps</string>
     <string name="blacklist_url_fragment_title">Blacklist</string>
     <string name="whitelist_url_fragment_title">Whitelist</string>

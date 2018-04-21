@@ -8,9 +8,9 @@
         android:id="@+id/dnsChangetextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="@dimen/text_small_size"
-        android:textColor="#000000"
-        android:text="@string/dns_info" />
+        android:padding="10dp"
+        android:text="@string/dns_info"
+        android:background="@drawable/border" />
 
     <EditText
         android:id="@+id/dns_address_1"
@@ -54,6 +54,5 @@
             android:layout_height="wrap_content"
             android:text="@string/restore_defaults" />
     </LinearLayout>
-
 
 </RelativeLayout>

@@ -66,7 +66,7 @@ public class AppInfoAdapter extends BaseAdapter {
         Context context = contextReference.get();
         ViewHolder holder;
         if (convertView == null) {
-            convertView = LayoutInflater.from(context).inflate(R.layout.item_disable_app_list_view, parent, false);
+            convertView = LayoutInflater.from(context).inflate(R.layout.item_app_info, parent, false);
             holder = new ViewHolder();
             holder.nameH = convertView.findViewById(R.id.appName);
             holder.packageH = convertView.findViewById(R.id.packName);

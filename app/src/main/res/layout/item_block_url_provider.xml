@@ -9,8 +9,7 @@
         android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:layout_margin="5dp"
-        android:text="https://adaway.org/hosts.txt"
-        android:textColor="#000000" />
+        android:text="https://adaway.org/hosts.txt" />
 
     <TextView
         android:id="@+id/blockUrlCountTextView"

@@ -6,37 +6,43 @@
 
     <TextView
         android:id="@+id/noteTextView"
-        android:layout_width="match_parent"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="5dp"
+        android:padding="10dp"
         android:text="@string/blacklist_info"
-        android:textColor="#000000"/>
+        android:background="@drawable/border" />
 
-    <EditText
-        android:id="@+id/blackUrlEditText"
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/editLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:padding="10dp"
         android:layout_below="@+id/noteTextView"
-        android:layout_toLeftOf="@+id/addBlackUrlButton"
-        android:layout_toStartOf="@+id/addBlackUrlButton"
-        android:layout_margin="5dp"
-        android:inputType="textUri"/>
+        android:background="@drawable/border">
 
-    <Button
-        android:id="@+id/addBlackUrlButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="5dp"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_below="@+id/noteTextView"
-        android:text="@string/block"/>
+        <EditText
+            android:id="@+id/blackUrlEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toStartOf="@id/addBlackUrlButton"
+            android:layout_toLeftOf="@id/addBlackUrlButton"
+            android:inputType="textUri" />
+
+        <Button
+            android:id="@+id/addBlackUrlButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:text="@string/block" />
+    </RelativeLayout>
 
     <ListView
         android:id="@+id/blackListView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="5dp"
-        android:layout_below="@+id/blackUrlEditText" />
+        android:layout_marginTop="5dp"
+        android:layout_below="@+id/editLayout" />
 
 </android.support.percent.PercentRelativeLayout>

@@ -11,7 +11,6 @@
         android:layout_height="wrap_content"
         android:padding="5dp"
         android:text="android.permission.INTERNET"
-        android:textColor="#000"
         android:textStyle="bold"/>
 
     <TextView
@@ -25,7 +24,6 @@
         android:paddingRight="5dp"
         android:paddingBottom="5dp"
         android:text="Dangerous"
-        android:textColor="#000"
         android:textSize="@dimen/text_mizerable_size"/>
 
     <TextView
@@ -39,7 +37,6 @@
         android:paddingRight="5dp"
         android:paddingBottom="5dp"
         android:text="Internet"
-        android:textColor="#000"
         android:textSize="@dimen/text_mizerable_size"/>
 
 </RelativeLayout>

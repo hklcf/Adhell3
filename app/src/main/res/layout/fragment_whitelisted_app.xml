@@ -4,24 +4,24 @@
 
     <TextView
         android:id="@+id/infoTextView"
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="5dp"
+        android:padding="10dp"
         android:text="@string/whitelisted_app_info"
-        android:textColor="#000000" />
+        android:background="@drawable/border" />
 
     <android.support.v4.widget.SwipeRefreshLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/whitelistedSwipeContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
         android:layout_below="@id/infoTextView">
 
     <ListView
         android:id="@+id/whitelisted_apps_list"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_margin="5dp"/>
+        android:layout_height="match_parent" />
 
     </android.support.v4.widget.SwipeRefreshLayout>
 

@@ -26,7 +26,6 @@
     android:layout_toEndOf="@id/blockedDomainIconImageView"
     android:layout_toRightOf="@id/blockedDomainIconImageView"
     android:text="Adhell"
-    android:textColor="#000000"
     android:textStyle="bold" />
 
 <TextView
@@ -41,8 +40,7 @@
     android:layout_toLeftOf="@id/blockedDomainTimeTextView"
     android:layout_toEndOf="@id/blockedDomainIconImageView"
     android:layout_toRightOf="@id/blockedDomainIconImageView"
-    android:text="graph.facebook.com"
-    android:textColor="#000000"/>
+    android:text="graph.facebook.com" />
 
 <TextView
     android:id="@+id/blockedDomainTimeTextView"
@@ -52,7 +50,6 @@
     android:layout_alignParentRight="true"
     android:layout_centerVertical="true"
     android:layout_margin="5dp"
-    android:text="12:05:12"
-    android:textColor="#000000"/>
+    android:text="12:05:12" />
 
 </RelativeLayout>
