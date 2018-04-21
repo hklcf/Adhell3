@@ -15,8 +15,8 @@ Adhell3 is an extension of previous discontinued Adhell2 app with more additiona
 
 
 ## Features
-- Mobile internet blocker<br/>
-Disable internet access completely when you are on mobile for specific apps. This can be useful to avoid watching video accidentally by using mobile data.
+- Mobile and Wi-Fi access disabler<br/>
+Disable internet access when on mobile or/and Wi-Fi for specific apps. This can be useful to avoid watching video accidentally by using mobile data.
 
 - Custom deny firewall rule<br/>
 This can be used for example to define a custom firewall rule to block ads for Chrome app on port 53 for all ip addresses:<br/>
@@ -35,7 +35,7 @@ An example to use host.txt file which is located at internal storage:<br/>
 
 - Show the content of host source<br/>
 Show the list of domains of individual host source or the list of all blocked domains from all host sources.<br/>
-This can be useful to check whether particular URL is in the list.<br/>
+This can be useful to check whether particular domain is in the list.<br/>
 The list contains of unique domains.
 
 - Retain data across installations<br/>
