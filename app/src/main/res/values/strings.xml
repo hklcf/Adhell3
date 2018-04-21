@@ -17,11 +17,14 @@
     <string name="activating_knox_license">Activating…</string>
     <string name="block_button_text_turn_off">Turn Off</string>
     <string name="block_button_text_turn_on">Turn On</string>
-    <string name="whitelist_info">Turn Adhell off and on for changes to take effect.\n\nA domain can contain wildcards, e.g. *facebook.com\nRule format to define a domain for a specific app:\n\t\tpackageName|domain
+    <string name="whitelist_info">Turn Adhell off and on for changes to take effect.\n\n
+        Domains support wildcards, e.g. *facebook.com\n
+        Rule format to allow a domain in a specific app:\n
+        \t\tpackageName|domain
     </string>
     <string name="delete_app">Disable and delete Adhell</string>
     <string name="delete_app_dialog_title">Delete Adhell</string>
-    <string name="delete_app_dialog_text">Do you really want to uninstall Adhell? This will also re-enable all disabled apps!</string>
+    <string name="delete_app_dialog_text">Do you really want to uninstall Adhell? This will also enable all disabled apps!</string>
     <string name="dns_1_address">DNS 1 Address</string>
     <string name="dns_2_address">DNS 2 Address</string>
     <string name="set_dns_button_text">Set DNS</string>
@@ -33,13 +36,18 @@
     <string name="block">Block</string>
     <string name="whitelist_ad_url">Whitelist</string>
     <string name="blacklist_info">
-        Turn Adhell off and on for changes to take effect.\n\nA domain can contain wildcards, e.g. *facebook.com\nFirewall rule format:\n\t\tpackageName|ipAddress|port\nRule example to block port 53 in Chrome for all ip addresses:\n\t\tcom.android.chrome|*|53
+        Turn Adhell off and on for changes to take effect.\n\n
+        Domains support wildcards, e.g. *facebook.com\n
+        Firewall rule format:\n
+        \t\tpackageName|ipAddress|port\n
+        E.g. block port 53 for all IP addresses in Chrome:\n
+        \t\tcom.android.chrome|*|53
     </string>
     <string name="blocker_fragment_title" translatable="false">Adhell 3</string>
     <string name="package_disabler_fragment_title">Package Disabler</string>
     <string name="apps_management_bottombar_title">Applications</string>
     <string name="domains_bottombar_title">Domains</string>
-    <string name="last_day_blocked">"Domains blocked in past 24 hours: "</string>
+    <string name="last_day_blocked">Domains blocked in past 24 hours:&#160;</string>
     <string name="check_input_dns">Check your input data.</string>
     <string name="changed_dns">DNS addresses have been set. Turn Adhell off and on to take effect.</string>
     <string name="restored_dns">DNS has been restored to defaults. Turn Adhell off and on to take effect.</string>
@@ -47,7 +55,10 @@
     <string name="delete_url">Delete URL</string>
     <string name="update_all_providers">Update Providers</string>
     <string name="provider_info">
-        In addition to Adhell\'s standard package, you can add links to remote and local hosts lists.\nAdhell can block up to %1$d unique domains.\nRemote: https://adaway.org/hosts.txt\nInternal: file:///mnt/sdcard/hosts.txt
+        In addition to Adhell\'s standard package, you can add links to remote and local hosts lists.\n
+        Adhell can block up to %1$d unique domains.\n
+        Remote: https://adaway.org/hosts.txt\n
+        Internal: file:///mnt/sdcard/hosts.txt
     </string>
     <string name="your_device_running_old_knox_version">
         Your device is running an old version of Knox, so this function may be unstable.
@@ -72,9 +83,9 @@
     <string name="enable_apps_dialog_title">Enable all apps</string>
     <string name="enable_apps_dialog_text">Do you really want to enable all apps?</string>
     <string name="backup_database_dialog_title">Backup database</string>
-    <string name="backup_database_dialog_text">This will replace your existing backup file if it exists. Are you sure?</string>
+    <string name="backup_database_dialog_text">Do you really want to backup the database and replace any existing backup?</string>
     <string name="restore_database_dialog_title">Restore database</string>
-    <string name="restore_database_dialog_text">Do you really want to restore database? Your entire setup will be replaced.</string>
+    <string name="restore_database_dialog_text">Do you really want to restore the database and replace your entire setup?</string>
     <string name="not_supported_dialog_title">App not supported</string>
     <string name="no_internet_connection_dialog_title">No internet connection</string>
 </resources>
