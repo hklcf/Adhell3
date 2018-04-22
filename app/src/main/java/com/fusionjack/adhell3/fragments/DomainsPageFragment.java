@@ -7,12 +7,12 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.URLUtil;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListAdapter;
 import android.widget.ListView;
@@ -33,6 +33,8 @@ import com.fusionjack.adhell3.utils.BlockUrlUtils;
 import com.fusionjack.adhell3.viewmodel.BlackUrlViewModel;
 import com.fusionjack.adhell3.viewmodel.BlockUrlProvidersViewModel;
 import com.fusionjack.adhell3.viewmodel.WhiteUrlViewModel;
+import com.getbase.floatingactionbutton.FloatingActionButton;
+import com.getbase.floatingactionbutton.FloatingActionsMenu;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -70,28 +72,7 @@ public class DomainsPageFragment extends Fragment {
         View view = null;
         switch (page) {
             case BLACKLIST_PAGE:
-                view = inflater.inflate(R.layout.fragment_manual_url_block, container, false);
-
-                EditText blackUrlEditText = view.findViewById(R.id.blackUrlEditText);
-                Button addBlackUrlButton = view.findViewById(R.id.addBlackUrlButton);
-                addBlackUrlButton.setOnClickListener(v -> {
-                    String urlToAdd = blackUrlEditText.getText().toString().trim().toLowerCase();
-                    if (urlToAdd.indexOf('|') == -1) {
-                        if (!BlockUrlPatternsMatch.isUrlValid(urlToAdd)) {
-                            Toast.makeText(context, "Url not valid. Please check", Toast.LENGTH_SHORT).show();
-                            return;
-                        }
-                    } else {
-                        // packageName|ipAddress|port
-                        StringTokenizer tokens = new StringTokenizer(urlToAdd, "|");
-                        if (tokens.countTokens() != 3) {
-                            Toast.makeText(context, "Rule not valid. Please check", Toast.LENGTH_SHORT).show();
-                            return;
-                        }
-                    }
-
-                    new AddUrlAsyncTask(urlToAdd, page, context).execute();
-                });
+                view = inflater.inflate(R.layout.fragment_blacklist, container, false);
 
                 ListView blacklistView = view.findViewById(R.id.blackListView);
                 blacklistView.setOnItemClickListener((parent, view1, position, id) -> {
@@ -114,31 +95,51 @@ public class DomainsPageFragment extends Fragment {
                         blacklistView.setAdapter(itemsAdapter);
                     }
                 });
+
+                FloatingActionsMenu blackFloatMenu = view.findViewById(R.id.blacklist_actions);
+                FloatingActionButton actionAddBlackDomain = view.findViewById(R.id.action_add_domain);
+                actionAddBlackDomain.setIcon(R.drawable.ic_public_black_24dp);
+                actionAddBlackDomain.setOnClickListener(v -> {
+                    blackFloatMenu.collapse();
+                    View dialogView = inflater.inflate(R.layout.dialog_blacklist_domain, container, false);
+                    new AlertDialog.Builder(context)
+                        .setView(dialogView)
+                        .setPositiveButton(android.R.string.yes, (dialog, whichButton) -> {
+                            EditText domainEditText = dialogView.findViewById(R.id.domainEditText);
+                            String domainToAdd = domainEditText.getText().toString().trim().toLowerCase();
+                            if (!BlockUrlPatternsMatch.isUrlValid(domainToAdd)) {
+                                Toast.makeText(context, "Url not valid. Please check", Toast.LENGTH_SHORT).show();
+                            } else {
+                                new AddUrlAsyncTask(domainToAdd, page, context).execute();
+                            }
+                        })
+                        .setNegativeButton(android.R.string.no, null).show();
+                });
+
+                FloatingActionButton actionAddFirewallRule = view.findViewById(R.id.action_add_firewall_rule);
+                actionAddFirewallRule.setIcon(R.drawable.ic_whatshot_black_24dp);
+                actionAddFirewallRule.setOnClickListener(v -> {
+                    blackFloatMenu.collapse();
+                    View dialogView = inflater.inflate(R.layout.dialog_blacklist_rule, container, false);
+                    new AlertDialog.Builder(context)
+                        .setView(dialogView)
+                        .setPositiveButton(android.R.string.yes, (dialog, whichButton) -> {
+                            EditText ruleEditText = dialogView.findViewById(R.id.ruleEditText);
+                            String ruleToAdd = ruleEditText.getText().toString().trim().toLowerCase();
+                            StringTokenizer tokens = new StringTokenizer(ruleToAdd, "|");
+                            if (tokens.countTokens() != 3) {
+                                Toast.makeText(context, "Rule not valid. Please check", Toast.LENGTH_SHORT).show();
+                            } else {
+                                new AddUrlAsyncTask(ruleToAdd, page, context).execute();
+                            }
+                        })
+                        .setNegativeButton(android.R.string.no, null).show();
+                });
+
                 break;
 
             case WHITELIST_PAGE:
-                view = inflater.inflate(R.layout.fragment_white_list, container, false);
-
-                EditText whiteUrlEditText = view.findViewById(R.id.whiteUrlEditText);
-                Button addWhitelistUrlButton = view.findViewById(R.id.addWhiteUrlButton);
-                addWhitelistUrlButton.setOnClickListener(v -> {
-                    String urlToAdd = whiteUrlEditText.getText().toString();
-                    if (urlToAdd.indexOf('|') == -1) {
-                        if (!BlockUrlPatternsMatch.isUrlValid(urlToAdd)) {
-                            Toast.makeText(this.getContext(), "Url not valid. Please check", Toast.LENGTH_SHORT).show();
-                            return;
-                        }
-                    } else {
-                        // packageName|url
-                        StringTokenizer tokens = new StringTokenizer(urlToAdd, "|");
-                        if (tokens.countTokens() != 2) {
-                            Toast.makeText(this.getContext(), "Rule not valid. Please check", Toast.LENGTH_SHORT).show();
-                            return;
-                        }
-                    }
-
-                    new AddUrlAsyncTask(urlToAdd, page, context).execute();
-                });
+                view = inflater.inflate(R.layout.fragment_whitelist, container, false);
 
                 ListView whiteListView = view.findViewById(R.id.whiteListView);
                 whiteListView.setOnItemClickListener((parent, view1, position, id) -> {
@@ -161,27 +162,45 @@ public class DomainsPageFragment extends Fragment {
                         whiteListView.setAdapter(itemsAdapter);
                     }
                 });
+
+                FloatingActionsMenu whiteFloatMenu = view.findViewById(R.id.whitelist_actions);
+                FloatingActionButton actionAddWhiteDomain = view.findViewById(R.id.action_add_domain);
+                actionAddWhiteDomain.setIcon(R.drawable.ic_public_black_24dp);
+                actionAddWhiteDomain.setOnClickListener(v -> {
+                    whiteFloatMenu.collapse();
+                    View dialogView = inflater.inflate(R.layout.dialog_whitelist_domain, container, false);
+                    new AlertDialog.Builder(context)
+                            .setView(dialogView)
+                            .setPositiveButton(android.R.string.yes, (dialog, whichButton) -> {
+                                EditText domainEditText = dialogView.findViewById(R.id.domainEditText);
+                                String domainToAdd = domainEditText.getText().toString().trim().toLowerCase();
+                                if (domainToAdd.indexOf('|') == -1) {
+                                    if (!BlockUrlPatternsMatch.isUrlValid(domainToAdd)) {
+                                        Toast.makeText(this.getContext(), "Url not valid. Please check", Toast.LENGTH_SHORT).show();
+                                        return;
+                                    }
+                                } else {
+                                    // packageName|url
+                                    StringTokenizer tokens = new StringTokenizer(domainToAdd, "|");
+                                    if (tokens.countTokens() != 2) {
+                                        Toast.makeText(this.getContext(), "Rule not valid. Please check", Toast.LENGTH_SHORT).show();
+                                        return;
+                                    }
+                                }
+                                new AddUrlAsyncTask(domainToAdd, page, context).execute();
+                            })
+                            .setNegativeButton(android.R.string.no, null).show();
+                });
+
                 break;
 
             case PROVIDER_PAGE:
-                view = inflater.inflate(R.layout.fragment_custom_url_provider, container, false);
+                view = inflater.inflate(R.layout.fragment_provider, container, false);
 
                 // Set URL limit
                 TextView hintTextView = view.findViewById(R.id.providerInfoTextView);
                 String strFormat = getResources().getString(R.string.provider_info);
                 hintTextView.setText(String.format(strFormat, AdhellAppIntegrity.BLOCK_URL_LIMIT));
-
-                // Add button
-                EditText providerEditText = view.findViewById(R.id.addProviderEditText);
-                Button addProviderButton = view.findViewById(R.id.addProviderButton);
-                addProviderButton.setOnClickListener(v -> {
-                    String provider = providerEditText.getText().toString();
-                    if (URLUtil.isValidUrl(provider)) {
-                        new AddProviderAsyncTask(provider, context).execute();
-                    } else {
-                        Toast.makeText(getContext(), "Url is invalid", Toast.LENGTH_LONG).show();
-                    }
-                });
 
                 // Provider list
                 ListView providerListView = view.findViewById(R.id.providerListView);
@@ -211,9 +230,30 @@ public class DomainsPageFragment extends Fragment {
                     }
                 });
 
-                // Update button
-                Button updateBlockUrlProvidersButton = view.findViewById(R.id.updateProviderButton);
-                updateBlockUrlProvidersButton.setOnClickListener(v -> {
+                FloatingActionsMenu providerFloatMenu = view.findViewById(R.id.provider_actions);
+                FloatingActionButton actionAddProvider = view.findViewById(R.id.action_add_provider);
+                actionAddProvider.setIcon(R.drawable.ic_event_note_black_24dp);
+                actionAddProvider.setOnClickListener(v -> {
+                    providerFloatMenu.collapse();
+                    View dialogView = inflater.inflate(R.layout.dialog_add_provider, container, false);
+                    new AlertDialog.Builder(context)
+                        .setView(dialogView)
+                        .setPositiveButton(android.R.string.yes, (dialog, whichButton) -> {
+                            EditText providerEditText = dialogView.findViewById(R.id.providerEditText);
+                            String provider = providerEditText.getText().toString();
+                            if (URLUtil.isValidUrl(provider)) {
+                                new AddProviderAsyncTask(provider, context).execute();
+                            } else {
+                                Toast.makeText(getContext(), "Url is invalid", Toast.LENGTH_LONG).show();
+                            }
+                        })
+                        .setNegativeButton(android.R.string.no, null).show();
+                });
+
+                FloatingActionButton actionUpdateProviders = view.findViewById(R.id.action_update_providers);
+                actionUpdateProviders.setIcon(R.drawable.ic_update_black_24dp);
+                actionUpdateProviders.setOnClickListener(v -> {
+                    providerFloatMenu.collapse();
                     new UpdateProviderAsyncTask(context).execute();
                 });
 
@@ -255,16 +295,13 @@ public class DomainsPageFragment extends Fragment {
             Context context = contextWeakReference.get();
             if (context != null) {
                 ListView listView = null;
-                EditText editText = null;
                 switch (page) {
                     case BLACKLIST_PAGE:
                         listView = ((Activity) context).findViewById(R.id.blackListView);
-                        editText = ((Activity) context).findViewById(R.id.blackUrlEditText);
                         break;
 
                     case WHITELIST_PAGE:
                         listView = ((Activity) context).findViewById(R.id.whiteListView);
-                        editText = ((Activity) context).findViewById(R.id.whiteUrlEditText);
                         break;
                 }
 
@@ -272,10 +309,6 @@ public class DomainsPageFragment extends Fragment {
                     ArrayAdapter<String> adapter = (ArrayAdapter<String>) listView.getAdapter();
                     adapter.add(url);
                     adapter.notifyDataSetChanged();
-                }
-
-                if (editText != null) {
-                    editText.setText("");
                 }
 
                 if (url.indexOf('|') == -1) {
@@ -383,11 +416,6 @@ public class DomainsPageFragment extends Fragment {
 
                         new LoadProviderAsyncTask(blockUrlProvider, context).execute();
                     }
-                }
-
-                EditText editText = ((Activity) context).findViewById(R.id.addProviderEditText);
-                if (editText != null) {
-                    editText.setText("");
                 }
             }
         }

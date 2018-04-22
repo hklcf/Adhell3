@@ -17,9 +17,6 @@
     <string name="whitelist_info">
         Whitelist domains
         \nTurn Adhell off and on for changes to take effect.
-        \n\nDomains support wildcards, e.g. *facebook.com
-        \nRule format to allow a domain in a specific app:
-        \n\t\tpackageName|domain
     </string>
     <string name="delete_app">Disable and delete Adhell</string>
     <string name="delete_app_dialog_title">Delete Adhell</string>
@@ -32,17 +29,31 @@
     </string>
     <string name="restore_defaults">Restore Defaults</string>
     <string name="zero_dns" translatable="false">0.0.0.0</string>
-    <string name="block">Add domain/rule</string>
-    <string name="whitelist_ad_url">Add domain</string>
     <string name="blacklist_info">
         Blacklist domains or define deny firewall rules
         \nTurn Adhell off and on for changes to take effect.
-        \n\nDomains support wildcards, e.g. *facebook.com
-        \nFirewall rule format:
-        \n\t\tpackageName|ipAddress|port
-        \nE.g. block port 53 for all IP addresses in Chrome:
-        \n\t\tcom.android.chrome|*|53
     </string>
+    <string name="dialog_blacklist_domain_title">Add domain</string>
+    <string name="dialog_blacklist_domain_info">Domains support wildcards, e.g. *facebook.com</string>
+    <string name="dialog_blacklist_rule_title">Add Firewall Rule</string>
+    <string name="dialog_blacklist_rule_info">
+        Firewall rule format:
+        \npackageName|ipAddress|port
+        \nE.g. block port 53 for all IP addresses in Chrome:
+        \ncom.android.chrome|*|53
+    </string>
+    <string name="dialog_whitelist_domain_title">Add domain</string>
+    <string name="dialog_whitelist_domain_info">
+        Domains support wildcards, e.g. *facebook.com
+        \nRule format to allow a domain in a specific app:
+        \npackageName|domain
+    </string>
+    <string name="dialog_add_provider_title">Add provider</string>
+    <string name="dialog_add_provider_info">
+        Remote: https://adaway.org/hosts.txt
+        \nInternal: file:///mnt/sdcard/hosts.txt
+    </string>
+    <string name="dialog_update_providers_title">Update providers</string>
     <string name="blocker_fragment_title" translatable="false">Adhell 3</string>
     <string name="package_disabler_fragment_title">Package Disabler</string>
     <string name="apps_management_bottombar_title">Applications</string>
@@ -51,14 +62,10 @@
     <string name="check_input_dns">Check your input data.</string>
     <string name="changed_dns">DNS addresses have been set. Turn Adhell off and on to take effect.</string>
     <string name="restored_dns">DNS has been restored to defaults. Turn Adhell off and on to take effect.</string>
-    <string name="add_provider">Add Provider</string>
     <string name="delete_url">Delete URL</string>
-    <string name="update_all_providers">Update Providers</string>
     <string name="provider_info">
         In addition to Adhell\'s standard package, you can add links to remote and local hosts lists.
         \nAdhell can block up to %1$d unique domains.
-        \nRemote: https://adaway.org/hosts.txt
-        \nInternal: file:///mnt/sdcard/hosts.txt
     </string>
     <string name="your_device_running_old_knox_version">
         Your device is running an old version of Knox, so this function may be unstable.

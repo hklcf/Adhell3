@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.percent.PercentRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:fab="http://schemas.android.com/apk/res-auto">
+
+    <TextView
+        android:id="@+id/noteTextView"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:text="@string/whitelist_info"
+        android:background="@drawable/border" />
+
+    <ListView
+        android:id="@+id/whiteListView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="5dp"
+        android:layout_below="@id/noteTextView" />
+
+    <com.getbase.floatingactionbutton.FloatingActionsMenu
+        android:id="@+id/whitelist_actions"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        fab:fab_addButtonColorNormal="@color/colorFab"
+        fab:fab_addButtonColorPressed="@color/colorSelector"
+        fab:fab_addButtonPlusIconColor="@color/colorPrimaryLight"
+        fab:fab_labelStyle="@style/menu_labels_style"
+        android:layout_marginBottom="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginEnd="5dp">
+
+        <com.getbase.floatingactionbutton.FloatingActionButton
+            android:id="@+id/action_add_domain"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            fab:fab_colorNormal="@color/colorFab"
+            fab:fab_title="@string/dialog_whitelist_domain_title"
+            fab:fab_colorPressed="@color/colorSelector"/>
+
+    </com.getbase.floatingactionbutton.FloatingActionsMenu>
+
+</android.support.percent.PercentRelativeLayout>
