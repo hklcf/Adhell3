@@ -1,5 +1,7 @@
 package com.fusionjack.adhell3.fragments;
 
+import android.app.Activity;
+import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -8,30 +10,44 @@ import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.ListView;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import com.fusionjack.adhell3.R;
+import com.fusionjack.adhell3.adapter.ReportBlockedUrlAdapter;
 import com.fusionjack.adhell3.blocker.ContentBlocker;
 import com.fusionjack.adhell3.blocker.ContentBlocker56;
 import com.fusionjack.adhell3.blocker.ContentBlocker57;
+import com.fusionjack.adhell3.db.AppDatabase;
+import com.fusionjack.adhell3.db.entity.ReportBlockedUrl;
 import com.fusionjack.adhell3.dialogfragment.FirewallDialogFragment;
+import com.fusionjack.adhell3.utils.AdhellFactory;
+import com.fusionjack.adhell3.utils.AppCache;
 import com.fusionjack.adhell3.utils.DeviceAdminInteractor;
+import com.sec.enterprise.firewall.DomainFilterReport;
+import com.sec.enterprise.firewall.Firewall;
+
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
 
 public class BlockerFragment extends Fragment {
     private static final String TAG = BlockerFragment.class.getCanonicalName();
 
     private FragmentManager fragmentManager;
     private AppCompatActivity parentActivity;
-    private Button mPolicyChangeButton;
-    private Button reportButton;
-    private TextView isSupportedTextView;
+    private TextView statusTextView;
+    private Switch turnOnSwitch;
+    TextView infoTextView;
+    private SwipeRefreshLayout swipeContainer;
     private ContentBlocker contentBlocker;
 
     @Override
@@ -50,42 +66,28 @@ public class BlockerFragment extends Fragment {
         getActivity().setTitle(getString(R.string.blocker_fragment_title));
 
         View view = inflater.inflate(R.layout.fragment_blocker, container, false);
-        mPolicyChangeButton = view.findViewById(R.id.policyChangeButton);
-        isSupportedTextView = view.findViewById(R.id.isSupportedTextView);
-        reportButton = view.findViewById(R.id.adhellReportsButton);
+        turnOnSwitch = view.findViewById(R.id.switchDisable);
+        statusTextView = view.findViewById(R.id.statusTextView);
+        swipeContainer = view.findViewById(R.id.swipeContainer);
+        infoTextView = view.findViewById(R.id.infoTextView);
         TextView warningMessageTextView = view.findViewById(R.id.warningMessageTextView);
 
         contentBlocker = DeviceAdminInteractor.getInstance().getContentBlocker();
-        if (!(contentBlocker instanceof ContentBlocker56 || contentBlocker instanceof ContentBlocker57)) {
-            warningMessageTextView.setVisibility(View.VISIBLE);
-        } else {
+        if (contentBlocker instanceof ContentBlocker56 || contentBlocker instanceof ContentBlocker57) {
             warningMessageTextView.setVisibility(View.GONE);
-        }
-
-        if (contentBlocker != null && contentBlocker.isEnabled()) {
-            mPolicyChangeButton.setText(R.string.block_button_text_turn_off);
-            isSupportedTextView.setText(R.string.block_enabled);
         } else {
-            mPolicyChangeButton.setText(R.string.block_button_text_turn_on);
-            isSupportedTextView.setText(R.string.block_disabled);
+            warningMessageTextView.setVisibility(View.VISIBLE);
         }
 
-        mPolicyChangeButton.setOnClickListener(v -> {
+        infoTextView.setVisibility(View.INVISIBLE);
+        swipeContainer.setVisibility(View.INVISIBLE);
+        turnOnSwitch.setOnClickListener(v -> {
             Log.d(TAG, "Adhell switch button has been clicked");
             new SetFirewallAsyncTask(this, fragmentManager).execute();
         });
 
-        if (contentBlocker.isEnabled() &&
-                (contentBlocker instanceof ContentBlocker56 || contentBlocker instanceof ContentBlocker57)) {
-            reportButton.setOnClickListener(view1 -> {
-                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                fragmentTransaction.replace(R.id.fragmentContainer, new AdhellReportsFragment());
-                fragmentTransaction.addToBackStack("main_to_reports");
-                fragmentTransaction.commit();
-            });
-        } else {
-            reportButton.setVisibility(View.GONE);
-        }
+        updateUserInterface();
+
         return view;
     }
 
@@ -96,25 +98,27 @@ public class BlockerFragment extends Fragment {
     }
 
     private void updateUserInterface() {
-        if (contentBlocker.isEnabled()) {
-            mPolicyChangeButton.setText(R.string.block_button_text_turn_off);
-            isSupportedTextView.setText(R.string.block_enabled);
+        if (contentBlocker != null && contentBlocker.isEnabled()) {
+            statusTextView.setText(R.string.block_enabled);
+            turnOnSwitch.setChecked(true);
         } else {
-            mPolicyChangeButton.setText(R.string.block_button_text_turn_on);
-            isSupportedTextView.setText(R.string.block_disabled);
+            statusTextView.setText(R.string.block_disabled);
+            turnOnSwitch.setChecked(false);
         }
 
-        if (contentBlocker.isEnabled() &&
-                (contentBlocker instanceof ContentBlocker56 || contentBlocker instanceof ContentBlocker57)) {
-            reportButton.setVisibility(View.VISIBLE);
-            reportButton.setOnClickListener(view1 -> {
-                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                fragmentTransaction.replace(R.id.fragmentContainer, new AdhellReportsFragment());
-                fragmentTransaction.addToBackStack("main_to_reports");
-                fragmentTransaction.commit();
-            });
-        } else {
-            reportButton.setVisibility(View.GONE);
+        if (contentBlocker instanceof ContentBlocker56 || contentBlocker instanceof ContentBlocker57) {
+            if (contentBlocker.isEnabled()) {
+                infoTextView.setVisibility(View.VISIBLE);
+                swipeContainer.setVisibility(View.VISIBLE);
+                swipeContainer.setOnRefreshListener(() ->
+                        new RefreshAsyncTask(getContext()).execute()
+                );
+            } else {
+                infoTextView.setVisibility(View.INVISIBLE);
+                swipeContainer.setVisibility(View.INVISIBLE);
+            }
+            AppCache.getInstance(getContext(), null);
+            new RefreshAsyncTask(getContext()).execute();
         }
     }
 
@@ -164,6 +168,75 @@ public class BlockerFragment extends Fragment {
         protected void onPostExecute(Void aVoid) {
             fragment.enableCloseButton();
             parentFragment.updateUserInterface();
+        }
+    }
+
+    private static class RefreshAsyncTask extends AsyncTask<Void, Void, List<ReportBlockedUrl>> {
+        private WeakReference<Context> contextReference;
+        private Firewall firewall;
+
+        RefreshAsyncTask(Context context) {
+            this.contextReference = new WeakReference<>(context);
+            this.firewall = AdhellFactory.getInstance().getFirewall();
+        }
+
+        @Override
+        protected List<ReportBlockedUrl> doInBackground(Void... voids) {
+            List<ReportBlockedUrl> reportBlockedUrls = new ArrayList<>();
+            List<DomainFilterReport> reports = firewall.getDomainFilterReport(null);
+            if (reports == null) {
+                return reportBlockedUrls;
+            }
+
+            long yesterday = yesterday();
+            AppDatabase appDatabase = AdhellFactory.getInstance().getAppDatabase();
+            appDatabase.reportBlockedUrlDao().deleteBefore(yesterday);
+
+            ReportBlockedUrl lastBlockedUrl = appDatabase.reportBlockedUrlDao().getLastBlockedDomain();
+            long lastBlockedTimestamp = 0;
+            if (lastBlockedUrl != null) {
+                lastBlockedTimestamp = lastBlockedUrl.blockDate / 1000;
+            }
+
+            for (DomainFilterReport b : reports) {
+                if (b.getTimeStamp() > lastBlockedTimestamp) {
+                    ReportBlockedUrl reportBlockedUrl =
+                            new ReportBlockedUrl(b.getDomainUrl(), b.getPackageName(), b.getTimeStamp() * 1000);
+                    reportBlockedUrls.add(reportBlockedUrl);
+                }
+            }
+            appDatabase.reportBlockedUrlDao().insertAll(reportBlockedUrls);
+
+            return appDatabase.reportBlockedUrlDao().getReportBlockUrlBetween(yesterday(), System.currentTimeMillis());
+        }
+
+        @Override
+        protected void onPostExecute(List<ReportBlockedUrl> reportBlockedUrls) {
+            Context context = contextReference.get();
+            if (context != null) {
+                ListView listView = ((Activity) context).findViewById(R.id.blockedDomainsListView);
+                if (listView != null) {
+                    ReportBlockedUrlAdapter adapter = new ReportBlockedUrlAdapter(context, reportBlockedUrls);
+                    listView.setAdapter(adapter);
+                }
+
+                TextView infoTextView = ((Activity) context).findViewById(R.id.infoTextView);
+                if (infoTextView != null) {
+                    infoTextView.setText(String.format("%s%s",
+                            context.getString(R.string.last_day_blocked), String.valueOf(reportBlockedUrls.size())));
+                }
+
+                SwipeRefreshLayout swipeContainer = ((Activity) context).findViewById(R.id.swipeContainer);
+                if (swipeContainer != null) {
+                    swipeContainer.setRefreshing(false);
+                }
+            }
+        }
+
+        private long yesterday() {
+            final Calendar cal = Calendar.getInstance();
+            cal.add(Calendar.DATE, -1);
+            return cal.getTimeInMillis();
         }
     }
 }

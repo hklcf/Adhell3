@@ -1,10 +1,7 @@
 <resources>
     <string name="app_name" translatable="false">Adhell 3</string>
-    <string name="wait">Wait…</string>
-    <string name="reports">Reports</string>
-    <string name="isSupported">Wait</string>
-    <string name="block_enabled">Adhell enabled. You are safe now.</string>
-    <string name="block_disabled">Adhell disabled.</string>
+    <string name="block_enabled">Knox Firewall is enabled.</string>
+    <string name="block_disabled">Knox Firewall is disabled.</string>
     <string name="adhell_not_supported">Adhell is not yet supported on your device.</string>
     <string name="to_enable_adhell">
         To enable Adhell, you must activate Admin mode for this app.

@@ -8,27 +8,58 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="5dp"
-        android:text="@string/your_device_running_old_knox_version"
-    />
+        android:text="@string/your_device_running_old_knox_version" />
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/editLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:padding="10dp"
+        android:background="@drawable/border">
+
+        <TextView
+            android:id="@+id/statusTextView"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="@string/block_enabled"
+            android:textStyle="bold" />
+
+        <Switch
+            android:id="@+id/switchDisable"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:clickable="false"
+            android:focusable="false"
+            android:focusableInTouchMode="false"/>
+
+    </RelativeLayout>
+
     <TextView
-        android:id="@+id/isSupportedTextView"
-        android:layout_width="wrap_content"
+        android:id="@+id/infoTextView"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:text="@string/isSupported"
-        android:textSize="@dimen/text_small_size"/>
+        android:layout_marginTop="5dp"
+        android:padding="10dp"
+        android:text="@string/last_day_blocked"
+        android:background="@drawable/border"/>
 
-    <Button
-        android:id="@+id/policyChangeButton"
-        android:layout_width="wrap_content"
+    <android.support.v4.widget.SwipeRefreshLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/swipeContainer"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:text="@string/wait"/>
+        android:layout_marginTop="5dp">
 
-    <Button
-        android:id="@+id/adhellReportsButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:text="@string/reports"/>
+        <ListView
+            android:id="@+id/blockedDomainsListView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </android.support.v4.widget.SwipeRefreshLayout>
 </LinearLayout>
