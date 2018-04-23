@@ -62,4 +62,5 @@ dependencies {
     annotationProcessor "com.google.dagger:dagger-compiler:2.15"
     compileOnly 'javax.annotation:jsr250-api:1.0'
     implementation 'com.google.guava:guava:24.1-android'
+    implementation 'com.getbase:floatingactionbutton:1.10.1'
 }
