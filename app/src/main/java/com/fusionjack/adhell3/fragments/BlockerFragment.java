@@ -11,11 +11,13 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -27,6 +29,7 @@ import com.fusionjack.adhell3.blocker.ContentBlocker56;
 import com.fusionjack.adhell3.blocker.ContentBlocker57;
 import com.fusionjack.adhell3.db.AppDatabase;
 import com.fusionjack.adhell3.db.entity.ReportBlockedUrl;
+import com.fusionjack.adhell3.db.entity.WhiteUrl;
 import com.fusionjack.adhell3.dialogfragment.FirewallDialogFragment;
 import com.fusionjack.adhell3.utils.AdhellFactory;
 import com.fusionjack.adhell3.utils.AppCache;
@@ -37,6 +40,7 @@ import com.sec.enterprise.firewall.Firewall;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 public class BlockerFragment extends Fragment {
@@ -46,7 +50,7 @@ public class BlockerFragment extends Fragment {
     private AppCompatActivity parentActivity;
     private TextView statusTextView;
     private Switch turnOnSwitch;
-    TextView infoTextView;
+    private TextView infoTextView;
     private SwipeRefreshLayout swipeContainer;
     private ContentBlocker contentBlocker;
 
@@ -218,6 +222,21 @@ public class BlockerFragment extends Fragment {
                 if (listView != null) {
                     ReportBlockedUrlAdapter adapter = new ReportBlockedUrlAdapter(context, reportBlockedUrls);
                     listView.setAdapter(adapter);
+                    listView.setOnItemClickListener((AdapterView<?> adView, View view2, int position, long id) -> {
+                        View dialogView = LayoutInflater.from(context).inflate(R.layout.dialog_to_whitelist, listView, false);
+                        new AlertDialog.Builder(context)
+                            .setView(dialogView)
+                            .setPositiveButton(android.R.string.yes, (dialog, whichButton) -> {
+                                AsyncTask.execute(() -> {
+                                    AppDatabase appDatabase = AdhellFactory.getInstance().getAppDatabase();
+                                    WhiteUrl whiteUrl = new WhiteUrl();
+                                    whiteUrl.url = reportBlockedUrls.get(position).url;
+                                    whiteUrl.insertedAt = new Date();
+                                    appDatabase.whiteUrlDao().insert(whiteUrl);
+                                });
+                            })
+                            .setNegativeButton(android.R.string.no, null).show();
+                    });
                 }
 
                 TextView infoTextView = ((Activity) context).findViewById(R.id.infoTextView);

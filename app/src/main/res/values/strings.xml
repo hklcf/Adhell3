@@ -54,6 +54,7 @@
         \nInternal: file:///mnt/sdcard/hosts.txt
     </string>
     <string name="dialog_update_providers_title">Update providers</string>
+    <string name="dialog_add_to_whitelist_question">Do you want to add the selected domain to whitelist?</string>
     <string name="blocker_fragment_title" translatable="false">Adhell 3</string>
     <string name="package_disabler_fragment_title">Package Disabler</string>
     <string name="apps_management_bottombar_title">Applications</string>

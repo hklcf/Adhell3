@@ -13,12 +13,20 @@
         android:text="@string/blacklist_info"
         android:background="@drawable/border" />
 
-    <ListView
-        android:id="@+id/blackListView"
+    <android.support.v4.widget.SwipeRefreshLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/blacklistSwipeContainer"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
-        android:layout_below="@+id/noteTextView" />
+        android:layout_below="@+id/noteTextView">
+
+        <ListView
+            android:id="@+id/blackListView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </android.support.v4.widget.SwipeRefreshLayout>
 
     <com.getbase.floatingactionbutton.FloatingActionsMenu
         android:id="@+id/blacklist_actions"
