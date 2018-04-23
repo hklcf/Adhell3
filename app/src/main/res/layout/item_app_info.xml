@@ -9,9 +9,6 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"
         android:layout_margin="5dp"
-        android:clickable="false"
-        android:focusable="false"
-        android:focusableInTouchMode="false"
         android:scaleType="centerCrop"
         android:src="@mipmap/ic_launcher"
         android:contentDescription="Adhell" />
@@ -23,10 +20,7 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
-        android:layout_margin="5dp"
-        android:clickable="false"
-        android:focusable="false"
-        android:focusableInTouchMode="false"/>
+        android:layout_margin="5dp"/>
 
     <TextView
         android:id="@+id/appName"
@@ -39,9 +33,6 @@
         android:layout_toLeftOf="@id/switchDisable"
         android:layout_toEndOf="@id/appIcon"
         android:layout_toRightOf="@id/appIcon"
-        android:clickable="false"
-        android:focusable="false"
-        android:focusableInTouchMode="false"
         android:text="Adhell"
         android:textStyle="bold"/>
 
@@ -56,9 +47,6 @@
         android:layout_toLeftOf="@id/switchDisable"
         android:layout_toEndOf="@id/appIcon"
         android:layout_toRightOf="@id/appIcon"
-        android:clickable="false"
-        android:focusable="false"
-        android:focusableInTouchMode="false"
         android:text="System"
         android:textSize="12sp"
         android:textStyle="italic"/>
@@ -75,11 +63,6 @@
         android:layout_toLeftOf="@id/switchDisable"
         android:layout_toEndOf="@id/appIcon"
         android:layout_toRightOf="@id/appIcon"
-        android:clickable="false"
-        android:ellipsize="end"
-        android:focusable="false"
-        android:focusableInTouchMode="false"
-        android:lines="1"
-        android:text="com.android.google"/>
+        android:text="com.android.googlecom.android.googlecom.android.googlecom.android.googlecom.android.google"/>
 
 </RelativeLayout>
