@@ -7,6 +7,7 @@ import static com.fusionjack.adhell3.tasks.LoadAppAsyncTask.SORTED_DISABLED;
 import static com.fusionjack.adhell3.tasks.LoadAppAsyncTask.SORTED_MOBILE_RESTRICTED;
 import static com.fusionjack.adhell3.tasks.LoadAppAsyncTask.SORTED_WHITELISTED;
 import static com.fusionjack.adhell3.tasks.LoadAppAsyncTask.SORTED_WIFI_RESTRICTED;
+import static com.fusionjack.adhell3.tasks.LoadAppAsyncTask.SORTED_DNS;
 
 public class AppFlag {
 
@@ -15,7 +16,8 @@ public class AppFlag {
         MOBILE_RESTRICTED_FLAG,
         WIFI_RESTRICTED_FLAG,
         WHITELISTED_FLAG,
-        COMPONENT_FLAG
+        COMPONENT_FLAG,
+        DNS_FLAG
     }
 
     private Flag flag;
@@ -58,6 +60,12 @@ public class AppFlag {
         int loadLayout = R.id.component_apps_list;
         int refreshLayout = R.id.componentSwipeContainer;
         return new AppFlag(Flag.COMPONENT_FLAG, SORTED_COMPONENT, loadLayout, refreshLayout);
+    }
+
+    public static AppFlag createDnsFlag() {
+        int loadLayout = R.id.dns_apps_list;
+        int refreshLayout = R.id.dnsSwipeContainer;
+        return new AppFlag(Flag.DNS_FLAG, SORTED_DNS, loadLayout, refreshLayout);
     }
 
     public Flag getFlag() {

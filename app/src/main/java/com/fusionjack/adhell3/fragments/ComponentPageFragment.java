@@ -39,7 +39,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-public class AppComponentPageFragment extends Fragment {
+public class ComponentPageFragment extends Fragment {
 
     private static final String ARG_PAGE = "page";
     private static final String ARG_PACKAGENAME = "packageName";
@@ -51,11 +51,11 @@ public class AppComponentPageFragment extends Fragment {
     public static final int SERVICES_PAGE = 1;
     public static final int RECEIVERS_PAGE = 2;
 
-    public static AppComponentPageFragment newInstance(int page, String packageName) {
+    public static ComponentPageFragment newInstance(int page, String packageName) {
         Bundle args = new Bundle();
         args.putInt(ARG_PAGE, page);
         args.putString(ARG_PACKAGENAME, packageName);
-        AppComponentPageFragment fragment = new AppComponentPageFragment();
+        ComponentPageFragment fragment = new ComponentPageFragment();
         fragment.setArguments(args);
         return fragment;
     }
@@ -71,7 +71,7 @@ public class AppComponentPageFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.app_component_tab_menu, menu);
+        inflater.inflate(R.menu.enable_all_menu, menu);
     }
 
     @Override

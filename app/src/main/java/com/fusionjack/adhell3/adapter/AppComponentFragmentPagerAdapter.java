@@ -6,7 +6,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
 import com.fusionjack.adhell3.R;
-import com.fusionjack.adhell3.fragments.AppComponentPageFragment;
+import com.fusionjack.adhell3.fragments.ComponentPageFragment;
 
 public class AppComponentFragmentPagerAdapter extends FragmentPagerAdapter {
     private static final int PAGE_COUNT = 3;
@@ -25,7 +25,7 @@ public class AppComponentFragmentPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        return AppComponentPageFragment.newInstance(position, packageName);
+        return ComponentPageFragment.newInstance(position, packageName);
     }
 
     @Override

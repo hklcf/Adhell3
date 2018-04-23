@@ -1,64 +1,56 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:fab="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
     <TextView
-        android:id="@+id/dnsChangetextView"
+        android:id="@+id/infoTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="10dp"
         android:text="@string/dns_info"
         android:background="@drawable/border" />
 
-    <EditText
-        android:id="@+id/dns_address_1"
+    <android.support.v4.widget.SwipeRefreshLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/dnsSwipeContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/dnsChangetextView"
-        android:padding="10dp"
-        android:digits="0123456789."
-        android:hint="@string/dns_1_address"
-        android:inputType="number|numberDecimal"
-        android:text="@string/zero_dns">
+        android:layout_marginTop="5dp"
+        android:layout_below="@id/infoTextView">
 
-        <requestFocus />
-    </EditText>
+        <ListView
+            android:id="@+id/dns_apps_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
 
-    <EditText
-        android:id="@+id/dns_address_2"
-        android:layout_width="match_parent"
+    </android.support.v4.widget.SwipeRefreshLayout>
+
+    <com.getbase.floatingactionbutton.FloatingActionsMenu
+        android:id="@+id/dns_actions"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/dns_address_1"
-        android:padding="10dp"
-        android:digits="0123456789."
-        android:hint="@string/dns_2_address"
-        android:inputType="number|numberDecimal"
-        android:text="@string/zero_dns" />
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        fab:fab_addButtonColorNormal="@color/colorFab"
+        fab:fab_addButtonColorPressed="@color/colorSelector"
+        fab:fab_addButtonPlusIconColor="@color/colorPrimaryLight"
+        fab:fab_labelStyle="@style/menu_labels_style"
+        fab:fab_labelsPosition="right"
+        android:layout_marginBottom="5dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginStart="5dp">
 
-    <LinearLayout
-        android:id="@+id/linear_layout_storing_two_buttons_in_dns_dialog"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/dns_address_2"
-        android:orientation="horizontal"
-        android:padding="10dp">
-        <Button
-            android:id="@+id/changeDnsOkButton"
-            android:layout_width="0dp"
+        <com.getbase.floatingactionbutton.FloatingActionButton
+            android:id="@+id/action_set_dns"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginRight="5dp"
-            android:layout_marginEnd="5dp"
-            android:layout_weight="1"
-            android:text="@string/set_dns_button_text" />
-        <Button
-            android:id="@+id/restoreDefaultDnsButton"
-            android:layout_width="0dp"
-            android:layout_marginLeft="5dp"
-            android:layout_marginStart="5dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:text="@string/restore_defaults" />
-    </LinearLayout>
+            fab:fab_colorNormal="@color/colorFab"
+            fab:fab_title="@string/dialog_set_dns_title"
+            fab:fab_colorPressed="@color/colorSelector"/>
+
+    </com.getbase.floatingactionbutton.FloatingActionsMenu>
 
 </RelativeLayout>

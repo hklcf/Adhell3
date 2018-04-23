@@ -58,7 +58,7 @@ public class ProviderListPageFragment extends DomainPageFragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.list_provider_menu, menu);
+        inflater.inflate(R.menu.search_menu, menu);
 
         SearchView searchView = (SearchView) menu.findItem(R.id.search).getActionView();
         searchView.setMaxWidth(Integer.MAX_VALUE);

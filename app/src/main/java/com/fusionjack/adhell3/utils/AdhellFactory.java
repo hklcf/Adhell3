@@ -8,13 +8,20 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
+import android.util.Patterns;
 
 import com.fusionjack.adhell3.App;
 import com.fusionjack.adhell3.R;
+import com.fusionjack.adhell3.blocker.ContentBlocker;
+import com.fusionjack.adhell3.blocker.ContentBlocker56;
+import com.fusionjack.adhell3.blocker.ContentBlocker57;
 import com.fusionjack.adhell3.db.AppDatabase;
+import com.fusionjack.adhell3.db.entity.AppInfo;
 import com.fusionjack.adhell3.db.entity.AppPermission;
+import com.sec.enterprise.AppIdentity;
 import com.sec.enterprise.firewall.DomainFilterRule;
 import com.sec.enterprise.firewall.Firewall;
 import com.sec.enterprise.firewall.FirewallResponse;
@@ -194,6 +201,67 @@ public final class AdhellFactory {
 
         if (state) {
             appDatabase.appPermissionDao().deleteAll();
+        }
+    }
+
+    public boolean isDnsAllowed() {
+        ContentBlocker contentBlocker = DeviceAdminInteractor.getInstance().getContentBlocker();
+        return contentBlocker instanceof ContentBlocker56 || contentBlocker instanceof ContentBlocker57;
+    }
+
+    public boolean isDnsNotEmpty() {
+        return sharedPreferences.contains("dns1") && sharedPreferences.contains("dns2");
+    }
+
+    public void setDns(String primaryDns, String secondaryDns, Handler handler) {
+        if (primaryDns.isEmpty() && secondaryDns.isEmpty()) {
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.remove("dns1");
+            editor.remove("dns2");
+            editor.apply();
+            if (handler != null) {
+                Message message = handler.obtainMessage(0, R.string.restored_dns);
+                message.sendToTarget();
+            }
+        } else if (!Patterns.IP_ADDRESS.matcher(primaryDns).matches() || !Patterns.IP_ADDRESS.matcher(secondaryDns).matches()) {
+            if (handler != null) {
+                Message message = handler.obtainMessage(0, R.string.check_input_dns);
+                message.sendToTarget();
+            }
+        } else {
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putString("dns1", primaryDns);
+            editor.putString("dns2", secondaryDns);
+            editor.apply();
+            if (handler != null) {
+                Message message = handler.obtainMessage(0, R.string.changed_dns);
+                message.sendToTarget();
+            }
+        }
+    }
+
+    public void applyDns(Handler handler) {
+        if (isDnsNotEmpty()) {
+            String dns1 = sharedPreferences.getString("dns1", "0.0.0.0");
+            String dns2 = sharedPreferences.getString("dns2", "0.0.0.0");
+            if (Patterns.IP_ADDRESS.matcher(dns1).matches() && Patterns.IP_ADDRESS.matcher(dns2).matches()) {
+                LogUtils.getInstance().writeInfo("\nProcessing DNS...", handler);
+
+                List<DomainFilterRule> rules = new ArrayList<>();
+                List<AppInfo> dnsPackages = AdhellFactory.getInstance().getAppDatabase().applicationInfoDao().getDnsApps();
+                for (AppInfo app : dnsPackages) {
+                    DomainFilterRule rule = new DomainFilterRule(new AppIdentity(app.packageName, null));
+                    rule.setDns1(dns1);
+                    rule.setDns2(dns2);
+                    rules.add(rule);
+                }
+
+                try {
+                    addDomainFilterRules(rules, handler);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 }

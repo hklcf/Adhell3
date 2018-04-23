@@ -124,4 +124,15 @@ public interface AppInfoDao {
 
     @Query("SELECT * FROM AppInfo WHERE (appName LIKE :str OR packageName LIKE :str) AND disabled = 0 ORDER BY installTime DESC")
     List<AppInfo> getEnabledAppsInTimeOrder(String str);
+
+
+    // DNS apps
+    @Query("SELECT * FROM AppInfo WHERE hasCustomDns = 1 ORDER BY appName ASC")
+    List<AppInfo> getDnsApps();
+
+    @Query("SELECT * FROM AppInfo WHERE system = 0 AND disabled = 0 ORDER BY hasCustomDns DESC, appName ASC")
+    List<AppInfo> getAppsInDnsOrder();
+
+    @Query("SELECT * FROM AppInfo WHERE (appName LIKE :str OR packageName LIKE :str) AND system = 0 AND disabled = 0 ORDER BY hasCustomDns DESC, appName ASC")
+    List<AppInfo> getAppsInDnsOrder(String str);
 }

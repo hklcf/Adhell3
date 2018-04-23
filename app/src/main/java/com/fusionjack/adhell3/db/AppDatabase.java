@@ -12,6 +12,7 @@ import com.fusionjack.adhell3.db.dao.AppInfoDao;
 import com.fusionjack.adhell3.db.dao.AppPermissionDao;
 import com.fusionjack.adhell3.db.dao.BlockUrlDao;
 import com.fusionjack.adhell3.db.dao.BlockUrlProviderDao;
+import com.fusionjack.adhell3.db.dao.DnsPackageDao;
 import com.fusionjack.adhell3.db.dao.DisabledPackageDao;
 import com.fusionjack.adhell3.db.dao.FirewallWhitelistedPackageDao;
 import com.fusionjack.adhell3.db.dao.PolicyPackageDao;
@@ -23,6 +24,7 @@ import com.fusionjack.adhell3.db.entity.AppInfo;
 import com.fusionjack.adhell3.db.entity.AppPermission;
 import com.fusionjack.adhell3.db.entity.BlockUrl;
 import com.fusionjack.adhell3.db.entity.BlockUrlProvider;
+import com.fusionjack.adhell3.db.entity.DnsPackage;
 import com.fusionjack.adhell3.db.entity.DisabledPackage;
 import com.fusionjack.adhell3.db.entity.FirewallWhitelistedPackage;
 import com.fusionjack.adhell3.db.entity.PolicyPackage;
@@ -40,6 +42,7 @@ import com.fusionjack.adhell3.db.migration.Migration_20_21;
 import com.fusionjack.adhell3.db.migration.Migration_21_22;
 import com.fusionjack.adhell3.db.migration.Migration_22_23;
 import com.fusionjack.adhell3.db.migration.Migration_23_24;
+import com.fusionjack.adhell3.db.migration.Migration_24_25;
 
 import java.io.File;
 
@@ -54,8 +57,9 @@ import java.io.File;
         PolicyPackage.class,
         ReportBlockedUrl.class,
         UserBlockUrl.class,
-        WhiteUrl.class
-}, version = 24)
+        WhiteUrl.class,
+        DnsPackage.class
+}, version = 25)
 
 public abstract class AppDatabase extends RoomDatabase {
     private static final Migration MIGRATION_14_15 = new Migration_14_15(14, 15);
@@ -68,6 +72,7 @@ public abstract class AppDatabase extends RoomDatabase {
     private static final Migration MIGRATION_21_22 = new Migration_21_22(21, 22);
     private static final Migration MIGRATION_22_23 = new Migration_22_23(22, 23);
     private static final Migration MIGRATION_23_24 = new Migration_23_24(23, 24);
+    private static final Migration MIGRATION_24_25 = new Migration_24_25(24, 25);
     private static AppDatabase INSTANCE;
 
     public static final String DATABASE_FOLDER = "adhell3";
@@ -101,6 +106,7 @@ public abstract class AppDatabase extends RoomDatabase {
                             .addMigrations(MIGRATION_21_22)
                             .addMigrations(MIGRATION_22_23)
                             .addMigrations(MIGRATION_23_24)
+                            .addMigrations(MIGRATION_24_25)
                             .build();
         }
         return INSTANCE;
@@ -131,5 +137,7 @@ public abstract class AppDatabase extends RoomDatabase {
     public abstract FirewallWhitelistedPackageDao firewallWhitelistedPackageDao();
 
     public abstract AppPermissionDao appPermissionDao();
+
+    public abstract DnsPackageDao dnsPackageDao();
 
 }

@@ -44,8 +44,6 @@
         Edit DNS only if you know the issues it can cause.
         \nToggle Domain rules to apply changes.
     </string>
-    <string name="restore_defaults">Restore Defaults</string>
-    <string name="zero_dns" translatable="false">0.0.0.0</string>
     <string name="blacklist_info">
         Blacklist domains or define firewall denial rules.
         \nToggle Domain rules to apply domain changes.
@@ -77,6 +75,10 @@
         \nSamsung Knox doesn\'t have an API to clear disabled components.
         \nTherefore, if they are still disabled after this operation, you need to uninstall Adhell to enable them.
         \n\nDo you really want to enable all apps\' components?
+    </string>
+    <string name="dialog_toggle_title">Enable/Disable All Apps</string>
+    <string name="dialog_toggle_info">
+        Do you really want to enable/disable all apps?
     </string>
     <string name="dialog_update_providers_title">Update Providers</string>
     <string name="dialog_add_to_whitelist_question">Add the selected domain to your whitelist?</string>
@@ -160,4 +162,9 @@
     <string name="permission_fragment_title">Permissions</string>
     <string name="service_fragment_title">Services</string>
     <string name="receiver_fragment_title">Receivers</string>
+    <string name="dialog_set_dns_title">Set DNS</string>
+    <string name="dialog_set_dns_info">
+        Set primary and secondary DNS.
+        \nLeave it empty to restore to default.
+    </string>
 </resources>

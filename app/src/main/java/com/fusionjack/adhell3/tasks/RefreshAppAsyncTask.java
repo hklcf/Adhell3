@@ -9,6 +9,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import com.fusionjack.adhell3.db.AppDatabase;
 import com.fusionjack.adhell3.db.DatabaseFactory;
 import com.fusionjack.adhell3.db.entity.AppInfo;
+import com.fusionjack.adhell3.db.entity.DnsPackage;
 import com.fusionjack.adhell3.db.entity.DisabledPackage;
 import com.fusionjack.adhell3.db.entity.FirewallWhitelistedPackage;
 import com.fusionjack.adhell3.db.entity.RestrictedPackage;
@@ -38,6 +39,7 @@ public class RefreshAppAsyncTask extends AsyncTask<Void, Void, Void> {
         List<AppInfo> mobileRestrictedApps = appDatabase.applicationInfoDao().getMobileRestrictedApps();
         List<AppInfo> wifiRestrictedApps = appDatabase.applicationInfoDao().getWifiRestrictedApps();
         List<FirewallWhitelistedPackage> whitelistedApps = appDatabase.firewallWhitelistedPackageDao().getAll();
+        List<DnsPackage> dnsPackageApps = appDatabase.dnsPackageDao().getAll();
 
         // Delete all apps info
         appDatabase.applicationInfoDao().deleteAll();
@@ -110,6 +112,23 @@ public class RefreshAppAsyncTask extends AsyncTask<Void, Void, Void> {
             }
         }
         appDatabase.firewallWhitelistedPackageDao().insertAll(whitelistedPackages);
+
+        // DNS apps
+        appDatabase.dnsPackageDao().deleteAll();
+        List<DnsPackage> dnsPackages = new ArrayList<>();
+        for (DnsPackage oldAppInfo : dnsPackageApps) {
+            AppInfo newAppInfo = appDatabase.applicationInfoDao().getAppByPackageName(oldAppInfo.packageName);
+            if (newAppInfo != null) {
+                newAppInfo.hasCustomDns = true;
+                appDatabase.applicationInfoDao().insert(newAppInfo);
+
+                DnsPackage dnsPackage = new DnsPackage();
+                dnsPackage.packageName = newAppInfo.packageName;
+                dnsPackage.policyPackageId = AdhellAppIntegrity.DEFAULT_POLICY_ID;
+                dnsPackages.add(dnsPackage);
+            }
+        }
+        appDatabase.dnsPackageDao().insertAll(dnsPackages);
 
         return null;
     }

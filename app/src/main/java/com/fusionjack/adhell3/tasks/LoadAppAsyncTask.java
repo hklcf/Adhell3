@@ -21,6 +21,7 @@ public class LoadAppAsyncTask extends AsyncTask<Void, Void, List<AppInfo>> {
     public static final int SORTED_WIFI_RESTRICTED = 2;
     public static final int SORTED_WHITELISTED = 3;
     public static final int SORTED_COMPONENT = 4;
+    public static final int SORTED_DNS = 5;
 
     private WeakReference<Context> contextReference;
     private String text;
@@ -85,6 +86,11 @@ public class LoadAppAsyncTask extends AsyncTask<Void, Void, List<AppInfo>> {
                     return appDatabase.applicationInfoDao().getUserApps();
                 }
                 return appDatabase.applicationInfoDao().getUserApps(filterText);
+            case SORTED_DNS:
+                if (text.length() == 0) {
+                    return appDatabase.applicationInfoDao().getAppsInDnsOrder();
+                }
+                return appDatabase.applicationInfoDao().getAppsInDnsOrder(filterText);
         }
         return null;
     }

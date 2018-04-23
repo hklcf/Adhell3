@@ -41,4 +41,7 @@ public class AppInfo {
 
     @ColumnInfo(name = "wifiRestricted")
     public boolean wifiRestricted;
+
+    @ColumnInfo(name = "hasCustomDns")
+    public boolean hasCustomDns;
 }
