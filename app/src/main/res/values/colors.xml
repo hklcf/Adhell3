@@ -8,4 +8,5 @@
     <color name="colorBorder">#efdcd5</color>
     <color name="colorSelector">#d7ccc8</color>
     <color name="colorFab">@color/colorBorder</color>
+    <color name="colorButton">@color/colorBorder</color>
 </resources>

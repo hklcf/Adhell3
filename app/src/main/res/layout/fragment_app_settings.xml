@@ -17,6 +17,7 @@
     <Button
         android:id="@+id/backup_database"
         app:layout_widthPercent="70%"
+        android:layout_marginTop="10dp"
         android:layout_height="wrap_content"
         android:layout_below="@+id/deleteApp"
         android:layout_centerHorizontal="true"
@@ -25,6 +26,7 @@
     <Button
         android:id="@+id/restore_database"
         app:layout_widthPercent="70%"
+        android:layout_marginTop="10dp"
         android:layout_height="wrap_content"
         android:layout_below="@+id/backup_database"
         android:layout_centerHorizontal="true"
