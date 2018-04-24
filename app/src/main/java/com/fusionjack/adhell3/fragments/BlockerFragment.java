@@ -117,12 +117,12 @@ public class BlockerFragment extends Fragment {
                 swipeContainer.setOnRefreshListener(() ->
                         new RefreshAsyncTask(getContext()).execute()
                 );
+                AppCache.getInstance(getContext(), null);
+                new RefreshAsyncTask(getContext()).execute();
             } else {
                 infoTextView.setVisibility(View.INVISIBLE);
                 swipeContainer.setVisibility(View.INVISIBLE);
             }
-            AppCache.getInstance(getContext(), null);
-            new RefreshAsyncTask(getContext()).execute();
         }
     }
 
