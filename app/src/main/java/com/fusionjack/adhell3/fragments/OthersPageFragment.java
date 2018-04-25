@@ -22,7 +22,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.SearchView;
 import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -111,11 +110,11 @@ public class OthersPageFragment extends Fragment {
             .setView(dialogView)
             .setPositiveButton(android.R.string.yes, (dialog, whichButton) -> {
                 AsyncTask.execute(() -> {
-                   AppDatabase appDatabase = AdhellFactory.getInstance().getAppDatabase();
-                   appDatabase.appPermissionDao().deleteAll();
                    ApplicationPermissionControlPolicy policy = AdhellFactory.getInstance().getAppControlPolicy();
                    if (policy != null) {
                        policy.clearPackagesFromPermissionBlackList();
+                       AppDatabase appDatabase = AdhellFactory.getInstance().getAppDatabase();
+                       appDatabase.appPermissionDao().deleteAll();
                    }
                 });
             })
