@@ -34,7 +34,10 @@
     <style name="ListViewStyle" parent="@android:style/Widget.ListView">
         <item name="android:divider">@color/colorBorder</item>
         <item name="android:dividerHeight">1dp</item>
-        <item name="android:padding">10dp</item>
+        <item name="android:paddingTop">2dp</item>
+        <item name="android:paddingLeft">10dp</item>
+        <item name="android:paddingRight">10dp</item>
+        <item name="android:paddingBottom">2dp</item>
         <item name="android:background">@drawable/border</item>
         <item name="android:listSelector">@drawable/list_selector</item>
     </style>
