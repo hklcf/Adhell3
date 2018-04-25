@@ -117,11 +117,8 @@ public class AdhellPermissionInAppsFragment extends Fragment {
                     viewModel.getSelected().observe(fragment, permissionInfo -> {
                         if (permissionInfo != null) {
                             activity.setTitle(permissionInfo.name);
-                            AdhellPermissionInAppsAdapter adapter = new AdhellPermissionInAppsAdapter(appInfos, context);
-                            adapter.currentPermissionName = permissionInfo.name;
-                            adapter.updatePermissionBlacklistedPackages();
+                            AdhellPermissionInAppsAdapter adapter = new AdhellPermissionInAppsAdapter(permissionInfo.name, appInfos, context);
                             recyclerView.setAdapter(adapter);
-                            adapter.notifyDataSetChanged();
                         }
                     });
                 }
