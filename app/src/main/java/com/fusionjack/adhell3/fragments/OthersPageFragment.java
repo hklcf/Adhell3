@@ -22,8 +22,12 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.SearchView;
 import android.util.Patterns;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -85,7 +89,42 @@ public class OthersPageFragment extends Fragment {
     }
 
     @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        if (page == PERMISSIONS_PAGE) {
+            inflater.inflate(R.menu.app_permission_menu, menu);
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_enable_all:
+                enableAllPermissions();
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void enableAllPermissions() {
+        View dialogView = LayoutInflater.from(getContext()).inflate(R.layout.dialog_enable_permissions, (ViewGroup) getView(), false);
+        new AlertDialog.Builder(context)
+            .setView(dialogView)
+            .setPositiveButton(android.R.string.yes, (dialog, whichButton) -> {
+                AsyncTask.execute(() -> {
+                   AppDatabase appDatabase = AdhellFactory.getInstance().getAppDatabase();
+                   appDatabase.appPermissionDao().deleteAll();
+                   ApplicationPermissionControlPolicy policy = AdhellFactory.getInstance().getAppControlPolicy();
+                   if (policy != null) {
+                       policy.clearPackagesFromPermissionBlackList();
+                   }
+                });
+            })
+            .setNegativeButton(android.R.string.no, null).show();
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        setHasOptionsMenu(true);
         View view = null;
         ContentBlocker contentBlocker = DeviceAdminInteractor.getInstance().getContentBlocker();
         switch (page) {

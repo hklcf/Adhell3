@@ -28,6 +28,7 @@ public class OthersFragment extends Fragment {
             parentActivity.getSupportActionBar().setDisplayHomeAsUpEnabled(false);
             parentActivity.getSupportActionBar().setHomeButtonEnabled(false);
         }
+        setHasOptionsMenu(true);
 
         View view = inflater.inflate(R.layout.fragment_others, container, false);
 
