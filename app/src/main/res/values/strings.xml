@@ -15,95 +15,96 @@
     <string name="block_button_text_turn_off">Turn Off</string>
     <string name="block_button_text_turn_on">Turn On</string>
     <string name="whitelist_info">
-        Whitelist domains
-        \nTurn Adhell off and on for changes to take effect.
+        Whitelist domains to bypass the firewall.
+        \nToggle the firewall to apply changes.
     </string>
-    <string name="delete_app">Disable and delete Adhell</string>
+    <string name="delete_app">Disable and Delete Adhell</string>
     <string name="delete_app_dialog_title">Delete Adhell</string>
-    <string name="delete_app_dialog_text">Do you really want to uninstall Adhell? This will also enable all disabled apps!</string>
+    <string name="delete_app_dialog_text">Do you really want to uninstall Adhell and enable all disabled apps?</string>
     <string name="dns_1_address">DNS 1 Address</string>
     <string name="dns_2_address">DNS 2 Address</string>
     <string name="set_dns_button_text">Set DNS</string>
-    <string name="dns_info">Change these only if you know what DNS is for and what
-        benefits or problems editing could cause. Note that Adhell must be enabled.
+    <string name="dns_info">
+        Edit DNS only if you know the issues it can cause.
+        \nToggle the firewall to apply changes.
     </string>
     <string name="restore_defaults">Restore Defaults</string>
     <string name="zero_dns" translatable="false">0.0.0.0</string>
     <string name="blacklist_info">
-        Blacklist domains or define deny firewall rules
-        \nTurn Adhell off and on for changes to take effect.
+        Blacklist domains or define firewall denial rules.
+        \nToggle the firewall to apply changes.
     </string>
-    <string name="dialog_blacklist_domain_title">Add domain</string>
+    <string name="dialog_blacklist_domain_title">Add Domain</string>
     <string name="dialog_blacklist_domain_info">Domains support wildcards, e.g. *facebook.com</string>
     <string name="dialog_blacklist_rule_title">Add Firewall Rule</string>
     <string name="dialog_blacklist_rule_info">
         Firewall rule format:
         \npackageName|ipAddress|port
-        \nE.g. block port 53 for all IP addresses in Chrome:
+        \nE.g. block port 53 for all IPs in Chrome:
         \ncom.android.chrome|*|53
     </string>
-    <string name="dialog_whitelist_domain_title">Add domain</string>
+    <string name="dialog_whitelist_domain_title">Add Domain</string>
     <string name="dialog_whitelist_domain_info">
         Domains support wildcards, e.g. *facebook.com
         \nRule format to allow a domain in a specific app:
         \npackageName|domain
     </string>
-    <string name="dialog_add_provider_title">Add provider</string>
+    <string name="dialog_add_provider_title">Add Provider</string>
     <string name="dialog_add_provider_info">
         Remote: https://adaway.org/hosts.txt
         \nInternal: file:///mnt/sdcard/hosts.txt
     </string>
-    <string name="dialog_enable_permissions_title">Enable all permissions</string>
+    <string name="dialog_enable_permissions_title">Enable All Permissions</string>
     <string name="dialog_enable_permissions_info">
-        Do you really want to enable all app\'s permissions?
+        Do you really want to enable all apps\' permissions?
     </string>
-    <string name="dialog_update_providers_title">Update providers</string>
-    <string name="dialog_add_to_whitelist_question">Do you want to add the selected domain to whitelist?</string>
+    <string name="dialog_update_providers_title">Update Providers</string>
+    <string name="dialog_add_to_whitelist_question">Add the selected domain to your whitelist?</string>
     <string name="blocker_fragment_title" translatable="false">Adhell 3</string>
-    <string name="package_disabler_fragment_title">Package Disabler</string>
-    <string name="apps_management_bottombar_title">Applications</string>
+    <string name="package_disabler_fragment_title">Disable Apps</string>
+    <string name="apps_management_bottombar_title">Apps</string>
     <string name="domains_bottombar_title">Domains</string>
     <string name="last_day_blocked">Domains blocked in past 24 hours:&#160;</string>
-    <string name="check_input_dns">Check your input data.</string>
-    <string name="changed_dns">DNS addresses have been set. Turn Adhell off and on to take effect.</string>
-    <string name="restored_dns">DNS has been restored to defaults. Turn Adhell off and on to take effect.</string>
+    <string name="check_input_dns">Invalid DNS format.</string>
+    <string name="changed_dns">DNS addresses have been set. Toggle the firewall to apply changes.</string>
+    <string name="restored_dns">DNS has been restored to defaults. Toggle the firewall to apply changes.</string>
     <string name="delete_url">Delete URL</string>
     <string name="provider_info">
         In addition to Adhell\'s standard package, you can add links to remote and local hosts lists.
         \nAdhell can block up to %1$d unique domains.
     </string>
     <string name="your_device_running_old_knox_version">
-        Your device is running an old version of Knox, so this function may be unstable.
+        Your device\'s Knox version is old, so this function may be unstable.
     </string>
-    <string name="others_tab_title">Others</string>
-    <string name="mobile_restricter_fragment_title">Mobile Restricter</string>
-    <string name="wifi_restricter_fragment_title">Wi-Fi Restricter</string>
+    <string name="others_tab_title">Other</string>
+    <string name="mobile_restricter_fragment_title">Mobile Data</string>
+    <string name="wifi_restricter_fragment_title">Wi-Fi Data</string>
     <string name="enabled_all_apps">Enabling all apps…</string>
     <string name="total_domains">Total domains:&#160;</string>
     <string name="package_disabler_info">
-        Manage which apps should be disabled from system entirely.
-        \nThe app is disabled immediately and it won\'t show up on app drawer.
+        Disable an app entirely and hide it on app drawer.
+        \nChanges take effect immediately.
     </string>
     <string name="mobile_restricter_info">
-        Manage which apps are allowed to use mobile data.
-        \nTurn Adhell off and on for changes to take effect.
+        Block or allow an app\'s mobile data usage.
+        \nToggle the firewall to apply changes.
     </string>
     <string name="wifi_restricter_info">
-        Manage which apps are allowed to use Wi-Fi data.
-        \nTurn Adhell off and on for changes to take effect.
+        Block or allow an app\'s Wi-Fi data usage.
+        \nToggle the firewall to apply changes.
     </string>
     <string name="whitelisted_app_info">
-        Manage which apps should be whitelisted from ads blocker.
-        \nTurn Adhell off and on for changes to take effect.
+        Whitelist an app to bypass the firewall.
+        \nToggle the firewall to apply changes.
     </string>
     <string name="app_permission_info">
-        Applications generally do not handle any missing permissions.
-        \nA removed permission may lead an application to crash.
-        \nChanges on app permissions are applied immediately.
+        Apps usually can\'t handle missing permissions.
+        \nRemoving a permission may cause app crashes.
+        \nChanges take effect immediately.
     </string>
-    <string name="backup_database">Backup database</string>
-    <string name="restore_database">Restore database</string>
-    <string name="whitelist_fragment_title">Whitelist Apps</string>
+    <string name="backup_database">Backup Database</string>
+    <string name="restore_database">Restore Database</string>
+    <string name="whitelist_fragment_title">App Whitelist</string>
     <string name="blacklist_url_fragment_title">Blacklist</string>
     <string name="whitelist_url_fragment_title">Whitelist</string>
     <string name="provider_url_fragment_title">Providers</string>
@@ -111,12 +112,12 @@
     <string name="permissions_fragment_title">App Permissions</string>
     <string name="dns_fragment_title">DNS</string>
     <string name="settings_fragment_title">Settings</string>
-    <string name="enable_apps_dialog_title">Enable all apps</string>
+    <string name="enable_apps_dialog_title">Enable All Apps</string>
     <string name="enable_apps_dialog_text">Do you really want to enable all apps?</string>
-    <string name="backup_database_dialog_title">Backup database</string>
+    <string name="backup_database_dialog_title">Backup Database</string>
     <string name="backup_database_dialog_text">Do you really want to backup the database and replace any existing backup?</string>
-    <string name="restore_database_dialog_title">Restore database</string>
+    <string name="restore_database_dialog_title">Restore Database</string>
     <string name="restore_database_dialog_text">Do you really want to restore the database and replace your entire setup?</string>
-    <string name="not_supported_dialog_title">App not supported</string>
-    <string name="no_internet_connection_dialog_title">No internet connection</string>
+    <string name="not_supported_dialog_title">App Not Supported</string>
+    <string name="no_internet_connection_dialog_title">No Internet Connection</string>
 </resources>
