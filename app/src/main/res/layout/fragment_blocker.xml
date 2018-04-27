@@ -3,15 +3,54 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:orientation="vertical">
+
     <TextView
         android:id="@+id/warningMessageTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="5dp"
-        android:text="@string/your_device_running_old_knox_version" />
+        android:layout_marginBottom="5dp"
+        android:padding="10dp"
+        android:text="@string/your_device_running_old_knox_version"
+        android:background="@drawable/border" />
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/editLayout"
+        android:id="@+id/domainRulesLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:background="@drawable/border">
+
+        <TextView
+            android:id="@+id/domainStatusTextView"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/domain_rules_enabled"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/domainInfoTextView"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/domainStatusTextView"
+            android:text="@string/domain_rules_info"
+            android:textSize="12sp"/>
+
+        <Switch
+            android:id="@+id/domainRulesSwitch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:clickable="false"
+            android:focusable="false"
+            android:focusableInTouchMode="false"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/firewallRulesLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
@@ -19,15 +58,22 @@
         android:background="@drawable/border">
 
         <TextView
-            android:id="@+id/statusTextView"
+            android:id="@+id/firewallStatusTextView"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:text="@string/block_enabled"
+            android:text="@string/firewall_rules_enabled"
             android:textStyle="bold" />
 
+        <TextView
+            android:id="@+id/firewallInfoTextView"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/firewallStatusTextView"
+            android:text="@string/firewall_rules_info"
+            android:textSize="12sp"/>
+
         <Switch
-            android:id="@+id/switchDisable"
+            android:id="@+id/firewallRulesSwitch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"

@@ -28,6 +28,7 @@ import com.fusionjack.adhell3.blocker.ContentBlocker;
 import com.fusionjack.adhell3.blocker.ContentBlocker56;
 import com.fusionjack.adhell3.blocker.ContentBlocker57;
 import com.fusionjack.adhell3.db.AppDatabase;
+import com.fusionjack.adhell3.db.entity.AppInfo;
 import com.fusionjack.adhell3.db.entity.ReportBlockedUrl;
 import com.fusionjack.adhell3.db.entity.WhiteUrl;
 import com.fusionjack.adhell3.dialogfragment.FirewallDialogFragment;
@@ -35,7 +36,9 @@ import com.fusionjack.adhell3.utils.AdhellFactory;
 import com.fusionjack.adhell3.utils.AppCache;
 import com.fusionjack.adhell3.utils.DeviceAdminInteractor;
 import com.sec.enterprise.firewall.DomainFilterReport;
+import com.sec.enterprise.firewall.DomainFilterRule;
 import com.sec.enterprise.firewall.Firewall;
+import com.sec.enterprise.firewall.FirewallRule;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -48,8 +51,10 @@ public class BlockerFragment extends Fragment {
 
     private FragmentManager fragmentManager;
     private AppCompatActivity parentActivity;
-    private TextView statusTextView;
-    private Switch turnOnSwitch;
+    private TextView domainStatusTextView;
+    private Switch domainSwitch;
+    private TextView firewallStatusTextView;
+    private Switch firewallSwitch;
     private TextView infoTextView;
     private SwipeRefreshLayout swipeContainer;
     private ContentBlocker contentBlocker;
@@ -70,8 +75,10 @@ public class BlockerFragment extends Fragment {
         getActivity().setTitle(getString(R.string.blocker_fragment_title));
 
         View view = inflater.inflate(R.layout.fragment_blocker, container, false);
-        turnOnSwitch = view.findViewById(R.id.switchDisable);
-        statusTextView = view.findViewById(R.id.statusTextView);
+        domainSwitch = view.findViewById(R.id.domainRulesSwitch);
+        domainStatusTextView = view.findViewById(R.id.domainStatusTextView);
+        firewallSwitch = view.findViewById(R.id.firewallRulesSwitch);
+        firewallStatusTextView = view.findViewById(R.id.firewallStatusTextView);
         swipeContainer = view.findViewById(R.id.swipeContainer);
         infoTextView = view.findViewById(R.id.infoTextView);
         TextView warningMessageTextView = view.findViewById(R.id.warningMessageTextView);
@@ -85,9 +92,13 @@ public class BlockerFragment extends Fragment {
 
         infoTextView.setVisibility(View.INVISIBLE);
         swipeContainer.setVisibility(View.INVISIBLE);
-        turnOnSwitch.setOnClickListener(v -> {
-            Log.d(TAG, "Adhell switch button has been clicked");
-            new SetFirewallAsyncTask(this, fragmentManager).execute();
+        domainSwitch.setOnClickListener(v -> {
+            Log.d(TAG, "Domain switch button has been clicked");
+            new SetFirewallAsyncTask(true, this, fragmentManager).execute();
+        });
+        firewallSwitch.setOnClickListener(v -> {
+            Log.d(TAG, "Firewall switch button has been clicked");
+            new SetFirewallAsyncTask(false, this, fragmentManager).execute();
         });
 
         updateUserInterface();
@@ -102,16 +113,27 @@ public class BlockerFragment extends Fragment {
     }
 
     private void updateUserInterface() {
-        if (contentBlocker != null && contentBlocker.isEnabled()) {
-            statusTextView.setText(R.string.block_enabled);
-            turnOnSwitch.setChecked(true);
+        boolean isDomainRuleEmpty = contentBlocker.isDomainRuleEmpty();
+        boolean isFirewallRuleEmpty = contentBlocker.isFirewallRuleEmpty();
+
+        if (contentBlocker == null || isDomainRuleEmpty) {
+            domainStatusTextView.setText(R.string.domain_rules_disabled);
+            domainSwitch.setChecked(false);
         } else {
-            statusTextView.setText(R.string.block_disabled);
-            turnOnSwitch.setChecked(false);
+            domainStatusTextView.setText(R.string.domain_rules_enabled);
+            domainSwitch.setChecked(true);
+        }
+
+        if (contentBlocker == null || isFirewallRuleEmpty) {
+            firewallStatusTextView.setText(R.string.firewall_rules_disabled);
+            firewallSwitch.setChecked(false);
+        } else {
+            firewallStatusTextView.setText(R.string.firewall_rules_enabled);
+            firewallSwitch.setChecked(true);
         }
 
         if (contentBlocker instanceof ContentBlocker56 || contentBlocker instanceof ContentBlocker57) {
-            if (contentBlocker.isEnabled()) {
+            if (!isDomainRuleEmpty) {
                 infoTextView.setVisibility(View.VISIBLE);
                 swipeContainer.setVisibility(View.VISIBLE);
                 swipeContainer.setOnRefreshListener(() ->
@@ -124,6 +146,81 @@ public class BlockerFragment extends Fragment {
                 swipeContainer.setVisibility(View.INVISIBLE);
             }
         }
+
+        new SetInfoAsyncTask(getContext()).execute();
+    }
+
+    private static class SetInfoAsyncTask extends AsyncTask<Void, Void, Void> {
+        private WeakReference<Context> contextWeakReference;
+        private int mobileSize;
+        private int wifiSize;
+        private int whitelistedSize;
+        private int domainSize;
+        private int denyFirewallSize;
+
+        SetInfoAsyncTask(Context context) {
+            this.contextWeakReference = new WeakReference<>(context);
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            Firewall firewall = AdhellFactory.getInstance().getFirewall();
+            if (firewall != null) {
+                List<String> packageNameList = new ArrayList<>();
+                packageNameList.add(Firewall.FIREWALL_ALL_PACKAGES);
+                List<DomainFilterRule> domainRules = firewall.getDomainFilterRules(packageNameList);
+                if (domainRules != null && domainRules.size() > 0) {
+                    domainSize = domainRules.get(0).getDenyDomains().size();
+                }
+
+                AppDatabase appDatabase = AdhellFactory.getInstance().getAppDatabase();
+                List<AppInfo> appInfos = appDatabase.applicationInfoDao().getWhitelistedApps();
+                for (AppInfo appInfo : appInfos) {
+                    packageNameList.clear();
+                    packageNameList.add(appInfo.packageName);
+                    domainRules = firewall.getDomainFilterRules(packageNameList);
+                    if (domainRules != null && domainRules.size() > 0) {
+                        whitelistedSize += domainRules.get(0).getAllowDomains().size();
+                    }
+                }
+
+                FirewallRule[] firewallRules = firewall.getRules(Firewall.FIREWALL_DENY_RULE, null);
+                if (firewallRules != null) {
+                    for (FirewallRule firewallRule : firewallRules) {
+                        Firewall.NetworkInterface networkInterfaces = firewallRule.getNetworkInterface();
+                        switch (networkInterfaces) {
+                            case ALL_NETWORKS:
+                                denyFirewallSize++;
+                                break;
+                            case MOBILE_DATA_ONLY:
+                                mobileSize++;
+                                break;
+                            case WIFI_DATA_ONLY:
+                                wifiSize++;
+                                break;
+                        }
+                    }
+                }
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            Context context = contextWeakReference.get();
+            if (context != null) {
+                TextView domainInfoTextView = ((Activity) context).findViewById(R.id.domainInfoTextView);
+                if (domainInfoTextView != null) {
+                    String domainInfo = context.getResources().getString(R.string.domain_rules_info);
+                    domainInfoTextView.setText(String.format(domainInfo, whitelistedSize, domainSize));
+                }
+                TextView firewallInfoTextView = ((Activity) context).findViewById(R.id.firewallInfoTextView);
+                if (firewallInfoTextView != null) {
+                    String firewallInfo = context.getResources().getString(R.string.firewall_rules_info);
+                    firewallInfoTextView.setText(String.format(firewallInfo, mobileSize, wifiSize, denyFirewallSize));
+                }
+            }
+        }
     }
 
     private static class SetFirewallAsyncTask extends AsyncTask<Void, Void, Void> {
@@ -132,8 +229,10 @@ public class BlockerFragment extends Fragment {
         private BlockerFragment parentFragment;
         private ContentBlocker contentBlocker;
         private Handler handler;
+        private boolean isDomain;
 
-        SetFirewallAsyncTask(BlockerFragment parentFragment, FragmentManager fragmentManager) {
+        SetFirewallAsyncTask(boolean isDomain, BlockerFragment parentFragment, FragmentManager fragmentManager) {
+            this.isDomain = isDomain;
             this.parentFragment = parentFragment;
             this.fragmentManager = fragmentManager;
             this.contentBlocker = DeviceAdminInteractor.getInstance().getContentBlocker();
@@ -148,10 +247,12 @@ public class BlockerFragment extends Fragment {
 
         @Override
         protected void onPreExecute() {
-            if (contentBlocker.isEnabled()) {
-                fragment = FirewallDialogFragment.newInstance("Disabling Adhell...");
+            if (isDomain) {
+                fragment = FirewallDialogFragment.newInstance(
+                        contentBlocker.isDomainRuleEmpty() ? "Enabling Domain Rules..." : "Disabling Domain Rules...");
             } else {
-                fragment = FirewallDialogFragment.newInstance("Enabling Adhell...");
+                fragment = FirewallDialogFragment.newInstance(
+                        contentBlocker.isFirewallRuleEmpty() ? "Enabling Firewall Rules..." : "Disabling Firewall Rules...");
             }
             fragment.setCancelable(false);
             fragment.show(fragmentManager, "dialog_firewall");
@@ -160,10 +261,18 @@ public class BlockerFragment extends Fragment {
         @Override
         protected Void doInBackground(Void... args) {
             contentBlocker.setHandler(handler);
-            if (contentBlocker.isEnabled()) {
-                contentBlocker.disableBlocker();
+            if (isDomain) {
+                if (contentBlocker.isDomainRuleEmpty()) {
+                    contentBlocker.enableDomainRules();
+                } else {
+                    contentBlocker.disableDomainRules();
+                }
             } else {
-                contentBlocker.enableBlocker();
+                if (contentBlocker.isFirewallRuleEmpty()) {
+                    contentBlocker.enableFirewallRules();
+                } else {
+                    contentBlocker.disableFirewallRules();
+                }
             }
             return null;
         }
@@ -226,15 +335,15 @@ public class BlockerFragment extends Fragment {
                         View dialogView = LayoutInflater.from(context).inflate(R.layout.dialog_to_whitelist, listView, false);
                         new AlertDialog.Builder(context)
                             .setView(dialogView)
-                            .setPositiveButton(android.R.string.yes, (dialog, whichButton) -> {
+                            .setPositiveButton(android.R.string.yes, (dialog, whichButton) ->
                                 AsyncTask.execute(() -> {
                                     AppDatabase appDatabase = AdhellFactory.getInstance().getAppDatabase();
                                     WhiteUrl whiteUrl = new WhiteUrl();
                                     whiteUrl.url = reportBlockedUrls.get(position).url;
                                     whiteUrl.insertedAt = new Date();
                                     appDatabase.whiteUrlDao().insert(whiteUrl);
-                                });
-                            })
+                                })
+                            )
                             .setNegativeButton(android.R.string.no, null).show();
                     });
                 }

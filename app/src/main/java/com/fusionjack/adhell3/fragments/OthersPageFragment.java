@@ -214,7 +214,8 @@ public class OthersPageFragment extends Fragment {
                     .setMessage(getString(R.string.delete_app_dialog_text))
                     .setIcon(R.drawable.ic_warning_black_24dp)
                     .setPositiveButton(android.R.string.yes, (dialog, whichButton) -> {
-                        contentBlocker.disableBlocker();
+                        contentBlocker.disableDomainRules();
+                        contentBlocker.disableFirewallRules();
                         ComponentName devAdminReceiver = new ComponentName(context, CustomDeviceAdminReceiver.class);
                         DevicePolicyManager dpm = (DevicePolicyManager) context.getSystemService(Context.DEVICE_POLICY_SERVICE);
                         dpm.removeActiveAdmin(devAdminReceiver);

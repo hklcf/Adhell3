@@ -51,9 +51,9 @@ public class ContentBlocker20 implements ContentBlocker {
     }
 
     @Override
-    public boolean enableBlocker() {
-        disableBlocker();
-        Log.d(LOG_TAG, "Entering enableBlocker() method...");
+    public void enableDomainRules() {
+        disableDomainRules();
+        Log.d(LOG_TAG, "Entering enableDomainRules() method...");
         try {
             Log.d(LOG_TAG, "Check if Adhell enabled. Disable if true");
             Log.d(LOG_TAG, "Loading block list rules");
@@ -65,38 +65,51 @@ public class ContentBlocker20 implements ContentBlocker {
             Log.d(LOG_TAG, "Re-route rules added: " + isAdded);
 
             Log.d(LOG_TAG, "Rules enabled: " + isRulesEnabled);
-            Log.d(LOG_TAG, "Leaving enableBlocker() method");
-            return isRulesEnabled;
+            Log.d(LOG_TAG, "Leaving enableDomainRules() method");
         } catch (Throwable e) {
             Log.e(LOG_TAG, "Failed to enable Adhell:", e);
-            Log.d(LOG_TAG, "Leaving enableBlocker() method");
-            return false;
+            Log.d(LOG_TAG, "Leaving enableDomainRules() method");
         }
     }
 
     @Override
-    public boolean disableBlocker() {
-        Log.d(LOG_TAG, "Entering disableBlocker() method...");
+    public void disableDomainRules() {
+        Log.d(LOG_TAG, "Entering disableDomainRules() method...");
         try {
-
             firewallPolicy.cleanIptablesAllowRules();
             firewallPolicy.cleanIptablesDenyRules();
             firewallPolicy.cleanIptablesProxyRules();
             firewallPolicy.cleanIptablesRedirectExceptionsRules();
             firewallPolicy.cleanIptablesRerouteRules();
             firewallPolicy.removeIptablesRules();
-            boolean isDisabled = firewallPolicy.setIptablesOption(false);
-            return isDisabled;
+            firewallPolicy.setIptablesOption(false);
         } catch (Throwable e) {
             Log.e(LOG_TAG, "Failed to disable ContentBlocker", e);
-            Log.d(LOG_TAG, "Leaving disableBlocker() method");
-            return false;
+            Log.d(LOG_TAG, "Leaving disableDomainRules() method");
         }
+    }
+
+    @Override
+    public void enableFirewallRules() {
+    }
+
+    @Override
+    public void disableFirewallRules() {
     }
 
     @Override
     public boolean isEnabled() {
         return firewallPolicy.getIptablesOption();
+    }
+
+    @Override
+    public boolean isDomainRuleEmpty() {
+        return !isEnabled();
+    }
+
+    @Override
+    public boolean isFirewallRuleEmpty() {
+        return true;
     }
 
     @Override

@@ -79,7 +79,8 @@ public final class DatabaseFactory {
         copy(dbFile, backupDbFile);
 
         try {
-            DeviceAdminInteractor.getInstance().getContentBlocker().disableBlocker();
+            DeviceAdminInteractor.getInstance().getContentBlocker().disableDomainRules();
+            DeviceAdminInteractor.getInstance().getContentBlocker().disableFirewallRules();
             AdhellAppIntegrity appIntegrity = new AdhellAppIntegrity();
             appIntegrity.checkDefaultPolicyExists();
 

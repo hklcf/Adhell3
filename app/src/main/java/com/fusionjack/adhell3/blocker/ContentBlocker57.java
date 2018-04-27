@@ -44,32 +44,49 @@ public class ContentBlocker57 implements ContentBlocker {
     }
 
     @Override
-    public boolean enableBlocker() {
-        if (contentBlocker56.enableBlocker()) {
-            SharedPreferences sharedPreferences = App.get().getApplicationContext().getSharedPreferences("dnsAddresses", Context.MODE_PRIVATE);
-            if (sharedPreferences.contains("dns1") && sharedPreferences.contains("dns2")) {
-                String dns1 = sharedPreferences.getString("dns1", null);
-                String dns2 = sharedPreferences.getString("dns2", null);
-                if (dns1 != null && dns2 != null
-                        && Patterns.IP_ADDRESS.matcher(dns1).matches()
-                        && Patterns.IP_ADDRESS.matcher(dns2).matches()) {
-                    this.setDns(dns1, dns2);
-                }
-                Log.d(TAG, "Previous dns addresses has been applied. " + dns1 + " " + dns2);
+    public void enableDomainRules() {
+        contentBlocker56.enableDomainRules();
+        SharedPreferences sharedPreferences = App.get().getApplicationContext().getSharedPreferences("dnsAddresses", Context.MODE_PRIVATE);
+        if (sharedPreferences.contains("dns1") && sharedPreferences.contains("dns2")) {
+            String dns1 = sharedPreferences.getString("dns1", null);
+            String dns2 = sharedPreferences.getString("dns2", null);
+            if (dns1 != null && dns2 != null
+                    && Patterns.IP_ADDRESS.matcher(dns1).matches()
+                    && Patterns.IP_ADDRESS.matcher(dns2).matches()) {
+                this.setDns(dns1, dns2);
             }
-            return true;
+            Log.d(TAG, "Previous dns addresses has been applied. " + dns1 + " " + dns2);
         }
-        return false;
     }
 
     @Override
-    public boolean disableBlocker() {
-        return contentBlocker56.disableBlocker();
+    public void disableDomainRules() {
+        contentBlocker56.disableDomainRules();
+    }
+
+    @Override
+    public void enableFirewallRules() {
+        contentBlocker56.enableFirewallRules();
+    }
+
+    @Override
+    public void disableFirewallRules() {
+        contentBlocker56.disableFirewallRules();
     }
 
     @Override
     public boolean isEnabled() {
         return contentBlocker56.isEnabled();
+    }
+
+    @Override
+    public boolean isDomainRuleEmpty() {
+        return contentBlocker56.isDomainRuleEmpty();
+    }
+
+    @Override
+    public boolean isFirewallRuleEmpty() {
+        return contentBlocker56.isFirewallRuleEmpty();
     }
 
     @Override

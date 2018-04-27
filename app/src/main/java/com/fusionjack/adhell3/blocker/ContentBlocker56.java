@@ -55,15 +55,55 @@ public class ContentBlocker56 implements ContentBlocker {
     }
 
     @Override
-    public boolean enableBlocker() {
+    public void enableFirewallRules() {
         if (firewall == null) {
-            return false;
+            return;
         }
 
         try {
             processCustomRules();
             processMobileRestrictedApps();
             processWifiRestrictedApps();
+
+            if (!firewall.isFirewallEnabled()) {
+                LogUtils.getInstance().writeInfo("\nEnabling firewall...", handler);
+                firewall.enableFirewall(true);
+                LogUtils.getInstance().writeInfo("Firewall is enabled.", handler);
+            }
+        } catch (Exception e) {
+            disableFirewallRules();
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void disableFirewallRules() {
+        if (firewall == null) {
+            return;
+        }
+
+        // Clear firewall rules
+        try {
+            LogUtils.getInstance().writeInfo("\nClearing firewall rules...", handler);
+            FirewallResponse[] response = firewall.clearRules(Firewall.FIREWALL_ALL_RULES);
+            LogUtils.getInstance().writeInfo(response == null ? "No response" : response[0].getMessage(), handler);
+
+            if (firewall.isFirewallEnabled() && isDomainRuleEmpty()) {
+                firewall.enableFirewall(false);
+                LogUtils.getInstance().writeInfo("\nFirewall is disabled.", handler);
+            }
+        } finally {
+            LogUtils.getInstance().close();
+        }
+    }
+
+    @Override
+    public void enableDomainRules() {
+        if (firewall == null) {
+            return;
+        }
+
+        try {
             processWhitelistedApps();
             processWhitelistedDomains();
             processBlockedDomains();
@@ -71,19 +111,41 @@ public class ContentBlocker56 implements ContentBlocker {
             if (!firewall.isFirewallEnabled()) {
                 LogUtils.getInstance().writeInfo("\nEnabling firewall...", handler);
                 firewall.enableFirewall(true);
+                LogUtils.getInstance().writeInfo("Firewall is enabled.", handler);
             }
             if (!firewall.isDomainFilterReportEnabled()) {
-                LogUtils.getInstance().writeInfo("Enabling firewall report...", handler);
+                LogUtils.getInstance().writeInfo("\nEnabling firewall report...", handler);
                 firewall.enableDomainFilterReport(true);
+                LogUtils.getInstance().writeInfo("Firewall report is enabled.", handler);
             }
-            LogUtils.getInstance().writeInfo("\nFirewall is enabled.", handler);
         } catch (Exception e) {
-            disableBlocker();
+            disableDomainRules();
             e.printStackTrace();
-            return false;
+        }
+    }
+
+    @Override
+    public void disableDomainRules() {
+        if (firewall == null) {
+            return;
         }
 
-        return true;
+        // Clear domain filter rules
+        try {
+            LogUtils.getInstance().writeInfo("\nClearing domain rules...", handler);
+            FirewallResponse[] response = firewall.removeDomainFilterRules(DomainFilterRule.CLEAR_ALL);
+            LogUtils.getInstance().writeInfo(response == null ? "No response" : response[0].getMessage(), handler);
+
+            if (firewall.isFirewallEnabled() && isFirewallRuleEmpty()) {
+                firewall.enableFirewall(false);
+                LogUtils.getInstance().writeInfo("\nFirewall is disabled.", handler);
+            }
+            if (firewall.isDomainFilterReportEnabled()) {
+                firewall.enableDomainFilterReport(false);
+            }
+        } finally {
+            LogUtils.getInstance().close();
+        }
     }
 
     private void processCustomRules() throws Exception {
@@ -243,43 +305,27 @@ public class ContentBlocker56 implements ContentBlocker {
     }
 
     @Override
-    public boolean disableBlocker() {
-        if (firewall == null) {
-            return false;
+    public boolean isEnabled() {
+        return firewall != null && firewall.isFirewallEnabled();
+    }
+
+    @Override
+    public boolean isDomainRuleEmpty() {
+        if (isEnabled()) {
+            List<String> packageNameList = new ArrayList<>();
+            packageNameList.add(Firewall.FIREWALL_ALL_PACKAGES);
+            List<DomainFilterRule> rules = firewall.getDomainFilterRules(packageNameList);
+            return rules == null || rules.size() == 0;
         }
-
-        FirewallResponse[] response;
-        try {
-            // Clear firewall rules
-            LogUtils.getInstance().writeInfo("\nClearing firewall rules...", handler);
-            response = firewall.clearRules(Firewall.FIREWALL_ALL_RULES);
-            LogUtils.getInstance().writeInfo(response == null ? "No response" : response[0].getMessage(), handler);
-
-            // Clear domain filter rules
-            LogUtils.getInstance().writeInfo("\nClearing domain rules...", handler);
-            response = firewall.removeDomainFilterRules(DomainFilterRule.CLEAR_ALL);
-            LogUtils.getInstance().writeInfo(response == null ? "No response" : response[0].getMessage(), handler);
-
-            if (firewall.isFirewallEnabled()) {
-                firewall.enableFirewall(false);
-            }
-            if (firewall.isDomainFilterReportEnabled()) {
-                firewall.enableDomainFilterReport(false);
-            }
-
-            LogUtils.getInstance().writeInfo("\nFirewall is disabled.", handler);
-        } catch (SecurityException ex) {
-            LogUtils.getInstance().writeError("\nFailed to disable firewall: " + ex.getMessage(), ex, handler);
-            return false;
-        } finally {
-            LogUtils.getInstance().close();
-        }
-
         return true;
     }
 
     @Override
-    public boolean isEnabled() {
-        return firewall != null && firewall.isFirewallEnabled();
+    public boolean isFirewallRuleEmpty() {
+        if (isEnabled()) {
+            FirewallRule[] rules = firewall.getRules(Firewall.FIREWALL_DENY_RULE, null);
+            return rules == null || rules.length == 0;
+        }
+        return true;
     }
 }
