@@ -32,10 +32,10 @@
         android:button="@drawable/checkbox"
         android:layout_width="wrap_content"
         android:layout_height="24dp"
-        android:layout_alignTop="@+id/blockUrlProviderTextView"
         android:layout_margin="5dp"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
         android:scaleX="1.50"
         android:scaleY="1.50"/>
 
@@ -44,9 +44,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="5dp"
-        android:layout_alignTop="@+id/blockUrlProviderTextView"
         android:layout_toLeftOf="@+id/urlProviderCheckBox"
         android:layout_toStartOf="@+id/urlProviderCheckBox"
+        android:layout_centerVertical="true"
         android:contentDescription="@string/delete_url"
         android:scaleX="1.50"
         android:scaleY="1.50"
