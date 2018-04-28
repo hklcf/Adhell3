@@ -1,17 +1,17 @@
 <resources>
     <string name="app_name" translatable="false">Adhell 3</string>
-    <string name="domain_rules_enabled">Domain rules is enabled.</string>
-    <string name="domain_rules_disabled">Domain rules is disabled.</string>
+    <string name="domain_rules_enabled">Domain rules are enabled.</string>
+    <string name="domain_rules_disabled">Domain rules are disabled.</string>
     <string name="domain_rules_info">
-        %1$d apps are whitelisted
-        \n%2$d domains are blocked
+        %1$d apps are whitelisted.
+        \n%2$d domains are blocked.
     </string>
-    <string name="firewall_rules_enabled">Firewall rules is enabled.</string>
-    <string name="firewall_rules_disabled">Firewall rules is disabled.</string>
+    <string name="firewall_rules_enabled">Firewall rules are enabled.</string>
+    <string name="firewall_rules_disabled">Firewall rules are disabled.</string>
     <string name="firewall_rules_info">
-        %1$d apps are restricted in mobile access
-        \n%2$d apps are restricted in Wi-Fi access
-        \n%3$d rules are denied
+        %1$d apps\' mobile data is restricted.
+        \n%2$d apps\' Wi-Fi data is restricted.
+        \n%3$d denial rules are active.
     </string>
     <string name="adhell_not_supported">Adhell is not yet supported on your device.</string>
     <string name="to_enable_adhell">
@@ -27,7 +27,7 @@
     <string name="block_button_text_turn_on">Turn On</string>
     <string name="whitelist_info">
         Whitelist domains to bypass the firewall.
-        \nToggle the \'domain rules\' to apply changes.
+        \nToggle Domain rules to apply changes.
     </string>
     <string name="delete_app">Disable and Delete Adhell</string>
     <string name="delete_app_dialog_title">Delete Adhell</string>
@@ -37,29 +37,29 @@
     <string name="set_dns_button_text">Set DNS</string>
     <string name="dns_info">
         Edit DNS only if you know the issues it can cause.
-        \nToggle the \'domain rules\' to apply changes.
+        \nToggle Domain rules to apply changes.
     </string>
     <string name="restore_defaults">Restore Defaults</string>
     <string name="zero_dns" translatable="false">0.0.0.0</string>
     <string name="blacklist_info">
         Blacklist domains or define firewall denial rules.
-        \nToggle the \'domain rules\' to apply domain changes.
-        \nToggle the \'firewall rules\' to apply firewall rule changes.
+        \nToggle Domain rules to apply domain changes.
+        \nToggle Firewall rules to apply firewall changes.
     </string>
     <string name="dialog_blacklist_domain_title">Add Domain</string>
     <string name="dialog_blacklist_domain_info">Domains support wildcards, e.g. *facebook.com</string>
     <string name="dialog_blacklist_rule_title">Add Firewall Rule</string>
     <string name="dialog_blacklist_rule_info">
         Firewall rule format:
-        \npackageName|ipAddress|port
-        \nE.g. block port 53 for all IPs in Chrome:
-        \ncom.android.chrome|*|53
+        \n\tpackageName|ipAddress|port
+        \nE.g. block port 53 for every IP in Chrome:
+        \n\tcom.android.chrome|*|53
     </string>
     <string name="dialog_whitelist_domain_title">Add Domain</string>
     <string name="dialog_whitelist_domain_info">
         Domains support wildcards, e.g. *facebook.com
-        \nRule format to allow a domain in a specific app:
-        \npackageName|domain
+        \nDomain rule format for a specific app:
+        \n\tpackageName|domain
     </string>
     <string name="dialog_add_provider_title">Add Provider</string>
     <string name="dialog_add_provider_info">
@@ -78,13 +78,13 @@
     <string name="domains_bottombar_title">Domains</string>
     <string name="last_day_blocked">Domains blocked in past 24 hours:&#160;</string>
     <string name="check_input_dns">Invalid DNS format.</string>
-    <string name="changed_dns">DNS addresses have been set. Toggle the \'domain rules\' to apply changes.</string>
-    <string name="restored_dns">DNS has been restored to defaults. Toggle the \'domain rules\' to apply changes.</string>
+    <string name="changed_dns">DNS addresses have been set. Toggle Domain rules to apply changes.</string>
+    <string name="restored_dns">DNS has been restored to defaults. Toggle Domain rules to apply changes.</string>
     <string name="delete_url">Delete URL</string>
     <string name="provider_info">
         In addition to Adhell\'s standard package, you can add links to remote and local hosts lists.
         \nAdhell can block up to %1$d unique domains.
-        \nToggle the \'domain rules\' to apply changes.
+        \nToggle Domain rules to apply changes.
     </string>
     <string name="your_device_running_old_knox_version">
         Your device\'s Knox version is old, so this function may be unstable.
@@ -100,19 +100,19 @@
     </string>
     <string name="mobile_restricter_info">
         Block or allow an app\'s mobile data usage.
-        \nToggle the \'firewall rules\' to apply changes.
+        \nToggle Firewall rules to apply changes.
     </string>
     <string name="wifi_restricter_info">
         Block or allow an app\'s Wi-Fi data usage.
-        \nToggle the \'firewall rules\' to apply changes.
+        \nToggle Firewall rules to apply changes.
     </string>
     <string name="whitelisted_app_info">
         Whitelist an app to bypass the firewall.
-        \nToggle the \'domain rules\' to apply changes.
+        \nToggle Firewall rules to apply changes.
     </string>
     <string name="app_permission_info">
         Apps usually can\'t handle missing permissions.
-        \nRemoving a permission may cause app crashes.
+        \nRemoving a permission may crash some apps.
         \nChanges take effect immediately.
     </string>
     <string name="backup_database">Backup Database</string>
