@@ -12,12 +12,24 @@ android {
     compileSdkVersion 26
 
     defaultConfig {
+        def buildPropsFile = file('build.properties')
+        def buildNumber
+
+        if (buildPropsFile.canRead()) {
+            Properties buildProps = new Properties()
+            buildProps.load(new FileInputStream(buildPropsFile))
+            buildNumber = buildProps['build.number'].toInteger()
+        } else {
+            throw new FileNotFoundException("Could not read build.properties!")
+        }
+
         applicationId "com."
         minSdkVersion 16
         targetSdkVersion 26
         versionCode 1
-        versionName "3.0.0"
+        versionName "3.0.0." + buildNumber
     }
+
     buildTypes {
         compileOptions {
             sourceCompatibility JavaVersion.VERSION_1_8
