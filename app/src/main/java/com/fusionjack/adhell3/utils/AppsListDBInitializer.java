@@ -53,9 +53,10 @@ public class AppsListDBInitializer {
         appDatabase.applicationInfoDao().insertAll(appsInfo);
     }
 
-    public AppInfo generateAppInfo(PackageManager packageManager, String packageName) {
+    public AppInfo generateAppInfo(String packageName) {
         AppInfo appInfo = new AppInfo();
         try {
+            PackageManager packageManager = AdhellFactory.getInstance().getPackageManager();
             ApplicationInfo applicationInfo = packageManager.getApplicationInfo(packageName, PackageManager.GET_META_DATA);
             appInfo.id = appDatabase.applicationInfoDao().getMaxId() + 1;
             appInfo.packageName = packageName;
