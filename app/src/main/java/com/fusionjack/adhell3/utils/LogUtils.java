@@ -50,8 +50,10 @@ public class LogUtils {
     }
 
     public void close() {
-        ps.close();
-        ps = null;
+        if (ps != null) {
+            ps.close();
+            ps = null;
+        }
     }
 
     public void writeInfo(String text, Handler handler) {
