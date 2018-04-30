@@ -60,16 +60,20 @@ public class ContentBlocker56 implements ContentBlocker {
             return;
         }
 
+        LogUtils.getInstance().reset();
+        LogUtils.getInstance().writeInfo("Enabling firewall rules...", handler);
+
         try {
-            LogUtils.getInstance().reset();
             processCustomRules();
             processMobileRestrictedApps();
             processWifiRestrictedApps();
 
+            LogUtils.getInstance().writeInfo("\nFirewall rules are enabled.", handler);
+
             if (!firewall.isFirewallEnabled()) {
-                LogUtils.getInstance().writeInfo("\nEnabling firewall...", handler);
+                LogUtils.getInstance().writeInfo("\nEnabling Knox firewall...", handler);
                 firewall.enableFirewall(true);
-                LogUtils.getInstance().writeInfo("Firewall is enabled.", handler);
+                LogUtils.getInstance().writeInfo("Knox firewall is enabled.", handler);
             }
         } catch (Exception e) {
             disableFirewallRules();
@@ -83,15 +87,20 @@ public class ContentBlocker56 implements ContentBlocker {
             return;
         }
 
-        // Clear firewall rules
         LogUtils.getInstance().reset();
+        LogUtils.getInstance().writeInfo("Disabling firewall rules...", handler);
+
+        // Clear firewall rules
         LogUtils.getInstance().writeInfo("\nClearing firewall rules...", handler);
         FirewallResponse[] response = firewall.clearRules(Firewall.FIREWALL_ALL_RULES);
         LogUtils.getInstance().writeInfo(response == null ? "No response" : response[0].getMessage(), handler);
 
+        LogUtils.getInstance().writeInfo("\nFirewall rules are disabled.", handler);
+
         if (firewall.isFirewallEnabled() && isDomainRuleEmpty()) {
+            LogUtils.getInstance().writeInfo("\nDisabling Knox firewall...", handler);
             firewall.enableFirewall(false);
-            LogUtils.getInstance().writeInfo("\nFirewall is disabled.", handler);
+            LogUtils.getInstance().writeInfo("\nKnox firewall is disabled.", handler);
         }
     }
 
@@ -101,11 +110,15 @@ public class ContentBlocker56 implements ContentBlocker {
             return;
         }
 
+        LogUtils.getInstance().reset();
+        LogUtils.getInstance().writeInfo("Enabling domain rules...", handler);
+
         try {
-            LogUtils.getInstance().reset();
             processWhitelistedApps();
             processWhitelistedDomains();
             processBlockedDomains();
+
+            LogUtils.getInstance().writeInfo("\nDomain rules are enabled.", handler);
 
             if (!firewall.isFirewallEnabled()) {
                 LogUtils.getInstance().writeInfo("\nEnabling firewall...", handler);
@@ -129,15 +142,20 @@ public class ContentBlocker56 implements ContentBlocker {
             return;
         }
 
-        // Clear domain filter rules
         LogUtils.getInstance().reset();
+        LogUtils.getInstance().writeInfo("Disabling domain rules...", handler);
+
+        // Clear domain filter rules
         LogUtils.getInstance().writeInfo("\nClearing domain rules...", handler);
         FirewallResponse[] response = firewall.removeDomainFilterRules(DomainFilterRule.CLEAR_ALL);
         LogUtils.getInstance().writeInfo(response == null ? "No response" : response[0].getMessage(), handler);
 
+        LogUtils.getInstance().writeInfo("\nDomain rules are disabled.", handler);
+
         if (firewall.isFirewallEnabled() && isFirewallRuleEmpty()) {
+            LogUtils.getInstance().writeInfo("\nDisabling firewall...", handler);
             firewall.enableFirewall(false);
-            LogUtils.getInstance().writeInfo("\nFirewall is disabled.", handler);
+            LogUtils.getInstance().writeInfo("Firewall is disabled.", handler);
         }
         if (firewall.isDomainFilterReportEnabled()) {
             firewall.enableDomainFilterReport(false);

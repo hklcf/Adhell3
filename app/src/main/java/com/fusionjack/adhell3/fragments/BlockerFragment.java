@@ -249,10 +249,10 @@ public class BlockerFragment extends Fragment {
         protected void onPreExecute() {
             if (isDomain) {
                 fragment = FirewallDialogFragment.newInstance(
-                        contentBlocker.isDomainRuleEmpty() ? "Enabling Domain Rules..." : "Disabling Domain Rules...");
+                        contentBlocker.isDomainRuleEmpty() ? "Enabling Domain Rules" : "Disabling Domain Rules");
             } else {
                 fragment = FirewallDialogFragment.newInstance(
-                        contentBlocker.isFirewallRuleEmpty() ? "Enabling Firewall Rules..." : "Disabling Firewall Rules...");
+                        contentBlocker.isFirewallRuleEmpty() ? "Enabling Firewall Rules" : "Disabling Firewall Rules");
             }
             fragment.setCancelable(false);
             fragment.show(fragmentManager, "dialog_firewall");

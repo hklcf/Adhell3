@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.fusionjack.adhell3.R;
 
 public class FirewallDialogFragment extends DialogFragment {
+    private TextView titleTextView;
     private TextView logTextView;
     private Button closeButton;
     private String text = "";
@@ -34,17 +35,18 @@ public class FirewallDialogFragment extends DialogFragment {
     public void onViewCreated(View view, @Nullable final Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        titleTextView = view.findViewById(R.id.titleTextView);
+        Bundle bundle = getArguments();
+        if (bundle != null) {
+            titleTextView.setText(bundle.getString("title"));
+        }
+
         logTextView = view.findViewById(R.id.logTextView);
         closeButton = view.findViewById(R.id.closeButton);
         closeButton.setOnClickListener(v -> {
             dismiss();
         });
         closeButton.setEnabled(false);
-
-        Bundle bundle = getArguments();
-        if (bundle != null) {
-            appendText(bundle.getString("title"));
-        }
     }
 
     public void appendText(String text) {
