@@ -163,6 +163,23 @@ public class BlockerFragment extends Fragment {
         }
 
         @Override
+        protected void onPreExecute() {
+            Context context = contextWeakReference.get();
+            if (context != null) {
+                TextView domainInfoTextView = ((Activity) context).findViewById(R.id.domainInfoTextView);
+                if (domainInfoTextView != null) {
+                    String domainInfo = context.getResources().getString(R.string.domain_rules_info);
+                    domainInfoTextView.setText(String.format(domainInfo, 0, 0));
+                }
+                TextView firewallInfoTextView = ((Activity) context).findViewById(R.id.firewallInfoTextView);
+                if (firewallInfoTextView != null) {
+                    String firewallInfo = context.getResources().getString(R.string.firewall_rules_info);
+                    firewallInfoTextView.setText(String.format(firewallInfo, 0, 0, 0));
+                }
+            }
+        }
+
+        @Override
         protected Void doInBackground(Void... voids) {
             Firewall firewall = AdhellFactory.getInstance().getFirewall();
             if (firewall != null) {
