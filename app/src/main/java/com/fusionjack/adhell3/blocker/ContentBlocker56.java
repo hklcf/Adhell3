@@ -121,9 +121,9 @@ public class ContentBlocker56 implements ContentBlocker {
             LogUtils.getInstance().writeInfo("\nDomain rules are enabled.", handler);
 
             if (!firewall.isFirewallEnabled()) {
-                LogUtils.getInstance().writeInfo("\nEnabling firewall...", handler);
+                LogUtils.getInstance().writeInfo("\nEnabling Knox firewall...", handler);
                 firewall.enableFirewall(true);
-                LogUtils.getInstance().writeInfo("Firewall is enabled.", handler);
+                LogUtils.getInstance().writeInfo("Knox firewall is enabled.", handler);
             }
             if (!firewall.isDomainFilterReportEnabled()) {
                 LogUtils.getInstance().writeInfo("\nEnabling firewall report...", handler);
@@ -153,9 +153,9 @@ public class ContentBlocker56 implements ContentBlocker {
         LogUtils.getInstance().writeInfo("\nDomain rules are disabled.", handler);
 
         if (firewall.isFirewallEnabled() && isFirewallRuleEmpty()) {
-            LogUtils.getInstance().writeInfo("\nDisabling firewall...", handler);
+            LogUtils.getInstance().writeInfo("\nDisabling Knox firewall...", handler);
             firewall.enableFirewall(false);
-            LogUtils.getInstance().writeInfo("Firewall is disabled.", handler);
+            LogUtils.getInstance().writeInfo("Knox firewall is disabled.", handler);
         }
         if (firewall.isDomainFilterReportEnabled()) {
             firewall.enableDomainFilterReport(false);
