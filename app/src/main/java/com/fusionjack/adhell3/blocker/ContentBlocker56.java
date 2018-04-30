@@ -61,6 +61,7 @@ public class ContentBlocker56 implements ContentBlocker {
         }
 
         try {
+            LogUtils.getInstance().reset();
             processCustomRules();
             processMobileRestrictedApps();
             processWifiRestrictedApps();
@@ -83,17 +84,14 @@ public class ContentBlocker56 implements ContentBlocker {
         }
 
         // Clear firewall rules
-        try {
-            LogUtils.getInstance().writeInfo("\nClearing firewall rules...", handler);
-            FirewallResponse[] response = firewall.clearRules(Firewall.FIREWALL_ALL_RULES);
-            LogUtils.getInstance().writeInfo(response == null ? "No response" : response[0].getMessage(), handler);
+        LogUtils.getInstance().reset();
+        LogUtils.getInstance().writeInfo("\nClearing firewall rules...", handler);
+        FirewallResponse[] response = firewall.clearRules(Firewall.FIREWALL_ALL_RULES);
+        LogUtils.getInstance().writeInfo(response == null ? "No response" : response[0].getMessage(), handler);
 
-            if (firewall.isFirewallEnabled() && isDomainRuleEmpty()) {
-                firewall.enableFirewall(false);
-                LogUtils.getInstance().writeInfo("\nFirewall is disabled.", handler);
-            }
-        } finally {
-            LogUtils.getInstance().close();
+        if (firewall.isFirewallEnabled() && isDomainRuleEmpty()) {
+            firewall.enableFirewall(false);
+            LogUtils.getInstance().writeInfo("\nFirewall is disabled.", handler);
         }
     }
 
@@ -104,6 +102,7 @@ public class ContentBlocker56 implements ContentBlocker {
         }
 
         try {
+            LogUtils.getInstance().reset();
             processWhitelistedApps();
             processWhitelistedDomains();
             processBlockedDomains();
@@ -131,20 +130,17 @@ public class ContentBlocker56 implements ContentBlocker {
         }
 
         // Clear domain filter rules
-        try {
-            LogUtils.getInstance().writeInfo("\nClearing domain rules...", handler);
-            FirewallResponse[] response = firewall.removeDomainFilterRules(DomainFilterRule.CLEAR_ALL);
-            LogUtils.getInstance().writeInfo(response == null ? "No response" : response[0].getMessage(), handler);
+        LogUtils.getInstance().reset();
+        LogUtils.getInstance().writeInfo("\nClearing domain rules...", handler);
+        FirewallResponse[] response = firewall.removeDomainFilterRules(DomainFilterRule.CLEAR_ALL);
+        LogUtils.getInstance().writeInfo(response == null ? "No response" : response[0].getMessage(), handler);
 
-            if (firewall.isFirewallEnabled() && isFirewallRuleEmpty()) {
-                firewall.enableFirewall(false);
-                LogUtils.getInstance().writeInfo("\nFirewall is disabled.", handler);
-            }
-            if (firewall.isDomainFilterReportEnabled()) {
-                firewall.enableDomainFilterReport(false);
-            }
-        } finally {
-            LogUtils.getInstance().close();
+        if (firewall.isFirewallEnabled() && isFirewallRuleEmpty()) {
+            firewall.enableFirewall(false);
+            LogUtils.getInstance().writeInfo("\nFirewall is disabled.", handler);
+        }
+        if (firewall.isDomainFilterReportEnabled()) {
+            firewall.enableDomainFilterReport(false);
         }
     }
 

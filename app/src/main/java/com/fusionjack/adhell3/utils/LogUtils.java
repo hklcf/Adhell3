@@ -20,9 +20,12 @@ public class LogUtils {
     private final String TAG = LogUtils.class.getCanonicalName();
     private static LogUtils instance;
     private PrintStream ps;
-    private boolean closed = false;
 
     private LogUtils() {
+        create();
+    }
+
+    private void create() {
         File logFile = new File(Environment.getExternalStorageDirectory(), "adhell_log.txt");
         if (logFile.exists()) {
             logFile.delete();
@@ -41,9 +44,14 @@ public class LogUtils {
         return instance;
     }
 
+    public void reset() {
+        close();
+        create();
+    }
+
     public void close() {
         ps.close();
-        closed = true;
+        ps = null;
     }
 
     public void writeInfo(String text, Handler handler) {
@@ -65,11 +73,10 @@ public class LogUtils {
     }
 
     private void writeText(String text) {
-        if (closed) {
-            return;
+        if (ps != null) {
+            ps.append(text);
+            ps.append("\n");
+            ps.flush();
         }
-        ps.append(text);
-        ps.append("\n");
-        ps.flush();
     }
 }
