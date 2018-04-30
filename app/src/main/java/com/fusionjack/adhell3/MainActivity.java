@@ -5,11 +5,13 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.fusionjack.adhell3.dialogfragment.AdhellTurnOnDialogFragment;
 import com.fusionjack.adhell3.fragments.AppsFragment;
@@ -28,15 +30,23 @@ public class MainActivity extends AppCompatActivity {
     protected DeviceAdminInteractor mAdminInteractor;
     private FragmentManager fragmentManager;
     private AdhellTurnOnDialogFragment turnOnDialogFragment;
+    private boolean doubleBackToExitPressedOnce = false;
 
     @Override
     public void onBackPressed() {
-        int count = fragmentManager.getBackStackEntryCount();
-        if (count <= 1) {
-            finish();
-        } else {
-            fragmentManager.popBackStackImmediate();
+        if (doubleBackToExitPressedOnce) {
+            int count = fragmentManager.getBackStackEntryCount();
+            if (count <= 1) {
+                finish();
+            } else {
+                fragmentManager.popBackStackImmediate();
+            }
         }
+
+        this.doubleBackToExitPressedOnce = true;
+        Toast.makeText(this, "Press once again to exit", Toast.LENGTH_SHORT).show();
+
+        new Handler().postDelayed(() -> doubleBackToExitPressedOnce = false, 2000);
     }
 
     @Override
