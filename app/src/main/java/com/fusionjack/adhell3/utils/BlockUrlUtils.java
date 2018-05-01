@@ -148,4 +148,19 @@ public class BlockUrlUtils {
         return result;
     }
 
+    public static boolean isDomainLimitAboveDefault() {
+        int defaultDomainLimit = 15000;
+        int domainLimit = AdhellAppIntegrity.BLOCK_URL_LIMIT;
+        return domainLimit > defaultDomainLimit;
+    }
+
+    public static int getTotalDomainsCount(AppDatabase appDatabase) {
+        int total = 0;
+        List<BlockUrlProvider> blockUrlProviders = appDatabase.blockUrlProviderDao().getBlockUrlProviderBySelectedFlag(1);
+        for (BlockUrlProvider blockUrlProvider : blockUrlProviders) {
+            total += appDatabase.blockUrlDao().getUrlCountByProviderId(blockUrlProvider.id);
+        }
+        return total;
+    }
+
 }

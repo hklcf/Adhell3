@@ -329,7 +329,12 @@ public class ContentBlocker56 implements ContentBlocker {
             List<String> packageNameList = new ArrayList<>();
             packageNameList.add(Firewall.FIREWALL_ALL_PACKAGES);
             List<DomainFilterRule> rules = firewall.getDomainFilterRules(packageNameList);
-            return rules == null || rules.size() == 0;
+            if (BlockUrlUtils.isDomainLimitAboveDefault() && rules == null) {
+                // The rules will be null when the total domains more than 15000
+                // Let's assume that the domain rules are enabled in this case
+                return false;
+            }
+            return rules.size() == 0;
         }
         return true;
     }

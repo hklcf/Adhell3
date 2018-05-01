@@ -34,6 +34,7 @@ import com.fusionjack.adhell3.db.entity.WhiteUrl;
 import com.fusionjack.adhell3.dialogfragment.FirewallDialogFragment;
 import com.fusionjack.adhell3.utils.AdhellFactory;
 import com.fusionjack.adhell3.utils.AppCache;
+import com.fusionjack.adhell3.utils.BlockUrlUtils;
 import com.fusionjack.adhell3.utils.DeviceAdminInteractor;
 import com.sec.enterprise.firewall.DomainFilterReport;
 import com.sec.enterprise.firewall.DomainFilterRule;
@@ -183,14 +184,16 @@ public class BlockerFragment extends Fragment {
         protected Void doInBackground(Void... voids) {
             Firewall firewall = AdhellFactory.getInstance().getFirewall();
             if (firewall != null) {
+                AppDatabase appDatabase = AdhellFactory.getInstance().getAppDatabase();
                 List<String> packageNameList = new ArrayList<>();
                 packageNameList.add(Firewall.FIREWALL_ALL_PACKAGES);
                 List<DomainFilterRule> domainRules = firewall.getDomainFilterRules(packageNameList);
-                if (domainRules != null && domainRules.size() > 0) {
+                if (domainRules == null && BlockUrlUtils.isDomainLimitAboveDefault()) {
+                    domainSize = BlockUrlUtils.getTotalDomainsCount(appDatabase);
+                } else if (domainRules != null && domainRules.size() > 0) {
                     domainSize = domainRules.get(0).getDenyDomains().size();
                 }
 
-                AppDatabase appDatabase = AdhellFactory.getInstance().getAppDatabase();
                 List<AppInfo> appInfos = appDatabase.applicationInfoDao().getWhitelistedApps();
                 for (AppInfo appInfo : appInfos) {
                     packageNameList.clear();
@@ -247,12 +250,16 @@ public class BlockerFragment extends Fragment {
         private ContentBlocker contentBlocker;
         private Handler handler;
         private boolean isDomain;
+        private boolean isDomainRuleEmpty;
+        private boolean isFirewallRuleEmpty;
 
         SetFirewallAsyncTask(boolean isDomain, BlockerFragment parentFragment, FragmentManager fragmentManager) {
             this.isDomain = isDomain;
             this.parentFragment = parentFragment;
             this.fragmentManager = fragmentManager;
             this.contentBlocker = DeviceAdminInteractor.getInstance().getContentBlocker();
+            this.isDomainRuleEmpty = contentBlocker.isDomainRuleEmpty();
+            this.isFirewallRuleEmpty = contentBlocker.isFirewallRuleEmpty();
 
             this.handler = new Handler(Looper.getMainLooper()) {
                 @Override
@@ -266,10 +273,10 @@ public class BlockerFragment extends Fragment {
         protected void onPreExecute() {
             if (isDomain) {
                 fragment = FirewallDialogFragment.newInstance(
-                        contentBlocker.isDomainRuleEmpty() ? "Enabling Domain Rules" : "Disabling Domain Rules");
+                        isDomainRuleEmpty ? "Enabling Domain Rules" : "Disabling Domain Rules");
             } else {
                 fragment = FirewallDialogFragment.newInstance(
-                        contentBlocker.isFirewallRuleEmpty() ? "Enabling Firewall Rules" : "Disabling Firewall Rules");
+                        isFirewallRuleEmpty ? "Enabling Firewall Rules" : "Disabling Firewall Rules");
             }
             fragment.setCancelable(false);
             fragment.show(fragmentManager, "dialog_firewall");
@@ -279,13 +286,13 @@ public class BlockerFragment extends Fragment {
         protected Void doInBackground(Void... args) {
             contentBlocker.setHandler(handler);
             if (isDomain) {
-                if (contentBlocker.isDomainRuleEmpty()) {
+                if (isDomainRuleEmpty) {
                     contentBlocker.enableDomainRules();
                 } else {
                     contentBlocker.disableDomainRules();
                 }
             } else {
-                if (contentBlocker.isFirewallRuleEmpty()) {
+                if (isFirewallRuleEmpty) {
                     contentBlocker.enableFirewallRules();
                 } else {
                     contentBlocker.disableFirewallRules();
