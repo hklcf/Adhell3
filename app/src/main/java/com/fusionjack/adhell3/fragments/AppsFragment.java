@@ -28,6 +28,7 @@ public class AppsFragment extends Fragment {
         if (parentActivity.getSupportActionBar() != null) {
             parentActivity.getSupportActionBar().setDisplayHomeAsUpEnabled(false);
             parentActivity.getSupportActionBar().setHomeButtonEnabled(false);
+            parentActivity.getSupportActionBar().setDisplayShowCustomEnabled(false);
         }
         setHasOptionsMenu(true);
 

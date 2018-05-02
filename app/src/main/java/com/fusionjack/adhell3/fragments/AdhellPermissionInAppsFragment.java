@@ -46,6 +46,7 @@ public class AdhellPermissionInAppsFragment extends Fragment {
         if (parentActivity.getSupportActionBar() != null) {
             parentActivity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             parentActivity.getSupportActionBar().setHomeButtonEnabled(true);
+            parentActivity.getSupportActionBar().setDisplayShowCustomEnabled(false);
         }
 
         AppCache.getInstance(getContext(), null);
