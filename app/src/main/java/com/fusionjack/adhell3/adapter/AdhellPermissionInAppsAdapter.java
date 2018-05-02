@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.fusionjack.adhell3.R;
 import com.fusionjack.adhell3.db.AppDatabase;
@@ -149,9 +150,22 @@ public class AdhellPermissionInAppsAdapter extends RecyclerView.Adapter<AdhellPe
             if (blacklistedPackageNames != null && blacklistedPackageNames.contains(appInfo.packageName)) {
                 boolean isBlacklisted = appControlPolicy.removePackagesFromPermissionBlackList(permissionName, list);
                 Log.d(TAG, "Is removed: " + isBlacklisted);
-                if (isBlacklisted) {
+
+                // There is a case when the permission is removed but the result is false
+                // In this case, check whether the permission is removed
+                boolean forceRemove = false;
+                if (!isBlacklisted) {
+                    updatePermissionBlacklistedPackages();
+                    if (blacklistedPackageNames == null || !blacklistedPackageNames.contains(appInfo.packageName)) {
+                        forceRemove = true;
+                    }
+                }
+
+                if (isBlacklisted || forceRemove) {
                     appPermissionSwitch.setChecked(true);
                     AsyncTask.execute(() -> appDatabase.appPermissionDao().delete(appInfo.packageName, permissionName));
+                } else {
+                    Toast.makeText(contextReference.get(), "Failed to remove permission", Toast.LENGTH_LONG).show();
                 }
             } else {
                 boolean success = appControlPolicy.addPackagesToPermissionBlackList(permissionName, list);
