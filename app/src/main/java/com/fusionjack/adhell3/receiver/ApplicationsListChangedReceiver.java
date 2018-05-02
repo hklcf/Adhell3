@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 
+import com.fusionjack.adhell3.App;
 import com.fusionjack.adhell3.db.AppDatabase;
 import com.fusionjack.adhell3.db.entity.AppInfo;
 import com.fusionjack.adhell3.utils.AdhellFactory;
@@ -23,9 +24,10 @@ public class ApplicationsListChangedReceiver extends BroadcastReceiver {
                 return;
             }
 
-            boolean isReplacing = intent.getBooleanExtra(Intent.EXTRA_REPLACING, false);
+            String ownPackageName = App.get().getApplicationContext().getPackageName();
             String packageName = data.getEncodedSchemeSpecificPart();
-            if (!packageName.isEmpty()) {
+            if (!packageName.isEmpty() && !packageName.equalsIgnoreCase(ownPackageName)) {
+                boolean isReplacing = intent.getBooleanExtra(Intent.EXTRA_REPLACING, false);
                 AppDatabase appDatabase = AdhellFactory.getInstance().getAppDatabase();
                 if (action.equalsIgnoreCase("android.intent.action.PACKAGE_ADDED") && !isReplacing) {
                     appDatabase.applicationInfoDao().deleteByPackageName(packageName);
