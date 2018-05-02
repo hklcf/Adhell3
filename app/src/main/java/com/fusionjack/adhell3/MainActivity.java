@@ -34,19 +34,19 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if (doubleBackToExitPressedOnce) {
-            int count = fragmentManager.getBackStackEntryCount();
-            if (count <= 1) {
+        int count = fragmentManager.getBackStackEntryCount();
+        if (count <= 1) {
+            if (doubleBackToExitPressedOnce) {
                 finish();
-            } else {
-                fragmentManager.popBackStackImmediate();
             }
+
+            this.doubleBackToExitPressedOnce = true;
+            Toast.makeText(this, "Press once again to exit", Toast.LENGTH_SHORT).show();
+
+            new Handler().postDelayed(() -> doubleBackToExitPressedOnce = false, 2000);
+        } else {
+            fragmentManager.popBackStackImmediate();
         }
-
-        this.doubleBackToExitPressedOnce = true;
-        Toast.makeText(this, "Press once again to exit", Toast.LENGTH_SHORT).show();
-
-        new Handler().postDelayed(() -> doubleBackToExitPressedOnce = false, 2000);
     }
 
     @Override
