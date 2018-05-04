@@ -341,7 +341,14 @@ public final class DatabaseFactory {
         for (RestrictedPackage restrictedPackage : restrictedPackages) {
             AppInfo appInfo = appDatabase.applicationInfoDao().getAppByPackageName(restrictedPackage.packageName);
             if (appInfo != null) {
-                appInfo.mobileRestricted = true;
+                switch (restrictedPackage.type) {
+                    case MOBILE_RESTRICTED_TYPE:
+                        appInfo.mobileRestricted = true;
+                        break;
+                    case WIFI_RESTRICTED_TYPE:
+                        appInfo.wifiRestricted = true;
+                        break;
+                }
                 appDatabase.applicationInfoDao().update(appInfo);
             }
         }
