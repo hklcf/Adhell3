@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.fusionjack.adhell3.R;
@@ -154,10 +155,14 @@ public class AppsPageFragment extends Fragment {
     }
 
     private void enableAllPackages() {
+        View dialogView = LayoutInflater.from(getContext()).inflate(R.layout.dialog_question, (ViewGroup) getView(), false);
+        TextView titlTextView = dialogView.findViewById(R.id.titleTextView);
+        titlTextView.setText(R.string.enable_apps_dialog_title);
+        TextView questionTextView = dialogView.findViewById(R.id.questionTextView);
+        questionTextView.setText(R.string.enable_apps_dialog_text);
+
         new AlertDialog.Builder(context)
-            .setTitle(getString(R.string.enable_apps_dialog_title))
-            .setMessage(getString(R.string.enable_apps_dialog_text))
-            .setIcon(R.drawable.ic_warning_black_24dp)
+            .setView(dialogView)
             .setPositiveButton(android.R.string.yes, (dialog, whichButton) -> {
                 Toast.makeText(getContext(), getString(R.string.enabled_all_apps), Toast.LENGTH_SHORT).show();
                 AsyncTask.execute(() -> {

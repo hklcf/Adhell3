@@ -367,7 +367,11 @@ public class BlockerFragment extends Fragment {
                     ReportBlockedUrlAdapter adapter = new ReportBlockedUrlAdapter(context, reportBlockedUrls);
                     listView.setAdapter(adapter);
                     listView.setOnItemClickListener((AdapterView<?> adView, View view2, int position, long id) -> {
-                        View dialogView = LayoutInflater.from(context).inflate(R.layout.dialog_to_whitelist, listView, false);
+                        View dialogView = LayoutInflater.from(context).inflate(R.layout.dialog_question, listView, false);
+                        TextView titlTextView = dialogView.findViewById(R.id.titleTextView);
+                        titlTextView.setText(R.string.dialog_whitelist_domain_title);
+                        TextView questionTextView = dialogView.findViewById(R.id.questionTextView);
+                        questionTextView.setText(R.string.dialog_add_to_whitelist_question);
                         new AlertDialog.Builder(context)
                             .setView(dialogView)
                             .setPositiveButton(android.R.string.yes, (dialog, whichButton) ->

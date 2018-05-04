@@ -33,6 +33,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.fusionjack.adhell3.BuildConfig;
@@ -105,7 +106,11 @@ public class OthersPageFragment extends Fragment {
     }
 
     private void enableAllPermissions() {
-        View dialogView = LayoutInflater.from(getContext()).inflate(R.layout.dialog_enable_permissions, (ViewGroup) getView(), false);
+        View dialogView = LayoutInflater.from(getContext()).inflate(R.layout.dialog_question, (ViewGroup) getView(), false);
+        TextView titlTextView = dialogView.findViewById(R.id.titleTextView);
+        titlTextView.setText(R.string.dialog_enable_permissions_title);
+        TextView questionTextView = dialogView.findViewById(R.id.questionTextView);
+        questionTextView.setText(R.string.dialog_enable_permissions_info);
         new AlertDialog.Builder(context)
             .setView(dialogView)
             .setPositiveButton(android.R.string.yes, (dialog, whichButton) -> {
@@ -209,46 +214,60 @@ public class OthersPageFragment extends Fragment {
                 view = inflater.inflate(R.layout.fragment_app_settings, container, false);
 
                 Button deleteAppButton = view.findViewById(R.id.deleteApp);
-                deleteAppButton.setOnClickListener(v -> new AlertDialog.Builder(context)
-                    .setTitle(getString(R.string.delete_app_dialog_title))
-                    .setMessage(getString(R.string.delete_app_dialog_text))
-                    .setIcon(R.drawable.ic_warning_black_24dp)
-                    .setPositiveButton(android.R.string.yes, (dialog, whichButton) -> {
-                        contentBlocker.disableDomainRules();
-                        contentBlocker.disableFirewallRules();
-                        ComponentName devAdminReceiver = new ComponentName(context, CustomDeviceAdminReceiver.class);
-                        DevicePolicyManager dpm = (DevicePolicyManager) context.getSystemService(Context.DEVICE_POLICY_SERVICE);
-                        dpm.removeActiveAdmin(devAdminReceiver);
-                        Intent intent = new Intent(Intent.ACTION_DELETE);
-                        String packageName = "package:" + BuildConfig.APPLICATION_ID;
-                        intent.setData(Uri.parse(packageName));
-                        startActivity(intent);
-                    })
-                    .setNegativeButton(android.R.string.no, null).show());
+                deleteAppButton.setOnClickListener(v -> {
+                    View dialogView = LayoutInflater.from(getContext()).inflate(R.layout.dialog_question, (ViewGroup) getView(), false);
+                    TextView titlTextView = dialogView.findViewById(R.id.titleTextView);
+                    titlTextView.setText(R.string.delete_app_dialog_title);
+                    TextView questionTextView = dialogView.findViewById(R.id.questionTextView);
+                    questionTextView.setText(R.string.delete_app_dialog_text);
+
+                    new AlertDialog.Builder(context)
+                            .setView(dialogView)
+                            .setPositiveButton(android.R.string.yes, (dialog, whichButton) -> {
+                                contentBlocker.disableDomainRules();
+                                contentBlocker.disableFirewallRules();
+                                ComponentName devAdminReceiver = new ComponentName(context, CustomDeviceAdminReceiver.class);
+                                DevicePolicyManager dpm = (DevicePolicyManager) context.getSystemService(Context.DEVICE_POLICY_SERVICE);
+                                dpm.removeActiveAdmin(devAdminReceiver);
+                                Intent intent = new Intent(Intent.ACTION_DELETE);
+                                String packageName = "package:" + BuildConfig.APPLICATION_ID;
+                                intent.setData(Uri.parse(packageName));
+                                startActivity(intent);
+                            })
+                            .setNegativeButton(android.R.string.no, null).show();
+                });
 
                 Button backupDatabaseButton = view.findViewById(R.id.backup_database);
-                backupDatabaseButton.setOnClickListener(view1 ->
+                backupDatabaseButton.setOnClickListener(view1 -> {
+                    View dialogView = LayoutInflater.from(getContext()).inflate(R.layout.dialog_question, (ViewGroup) getView(), false);
+                    TextView titlTextView = dialogView.findViewById(R.id.titleTextView);
+                    titlTextView.setText(R.string.backup_database_dialog_title);
+                    TextView questionTextView = dialogView.findViewById(R.id.questionTextView);
+                    questionTextView.setText(R.string.backup_database_dialog_text);
+
                     new AlertDialog.Builder(context)
-                        .setTitle(getString(R.string.backup_database_dialog_title))
-                        .setMessage(getString(R.string.backup_database_dialog_text))
-                        .setIcon(R.drawable.ic_warning_black_24dp)
-                        .setPositiveButton(android.R.string.yes, (dialog, whichButton) ->
-                                new BackupDatabaseAsyncTask(getActivity()).execute()
-                        )
-                        .setNegativeButton(android.R.string.no, null).show()
-                );
+                            .setView(dialogView)
+                            .setPositiveButton(android.R.string.yes, (dialog, whichButton) ->
+                                    new BackupDatabaseAsyncTask(getActivity()).execute()
+                            )
+                            .setNegativeButton(android.R.string.no, null).show();
+                });
 
                 Button restoreDatabaseButton = view.findViewById(R.id.restore_database);
-                restoreDatabaseButton.setOnClickListener(view2 ->
+                restoreDatabaseButton.setOnClickListener(view2 -> {
+                    View dialogView = LayoutInflater.from(getContext()).inflate(R.layout.dialog_question, (ViewGroup) getView(), false);
+                    TextView titlTextView = dialogView.findViewById(R.id.titleTextView);
+                    titlTextView.setText(R.string.restore_database_dialog_title);
+                    TextView questionTextView = dialogView.findViewById(R.id.questionTextView);
+                    questionTextView.setText(R.string.restore_database_dialog_text);
+
                     new AlertDialog.Builder(context)
-                        .setTitle(getString(R.string.restore_database_dialog_title))
-                        .setMessage(getString(R.string.restore_database_dialog_text))
-                        .setIcon(R.drawable.ic_warning_black_24dp)
-                        .setPositiveButton(android.R.string.yes, (dialog, whichButton) ->
-                                new RestoreDatabaseAsyncTask(getActivity()).execute()
-                        )
-                        .setNegativeButton(android.R.string.no, null).show()
-                );
+                            .setView(dialogView)
+                            .setPositiveButton(android.R.string.yes, (dialog, whichButton) ->
+                                    new RestoreDatabaseAsyncTask(getActivity()).execute()
+                            )
+                            .setNegativeButton(android.R.string.no, null).show();
+                });
                 break;
         }
 
