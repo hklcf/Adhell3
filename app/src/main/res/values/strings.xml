@@ -14,12 +14,17 @@
         \n%3$d denial rules are active.
     </string>
     <string name="adhell_not_supported">Adhell is not yet supported on your device.</string>
-    <string name="to_enable_adhell">
+    <string name="enable_adhell_title">Enable Adhell</string>
+    <string name="enable_adhell_info">
         To enable Adhell, you must activate Admin mode for this app.
-        \nAdhell uses Samsung APIs which require the Device Administrator permission.
+        \nAdhell uses Samsung Knox APIs which require the Device Administrator permission.
     </string>
     <string name="turn_on_admin">Turn On Admin</string>
-    <string name="knox">Adhell utilizes Samsung\'s Knox Firewall, which requires a free developer license key.</string>
+    <string name="license_key_info">
+        Adhell utilizes Samsung Knox Standard SDK which requires a developer Enterprise (ELM) license key.
+        \nA developer license key needs to be renewed every 3 months.
+    </string>
+    <string name="license_key">Enterprise (ELM) license key</string>
     <string name="activate_knox">Activate Knox</string>
     <string name="no_internet_connection">Your device is not connected to the Internet.</string>
     <string name="activating_knox_license">Activating…</string>

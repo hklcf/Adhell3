@@ -52,7 +52,7 @@
         <item name="android:textAllCaps">false</item>
         <item name="android:textColor">@drawable/button_color</item>
         <item name="android:background">@drawable/button</item>
-        <item name="android:minWidth">60dp</item>
+        <item name="android:minWidth">100dp</item>
         <item name="android:minHeight">42dp</item>
     </style>
 
