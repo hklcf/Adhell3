@@ -9,7 +9,7 @@ buildscript {
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 26
+    compileSdkVersion 27
 
     defaultConfig {
         def buildPropsFile = file('build.properties')
@@ -25,7 +25,7 @@ android {
 
         applicationId "com."
         minSdkVersion 16
-        targetSdkVersion 26
+        targetSdkVersion 27
         versionCode 1
         versionName "3.0.0." + buildNumber
     }
@@ -53,12 +53,12 @@ android {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation 'com.android.support:appcompat-v7:26.1.0'
-    implementation 'com.android.support:support-v4:26.1.0'
-    implementation 'com.android.support:recyclerview-v7:26.1.0'
-    implementation 'com.android.support:percent:26.1.0'
-    implementation 'com.android.support:design:26.1.0'
-    implementation 'com.android.support:support-fragment:26.1.0'
+    implementation 'com.android.support:appcompat-v7:27.1.1'
+    implementation 'com.android.support:support-v4:27.1.1'
+    implementation 'com.android.support:recyclerview-v7:27.1.1'
+    implementation 'com.android.support:percent:27.1.1'
+    implementation 'com.android.support:design:27.1.1'
+    implementation 'com.android.support:support-fragment:27.1.1'
     implementation 'io.reactivex.rxjava2:rxandroid:2.0.2'
     implementation 'io.reactivex.rxjava2:rxjava:2.1.12'
     implementation 'com.roughike:bottom-bar:2.3.1'
