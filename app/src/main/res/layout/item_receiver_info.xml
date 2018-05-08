@@ -7,7 +7,7 @@
     android:descendantFocusability="blocksDescendants">
 
     <TextView
-        android:id="@+id/permissionNameTextView"
+        android:id="@+id/receiverNameTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
@@ -19,29 +19,12 @@
         android:textStyle="bold"/>
 
     <TextView
-        android:id="@+id/protectionLevelTextView"
+        android:id="@+id/receiverPermissionTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"
-        android:layout_below="@id/permissionNameTextView"
-        android:layout_toStartOf="@id/switchDisable"
-        android:layout_toLeftOf="@id/switchDisable"
-        android:paddingStart="5dp"
-        android:paddingLeft="5dp"
-        android:paddingEnd="5dp"
-        android:paddingRight="5dp"
-        android:paddingBottom="5dp"
-        android:text="Dangerous"
-        android:textSize="@dimen/text_mizerable_size"/>
-
-    <TextView
-        android:id="@+id/permissionLabelTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@id/protectionLevelTextView"
+        android:layout_below="@id/receiverNameTextView"
         android:layout_toStartOf="@id/switchDisable"
         android:layout_toLeftOf="@id/switchDisable"
         android:paddingStart="5dp"

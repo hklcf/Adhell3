@@ -3,6 +3,7 @@ package com.fusionjack.adhell3.utils;
 import android.app.enterprise.ApplicationPermissionControlPolicy;
 import android.app.enterprise.ApplicationPolicy;
 import android.app.enterprise.FirewallPolicy;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -13,6 +14,7 @@ import android.support.v7.app.AlertDialog;
 import com.fusionjack.adhell3.App;
 import com.fusionjack.adhell3.R;
 import com.fusionjack.adhell3.db.AppDatabase;
+import com.fusionjack.adhell3.db.entity.AppPermission;
 import com.sec.enterprise.firewall.DomainFilterRule;
 import com.sec.enterprise.firewall.Firewall;
 import com.sec.enterprise.firewall.FirewallResponse;
@@ -20,7 +22,9 @@ import com.sec.enterprise.firewall.FirewallRule;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.StringTokenizer;
 
 import javax.inject.Inject;
 
@@ -156,6 +160,40 @@ public final class AdhellFactory {
                 LogUtils.getInstance().writeError(sw.toString(), ex, handler);
                 throw ex;
             }
+        }
+    }
+
+    public void setAppComponentState(boolean state) {
+        if (appControlPolicy == null && appPolicy == null) {
+            return;
+        }
+
+        List<AppPermission> appPermissions = appDatabase.appPermissionDao().getAll();
+        for (AppPermission appPermission : appPermissions) {
+            List<String> packageList = new ArrayList<>();
+            packageList.add(appPermission.packageName);
+            switch (appPermission.permissionStatus) {
+                case AppPermission.STATUS_PERMISSION:
+                    if (state) {
+                        appControlPolicy.removePackagesFromPermissionBlackList(appPermission.permissionName, packageList);
+                    } else {
+                        appControlPolicy.addPackagesToPermissionBlackList(appPermission.permissionName, packageList);
+                    }
+                    break;
+                case AppPermission.STATUS_SERVICE:
+                    ComponentName componentName = new ComponentName(appPermission.packageName, appPermission.permissionName);
+                    appPolicy.setApplicationComponentState(componentName, state);
+                    break;
+                case AppPermission.STATUS_RECEIVER:
+                    StringTokenizer tokenizer = new StringTokenizer(appPermission.permissionName, "|");
+                    componentName = new ComponentName(appPermission.packageName, tokenizer.nextToken());
+                    appPolicy.setApplicationComponentState(componentName, state);
+                    break;
+            }
+        }
+
+        if (state) {
+            appDatabase.appPermissionDao().deleteAll();
         }
     }
 }

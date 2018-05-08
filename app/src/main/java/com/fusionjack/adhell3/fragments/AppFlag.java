@@ -2,6 +2,7 @@ package com.fusionjack.adhell3.fragments;
 
 import com.fusionjack.adhell3.R;
 
+import static com.fusionjack.adhell3.fragments.LoadAppAsyncTask.SORTED_COMPONENT;
 import static com.fusionjack.adhell3.fragments.LoadAppAsyncTask.SORTED_DISABLED;
 import static com.fusionjack.adhell3.fragments.LoadAppAsyncTask.SORTED_MOBILE_RESTRICTED;
 import static com.fusionjack.adhell3.fragments.LoadAppAsyncTask.SORTED_WHITELISTED;
@@ -13,7 +14,8 @@ public class AppFlag {
         DISABLER_FLAG,
         MOBILE_RESTRICTED_FLAG,
         WIFI_RESTRICTED_FLAG,
-        WHITELISTED_FLAG
+        WHITELISTED_FLAG,
+        COMPONENT_FLAG
     }
 
     private Flag flag;
@@ -50,6 +52,12 @@ public class AppFlag {
         int loadLayout = R.id.whitelisted_apps_list;
         int refreshLayout = R.id.whitelistedSwipeContainer;
         return new AppFlag(Flag.WHITELISTED_FLAG, SORTED_WHITELISTED, loadLayout, refreshLayout);
+    }
+
+    public static AppFlag createComponentFlag() {
+        int loadLayout = R.id.component_apps_list;
+        int refreshLayout = R.id.componentSwipeContainer;
+        return new AppFlag(Flag.COMPONENT_FLAG, SORTED_COMPONENT, loadLayout, refreshLayout);
     }
 
     public Flag getFlag() {

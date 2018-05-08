@@ -94,6 +94,9 @@ public class AppInfoAdapter extends BaseAdapter {
             case WHITELISTED_FLAG:
                 checked = appInfo.adhellWhitelisted;
                 break;
+            case COMPONENT_FLAG:
+                holder.switchH.setVisibility(View.GONE);
+                break;
         }
         holder.switchH.setChecked(!checked);
 

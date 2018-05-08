@@ -15,7 +15,7 @@ public class OthersFragmentPagerAdapter extends FragmentPagerAdapter {
     public OthersFragmentPagerAdapter(FragmentManager fm, Context context) {
         super(fm);
         tabTitles = new String[] {
-                context.getString(R.string.permissions_fragment_title),
+                context.getString(R.string.app_component_fragment_title),
                 context.getString(R.string.dns_fragment_title),
                 context.getString(R.string.settings_fragment_title)
         };

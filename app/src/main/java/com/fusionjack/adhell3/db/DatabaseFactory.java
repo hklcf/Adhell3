@@ -56,7 +56,7 @@ public final class DatabaseFactory {
             writeWhitelistedPackages(writer, appDatabase);
             writeDisabledPackages(writer, appDatabase);
             writeRestrictedPackages(writer, appDatabase);
-            writeAppPermissions(writer, appDatabase);
+            writeAppComponent(writer, appDatabase);
             writeBlockUrlProviders(writer, appDatabase);
             writeUserBlockUrls(writer, appDatabase);
             writeWhiteUrls(writer, appDatabase);
@@ -98,7 +98,7 @@ public final class DatabaseFactory {
                     } else if (name.equalsIgnoreCase("RestrictedPackage")) {
                         readRestrictedPackages(reader);
                     } else if (name.equalsIgnoreCase("AppPermission")) {
-                        readAppPermissions(reader);
+                        readAppComponent(reader);
                     } else if (name.equalsIgnoreCase("BlockUrlProvider")) {
                         readBlockUrlProviders(reader);
                     } else if (name.equalsIgnoreCase("UserBlockUrl")) {
@@ -174,7 +174,7 @@ public final class DatabaseFactory {
         writer.endArray();
     }
 
-    private void writeAppPermissions(JsonWriter writer, AppDatabase appDatabase) throws IOException {
+    private void writeAppComponent(JsonWriter writer, AppDatabase appDatabase) throws IOException {
         writer.name("AppPermission");
         writer.beginArray();
         List<AppPermission> appPermissions = appDatabase.appPermissionDao().getAll();
@@ -354,7 +354,7 @@ public final class DatabaseFactory {
         }
     }
 
-    private void readAppPermissions(JsonReader reader) throws IOException {
+    private void readAppComponent(JsonReader reader) throws IOException {
         String packageName = "";
         String permissionName = "";
         int permissionStatus = -1;

@@ -18,13 +18,13 @@ import android.arch.persistence.room.PrimaryKey;
 public class AppPermission {
 
     @Ignore
-    public static final int STATUS_DISALLOW = -1;
+    public static final int STATUS_PERMISSION = -1;
 
     @Ignore
-    public static final int STATUS_NONE = 0;
+    public static final int STATUS_SERVICE = 2;
 
     @Ignore
-    public static final int STATUS_ALLOW = 1;
+    public static final int STATUS_RECEIVER = 5;
 
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")

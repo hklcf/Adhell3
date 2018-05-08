@@ -5,6 +5,5 @@
         android:id="@+id/action_enable_all"
         android:icon="@drawable/ic_done_all_white_24dp"
         android:title="Enable All"
-        app:showAsAction="always">
-    </item>
+        app:showAsAction="always" />
 </menu>

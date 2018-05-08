@@ -184,7 +184,7 @@ public class AdhellAppIntegrity {
                 AppPermission appPermission = new AppPermission();
                 appPermission.packageName = packageName;
                 appPermission.permissionName = permissionName;
-                appPermission.permissionStatus = AppPermission.STATUS_DISALLOW;
+                appPermission.permissionStatus = AppPermission.STATUS_PERMISSION;
                 appPermissions.add(appPermission);
             }
         }

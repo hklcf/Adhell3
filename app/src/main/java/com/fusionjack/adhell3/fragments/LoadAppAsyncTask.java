@@ -19,6 +19,7 @@ public class LoadAppAsyncTask extends AsyncTask<Void, Void, List<AppInfo>> {
     static final int SORTED_MOBILE_RESTRICTED = 1;
     static final int SORTED_WIFI_RESTRICTED = 2;
     static final int SORTED_WHITELISTED = 3;
+    static final int SORTED_COMPONENT = 4;
 
     private WeakReference<Context> contextReference;
     private String text;
@@ -78,6 +79,11 @@ public class LoadAppAsyncTask extends AsyncTask<Void, Void, List<AppInfo>> {
                     return appDatabase.applicationInfoDao().getAppsInWhitelistedOrder();
                 }
                 return appDatabase.applicationInfoDao().getAppsInWhitelistedOrder(filterText);
+            case SORTED_COMPONENT:
+                if (text.length() == 0) {
+                    return appDatabase.applicationInfoDao().getUserApps();
+                }
+                return appDatabase.applicationInfoDao().getUserApps(filterText);
         }
         return null;
     }
