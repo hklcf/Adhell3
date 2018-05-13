@@ -31,6 +31,11 @@ public interface AppInfoDao {
     void update(AppInfo appInfo);
 
 
+    // Get app size
+    @Query("SELECT COUNT(*) FROM AppInfo")
+    int getAppSize();
+
+
     // Get based on appName/packageName
     @Query("SELECT * FROM AppInfo ORDER BY appName ASC")
     List<AppInfo> getAppsAlphabetically();

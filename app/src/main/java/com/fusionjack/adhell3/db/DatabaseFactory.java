@@ -81,7 +81,7 @@ public final class DatabaseFactory {
         try {
             DeviceAdminInteractor.getInstance().getContentBlocker().disableDomainRules();
             DeviceAdminInteractor.getInstance().getContentBlocker().disableFirewallRules();
-            AdhellAppIntegrity appIntegrity = new AdhellAppIntegrity();
+            AdhellAppIntegrity appIntegrity = AdhellAppIntegrity.getInstance();
             appIntegrity.checkDefaultPolicyExists();
 
             appDatabase.applicationInfoDao().deleteAll();

@@ -34,6 +34,7 @@ import com.fusionjack.adhell3.db.entity.AppInfo;
 import com.fusionjack.adhell3.db.entity.ReportBlockedUrl;
 import com.fusionjack.adhell3.db.entity.WhiteUrl;
 import com.fusionjack.adhell3.dialogfragment.FirewallDialogFragment;
+import com.fusionjack.adhell3.utils.AdhellAppIntegrity;
 import com.fusionjack.adhell3.utils.AdhellFactory;
 import com.fusionjack.adhell3.utils.AppCache;
 import com.fusionjack.adhell3.utils.BlockUrlUtils;
@@ -111,6 +112,13 @@ public class BlockerFragment extends Fragment {
         firewallSwitch.setOnClickListener(v -> {
             Log.d(TAG, "Firewall switch button has been clicked");
             new SetFirewallAsyncTask(false, this, fragmentManager).execute();
+        });
+
+        AsyncTask.execute(() -> {
+            AdhellAppIntegrity adhellAppIntegrity = AdhellAppIntegrity.getInstance();
+            adhellAppIntegrity.checkDefaultPolicyExists();
+            adhellAppIntegrity.checkAdhellStandardPackage();
+            adhellAppIntegrity.fillPackageDb();
         });
 
         updateUserInterface();

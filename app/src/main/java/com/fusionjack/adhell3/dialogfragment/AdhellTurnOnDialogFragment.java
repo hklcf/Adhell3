@@ -184,13 +184,6 @@ public class AdhellTurnOnDialogFragment extends DialogFragment {
         if (deviceAdminInteractor.isKnoxEnabled()) {
             activateKnoxButton.setText("License activated");
             allowActivateKnox(false);
-
-            AsyncTask.execute(() -> {
-                AdhellAppIntegrity adhellAppIntegrity = new AdhellAppIntegrity();
-                adhellAppIntegrity.checkDefaultPolicyExists();
-                adhellAppIntegrity.checkAdhellStandardPackage();
-                adhellAppIntegrity.fillPackageDb();
-            });
         } else {
             if (!deviceAdminInteractor.isActiveAdmin()) {
                 activateKnoxButton.setText("Activate License");

@@ -39,11 +39,20 @@ public class AdhellAppIntegrity {
     private PackageManager packageManager;
     private ApplicationPermissionControlPolicy appPermissionControlPolicy;
 
-    public AdhellAppIntegrity() {
+    private static AdhellAppIntegrity instance;
+
+    private AdhellAppIntegrity() {
         this.appDatabase = AdhellFactory.getInstance().getAppDatabase();
         this.packageManager = AdhellFactory.getInstance().getPackageManager();
         this.sharedPreferences = AdhellFactory.getInstance().getSharedPreferences();
         this.appPermissionControlPolicy = AdhellFactory.getInstance().getAppControlPolicy();
+    }
+
+    public static AdhellAppIntegrity getInstance() {
+        if (instance == null) {
+            instance = new AdhellAppIntegrity();
+        }
+        return instance;
     }
 
     public void check() {
@@ -226,7 +235,7 @@ public class AdhellAppIntegrity {
     }
 
     public void fillPackageDb() {
-        if (appDatabase.applicationInfoDao().getAppsAlphabetically().size() > 0) {
+        if (appDatabase.applicationInfoDao().getAppSize() > 0) {
             return;
         }
         AppsListDBInitializer.getInstance().fillPackageDb(packageManager);
