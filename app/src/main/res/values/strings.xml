@@ -80,7 +80,7 @@
     </string>
     <string name="dialog_update_providers_title">Update Providers</string>
     <string name="dialog_add_to_whitelist_question">Add the selected domain to your whitelist?</string>
-    <string name="blocker_fragment_title" translatable="false">Adhell 3</string>
+    <string name="home_bottombar_title" translatable="false">Home</string>
     <string name="package_disabler_fragment_title">Disable Apps</string>
     <string name="apps_management_bottombar_title">Apps</string>
     <string name="domains_bottombar_title">Domains</string>
@@ -97,7 +97,7 @@
     <string name="your_device_running_old_knox_version">
         Your device\'s Knox version is old, so this function may be unstable.
     </string>
-    <string name="others_tab_title">Other</string>
+    <string name="others_bottombar_title">Other</string>
     <string name="mobile_restricter_fragment_title">Mobile Data</string>
     <string name="wifi_restricter_fragment_title">Wi-Fi Data</string>
     <string name="enabled_all_apps">Enabling all apps…</string>

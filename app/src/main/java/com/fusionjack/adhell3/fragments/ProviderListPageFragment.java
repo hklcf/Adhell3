@@ -23,7 +23,7 @@ import com.fusionjack.adhell3.utils.BlockUrlUtils;
 import java.lang.ref.WeakReference;
 import java.util.List;
 
-public class ProviderListPageFragment extends DomainsPageFragment {
+public class ProviderListPageFragment extends DomainPageFragment {
 
     private String searchText;
     private Long providerId;

@@ -11,7 +11,7 @@
         android:paddingTop="5dp"
         android:paddingLeft="5dp"
         android:paddingRight="5dp"
-        android:text="@string/blocker_fragment_title"
+        android:text="@string/app_name"
         android:textColor="@android:color/white"
         android:textStyle="bold"
         android:textSize="20sp" />

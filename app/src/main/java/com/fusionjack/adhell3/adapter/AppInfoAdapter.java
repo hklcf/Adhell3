@@ -15,7 +15,7 @@ import android.widget.TextView;
 
 import com.fusionjack.adhell3.R;
 import com.fusionjack.adhell3.db.entity.AppInfo;
-import com.fusionjack.adhell3.fragments.AppFlag;
+import com.fusionjack.adhell3.model.AppFlag;
 import com.fusionjack.adhell3.utils.AppCache;
 
 import java.lang.ref.WeakReference;

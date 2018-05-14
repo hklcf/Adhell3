@@ -12,10 +12,10 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import com.fusionjack.adhell3.dialogfragment.AdhellTurnOnDialogFragment;
-import com.fusionjack.adhell3.fragments.AppsFragment;
-import com.fusionjack.adhell3.fragments.BlockerFragment;
-import com.fusionjack.adhell3.fragments.DomainsFragment;
+import com.fusionjack.adhell3.dialogfragment.ActivationDialogFragment;
+import com.fusionjack.adhell3.fragments.AppFragment;
+import com.fusionjack.adhell3.fragments.HomeFragment;
+import com.fusionjack.adhell3.fragments.DomainFragment;
 import com.fusionjack.adhell3.fragments.OthersFragment;
 import com.fusionjack.adhell3.utils.AdhellFactory;
 import com.fusionjack.adhell3.utils.DeviceAdminInteractor;
@@ -27,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String BACK_STACK_TAB_TAG = "tab_fragment";
     protected DeviceAdminInteractor mAdminInteractor;
     private FragmentManager fragmentManager;
-    private AdhellTurnOnDialogFragment turnOnDialogFragment;
+    private ActivationDialogFragment turnOnDialogFragment;
     private boolean doubleBackToExitPressedOnce = false;
 
     @Override
@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
-        turnOnDialogFragment = AdhellTurnOnDialogFragment.newInstance("Adhell Turn On");
+        turnOnDialogFragment = ActivationDialogFragment.newInstance("Adhell Turn On");
         turnOnDialogFragment.setCancelable(false);
         setContentView(R.layout.activity_main);
         BottomBar bottomBar = findViewById(R.id.bottomBar);
@@ -131,20 +131,20 @@ public class MainActivity extends AppCompatActivity {
         fragmentManager.popBackStack(BACK_STACK_TAB_TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         Fragment replacing;
         switch (tabId) {
-            case R.id.blockerTab:
-                replacing = new BlockerFragment();
+            case R.id.homeTab:
+                replacing = new HomeFragment();
                 break;
             case R.id.appsManagementTab:
-                replacing = new AppsFragment();
+                replacing = new AppFragment();
                 break;
             case R.id.domainsTab:
-                replacing = new DomainsFragment();
+                replacing = new DomainFragment();
                 break;
             case R.id.othersTab:
                 replacing = new OthersFragment();
                 break;
             default:
-                replacing = new BlockerFragment();
+                replacing = new HomeFragment();
         }
 
         fragmentManager.beginTransaction()

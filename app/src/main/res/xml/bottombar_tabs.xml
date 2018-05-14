@@ -1,8 +1,8 @@
 <tabs>
     <tab
         icon="@drawable/ic_home_black_24dp"
-        id="@+id/blockerTab"
-        title="@string/blocker_fragment_title"/>
+        id="@+id/homeTab"
+        title="@string/home_bottombar_title"/>
     <tab
         icon="@drawable/ic_business_black_24dp"
         id="@+id/appsManagementTab"
@@ -14,5 +14,5 @@
     <tab
         icon="@drawable/ic_dashboard_black_24dp"
         id="@+id/othersTab"
-        title="@string/others_tab_title"/>
+        title="@string/others_bottombar_title"/>
 </tabs>

@@ -7,7 +7,6 @@ import android.arch.persistence.room.RoomDatabase;
 import android.arch.persistence.room.migration.Migration;
 import android.content.Context;
 import android.os.Environment;
-import android.os.LocaleList;
 
 import com.fusionjack.adhell3.db.dao.AppInfoDao;
 import com.fusionjack.adhell3.db.dao.AppPermissionDao;

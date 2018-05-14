@@ -14,7 +14,6 @@ import android.widget.TextView;
 import com.fusionjack.adhell3.R;
 import com.fusionjack.adhell3.model.IComponentInfo;
 import com.fusionjack.adhell3.model.ReceiverInfo;
-import com.fusionjack.adhell3.model.ServiceInfo;
 import com.fusionjack.adhell3.utils.AdhellFactory;
 
 import java.util.List;

@@ -5,13 +5,12 @@ import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 import android.arch.persistence.room.TypeConverters;
+import android.support.annotation.NonNull;
 
 import com.fusionjack.adhell3.db.DateConverter;
 
 import java.util.Date;
 import java.util.List;
-
-import android.support.annotation.NonNull;
 
 @Entity(
         tableName = "PolicyPackage"

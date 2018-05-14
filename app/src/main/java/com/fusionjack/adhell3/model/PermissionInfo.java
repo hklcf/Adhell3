@@ -2,10 +2,6 @@ package com.fusionjack.adhell3.model;
 
 import android.os.Build;
 
-import com.fusionjack.adhell3.db.entity.AppPermission;
-
-import java.util.List;
-
 public class PermissionInfo implements IComponentInfo {
     public final String name;
     public final String label;

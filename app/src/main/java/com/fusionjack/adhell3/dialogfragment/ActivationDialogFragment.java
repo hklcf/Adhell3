@@ -8,7 +8,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
@@ -22,8 +21,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.fusionjack.adhell3.R;
-import com.fusionjack.adhell3.fragments.BlockerFragment;
-import com.fusionjack.adhell3.utils.AdhellAppIntegrity;
+import com.fusionjack.adhell3.fragments.HomeFragment;
 import com.fusionjack.adhell3.utils.DeviceAdminInteractor;
 
 import io.reactivex.Single;
@@ -35,8 +33,8 @@ import io.reactivex.observers.DisposableSingleObserver;
 import io.reactivex.schedulers.Schedulers;
 
 
-public class AdhellTurnOnDialogFragment extends DialogFragment {
-    private static final String TAG = AdhellTurnOnDialogFragment.class.getCanonicalName();
+public class ActivationDialogFragment extends DialogFragment {
+    private static final String TAG = ActivationDialogFragment.class.getCanonicalName();
     BroadcastReceiver receiver;
     IntentFilter filter;
     private DeviceAdminInteractor deviceAdminInteractor;
@@ -46,7 +44,7 @@ public class AdhellTurnOnDialogFragment extends DialogFragment {
     private CompositeDisposable disposable;
     private FragmentManager fragmentManager;
 
-    public AdhellTurnOnDialogFragment() {
+    public ActivationDialogFragment() {
         deviceAdminInteractor = DeviceAdminInteractor.getInstance();
         knoxKeyObservable = Single.create(emmiter -> {
             String knoxKey;
@@ -61,12 +59,12 @@ public class AdhellTurnOnDialogFragment extends DialogFragment {
         });
     }
 
-    public static AdhellTurnOnDialogFragment newInstance(String title) {
-        AdhellTurnOnDialogFragment adhellTurnOnDialogFragment = new AdhellTurnOnDialogFragment();
+    public static ActivationDialogFragment newInstance(String title) {
+        ActivationDialogFragment activationDialogFragment = new ActivationDialogFragment();
         Bundle args = new Bundle();
         args.putString("title", title);
-        adhellTurnOnDialogFragment.setArguments(args);
-        return adhellTurnOnDialogFragment;
+        activationDialogFragment.setArguments(args);
+        return activationDialogFragment;
     }
 
     @Nullable
@@ -230,7 +228,7 @@ public class AdhellTurnOnDialogFragment extends DialogFragment {
         super.onDismiss(dialog);
         fragmentManager
                 .beginTransaction()
-                .replace(R.id.fragmentContainer, new BlockerFragment(), BlockerFragment.class.getCanonicalName())
+                .replace(R.id.fragmentContainer, new HomeFragment(), HomeFragment.class.getCanonicalName())
                 .commit();
     }
 }
