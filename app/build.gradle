@@ -64,9 +64,9 @@ dependencies {
     implementation 'com.roughike:bottom-bar:2.3.1'
     implementation 'android.arch.lifecycle:extensions:1.1.1'
     annotationProcessor "android.arch.lifecycle:compiler:1.1.1"
-    implementation 'android.arch.persistence.room:runtime:1.0.0'
-    annotationProcessor "android.arch.persistence.room:compiler:1.0.0"
-    implementation 'android.arch.persistence.room:rxjava2:1.0.0'
+    implementation 'android.arch.persistence.room:runtime:1.1.1-rc1'
+    annotationProcessor "android.arch.persistence.room:compiler:1.1.1-rc1"
+    implementation 'android.arch.persistence.room:rxjava2:1.1.1-rc1'
     implementation 'com.google.dagger:dagger:2.15'
     annotationProcessor "com.google.dagger:dagger-compiler:2.15"
     compileOnly 'javax.annotation:jsr250-api:1.0'
