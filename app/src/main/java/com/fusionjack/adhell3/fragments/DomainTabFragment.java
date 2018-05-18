@@ -10,9 +10,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.fusionjack.adhell3.R;
-import com.fusionjack.adhell3.adapter.DomainFragmentPagerAdapter;
+import com.fusionjack.adhell3.adapter.DomainPagerAdapter;
 
-public class DomainFragment extends Fragment {
+public class DomainTabFragment extends Fragment {
 
     private int[] imageResId = {
             R.drawable.ic_event_busy_black_24dp,
@@ -36,7 +36,7 @@ public class DomainFragment extends Fragment {
 
         TabLayout tabLayout = view.findViewById(R.id.domains_sliding_tabs);
         ViewPager viewPager = view.findViewById(R.id.domains_viewpager);
-        viewPager.setAdapter(new DomainFragmentPagerAdapter(getChildFragmentManager(), getContext()));
+        viewPager.setAdapter(new DomainPagerAdapter(getChildFragmentManager(), getContext()));
         tabLayout.setupWithViewPager(viewPager);
         for (int i = 0; i < imageResId.length; i++) {
             TabLayout.Tab tab = tabLayout.getTabAt(i);

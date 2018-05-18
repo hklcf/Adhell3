@@ -6,14 +6,14 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
 import com.fusionjack.adhell3.R;
-import com.fusionjack.adhell3.fragments.ComponentPageFragment;
+import com.fusionjack.adhell3.fragments.ComponentTabPageFragment;
 
-public class AppComponentFragmentPagerAdapter extends FragmentPagerAdapter {
+public class ComponentPagerAdapter extends FragmentPagerAdapter {
     private static final int PAGE_COUNT = 3;
     private String tabTitles[];
     private String packageName;
 
-    public AppComponentFragmentPagerAdapter(FragmentManager fm, Context context, String packageName) {
+    public ComponentPagerAdapter(FragmentManager fm, Context context, String packageName) {
         super(fm);
         tabTitles = new String[] {
                 context.getString(R.string.permission_fragment_title),
@@ -25,7 +25,7 @@ public class AppComponentFragmentPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        return ComponentPageFragment.newInstance(position, packageName);
+        return ComponentTabPageFragment.newInstance(position, packageName);
     }
 
     @Override

@@ -21,7 +21,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.fusionjack.adhell3.R;
-import com.fusionjack.adhell3.fragments.HomeFragment;
+import com.fusionjack.adhell3.fragments.HomeTabFragment;
 import com.fusionjack.adhell3.utils.DeviceAdminInteractor;
 
 import io.reactivex.Single;
@@ -228,7 +228,7 @@ public class ActivationDialogFragment extends DialogFragment {
         super.onDismiss(dialog);
         fragmentManager
                 .beginTransaction()
-                .replace(R.id.fragmentContainer, new HomeFragment(), HomeFragment.class.getCanonicalName())
+                .replace(R.id.fragmentContainer, new HomeTabFragment(), HomeTabFragment.class.getCanonicalName())
                 .commit();
     }
 }

@@ -10,9 +10,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.fusionjack.adhell3.R;
-import com.fusionjack.adhell3.adapter.AppComponentFragmentPagerAdapter;
+import com.fusionjack.adhell3.adapter.ComponentPagerAdapter;
 
-public class ComponentFragment extends Fragment {
+public class ComponentTabFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -36,7 +36,7 @@ public class ComponentFragment extends Fragment {
 
         TabLayout tabLayout = view.findViewById(R.id.apps_sliding_tabs);
         ViewPager viewPager = view.findViewById(R.id.apps_viewpager);
-        viewPager.setAdapter(new AppComponentFragmentPagerAdapter(getChildFragmentManager(), getContext(), packageName));
+        viewPager.setAdapter(new ComponentPagerAdapter(getChildFragmentManager(), getContext(), packageName));
         viewPager.setOffscreenPageLimit(3);
         tabLayout.setupWithViewPager(viewPager);
 

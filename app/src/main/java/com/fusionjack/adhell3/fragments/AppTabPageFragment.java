@@ -33,7 +33,7 @@ import com.fusionjack.adhell3.utils.AppCache;
 
 import java.util.List;
 
-public class AppPageFragment extends Fragment {
+public class AppTabPageFragment extends Fragment {
     private static final String ARG_PAGE = "page";
     private int page;
     private AppFlag appFlag;
@@ -44,10 +44,10 @@ public class AppPageFragment extends Fragment {
     public static final int WIFI_RESTRICTER_PAGE = 2;
     public static final int WHITELIST_PAGE = 3;
 
-    public static AppPageFragment newInstance(int page) {
+    public static AppTabPageFragment newInstance(int page) {
         Bundle args = new Bundle();
         args.putInt(ARG_PAGE, page);
-        AppPageFragment fragment = new AppPageFragment();
+        AppTabPageFragment fragment = new AppTabPageFragment();
         fragment.setArguments(args);
         return fragment;
     }

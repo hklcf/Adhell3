@@ -35,7 +35,7 @@ import java.lang.ref.WeakReference;
 import java.util.Date;
 import java.util.List;
 
-import static com.fusionjack.adhell3.fragments.DomainPageFragment.PROVIDER_CONTENT_PAGE;
+import static com.fusionjack.adhell3.fragments.DomainTabPageFragment.PROVIDER_CONTENT_PAGE;
 
 public class ProviderListFragment extends Fragment {
     private Context context;

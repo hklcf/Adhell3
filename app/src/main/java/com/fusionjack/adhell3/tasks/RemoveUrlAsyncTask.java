@@ -13,8 +13,8 @@ import com.fusionjack.adhell3.utils.AdhellFactory;
 
 import java.lang.ref.WeakReference;
 
-import static com.fusionjack.adhell3.fragments.DomainPageFragment.BLACKLIST_PAGE;
-import static com.fusionjack.adhell3.fragments.DomainPageFragment.WHITELIST_PAGE;
+import static com.fusionjack.adhell3.fragments.DomainTabPageFragment.BLACKLIST_PAGE;
+import static com.fusionjack.adhell3.fragments.DomainTabPageFragment.WHITELIST_PAGE;
 
 public class RemoveUrlAsyncTask extends AsyncTask<Void, Void, Void> {
     private String url;

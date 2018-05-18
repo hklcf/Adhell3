@@ -17,8 +17,8 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.fusionjack.adhell3.fragments.DomainPageFragment.BLACKLIST_PAGE;
-import static com.fusionjack.adhell3.fragments.DomainPageFragment.WHITELIST_PAGE;
+import static com.fusionjack.adhell3.fragments.DomainTabPageFragment.BLACKLIST_PAGE;
+import static com.fusionjack.adhell3.fragments.DomainTabPageFragment.WHITELIST_PAGE;
 
 public class RefreshListAsyncTask extends AsyncTask<Void, Void, List<String>> {
     private int page;

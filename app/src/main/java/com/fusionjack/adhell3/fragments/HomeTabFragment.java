@@ -50,8 +50,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-public class HomeFragment extends Fragment {
-    private static final String TAG = HomeFragment.class.getCanonicalName();
+public class HomeTabFragment extends Fragment {
+    private static final String TAG = HomeTabFragment.class.getCanonicalName();
 
     private FragmentManager fragmentManager;
     private AppCompatActivity parentActivity;
@@ -265,14 +265,14 @@ public class HomeFragment extends Fragment {
     private static class SetFirewallAsyncTask extends AsyncTask<Void, Void, Void> {
         private FragmentManager fragmentManager;
         private FirewallDialogFragment fragment;
-        private HomeFragment parentFragment;
+        private HomeTabFragment parentFragment;
         private ContentBlocker contentBlocker;
         private Handler handler;
         private boolean isDomain;
         private boolean isDomainRuleEmpty;
         private boolean isFirewallRuleEmpty;
 
-        SetFirewallAsyncTask(boolean isDomain, HomeFragment parentFragment, FragmentManager fragmentManager) {
+        SetFirewallAsyncTask(boolean isDomain, HomeTabFragment parentFragment, FragmentManager fragmentManager) {
             this.isDomain = isDomain;
             this.parentFragment = parentFragment;
             this.fragmentManager = fragmentManager;

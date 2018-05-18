@@ -13,10 +13,10 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.fusionjack.adhell3.dialogfragment.ActivationDialogFragment;
-import com.fusionjack.adhell3.fragments.AppFragment;
-import com.fusionjack.adhell3.fragments.HomeFragment;
-import com.fusionjack.adhell3.fragments.DomainFragment;
-import com.fusionjack.adhell3.fragments.OthersFragment;
+import com.fusionjack.adhell3.fragments.AppTabFragment;
+import com.fusionjack.adhell3.fragments.HomeTabFragment;
+import com.fusionjack.adhell3.fragments.DomainTabFragment;
+import com.fusionjack.adhell3.fragments.OtherTabFragment;
 import com.fusionjack.adhell3.utils.AdhellFactory;
 import com.fusionjack.adhell3.utils.DeviceAdminInteractor;
 import com.fusionjack.adhell3.utils.LogUtils;
@@ -132,19 +132,19 @@ public class MainActivity extends AppCompatActivity {
         Fragment replacing;
         switch (tabId) {
             case R.id.homeTab:
-                replacing = new HomeFragment();
+                replacing = new HomeTabFragment();
                 break;
             case R.id.appsManagementTab:
-                replacing = new AppFragment();
+                replacing = new AppTabFragment();
                 break;
             case R.id.domainsTab:
-                replacing = new DomainFragment();
+                replacing = new DomainTabFragment();
                 break;
             case R.id.othersTab:
-                replacing = new OthersFragment();
+                replacing = new OtherTabFragment();
                 break;
             default:
-                replacing = new HomeFragment();
+                replacing = new HomeTabFragment();
         }
 
         fragmentManager.beginTransaction()

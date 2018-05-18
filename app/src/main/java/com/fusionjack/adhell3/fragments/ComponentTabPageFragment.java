@@ -39,7 +39,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-public class ComponentPageFragment extends Fragment {
+public class ComponentTabPageFragment extends Fragment {
 
     private static final String ARG_PAGE = "page";
     private static final String ARG_PACKAGENAME = "packageName";
@@ -51,11 +51,11 @@ public class ComponentPageFragment extends Fragment {
     public static final int SERVICES_PAGE = 1;
     public static final int RECEIVERS_PAGE = 2;
 
-    public static ComponentPageFragment newInstance(int page, String packageName) {
+    public static ComponentTabPageFragment newInstance(int page, String packageName) {
         Bundle args = new Bundle();
         args.putInt(ARG_PAGE, page);
         args.putString(ARG_PACKAGENAME, packageName);
-        ComponentPageFragment fragment = new ComponentPageFragment();
+        ComponentTabPageFragment fragment = new ComponentTabPageFragment();
         fragment.setArguments(args);
         return fragment;
     }

@@ -10,20 +10,19 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.fusionjack.adhell3.R;
-import com.fusionjack.adhell3.adapter.AppsFragmentPagerAdapter;
+import com.fusionjack.adhell3.adapter.OtherPagerAdapter;
 
-public class AppFragment extends Fragment {
+public class OtherTabFragment extends Fragment {
 
     private int[] imageResId = {
-            R.drawable.ic_visibility_off_black_24dp,
-            R.drawable.ic_signal_cellular_off_black_24dp,
-            R.drawable.ic_signal_wifi_off_black_24dp,
-            R.drawable.ic_beenhere_black_24dp
+            R.drawable.ic_security_black_24dp,
+            R.drawable.ic_dns_black_24dp,
+            R.drawable.ic_settings_black_24dp
     };
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        getActivity().setTitle("Apps Management");
+        getActivity().setTitle("Others");
         AppCompatActivity parentActivity = (AppCompatActivity) getActivity();
         if (parentActivity.getSupportActionBar() != null) {
             parentActivity.getSupportActionBar().setDisplayHomeAsUpEnabled(false);
@@ -32,16 +31,19 @@ public class AppFragment extends Fragment {
         }
         setHasOptionsMenu(true);
 
-        View view = inflater.inflate(R.layout.fragment_apps, container, false);
+        View view = inflater.inflate(R.layout.fragment_others, container, false);
 
-        TabLayout tabLayout = view.findViewById(R.id.apps_sliding_tabs);
-        ViewPager viewPager = view.findViewById(R.id.apps_viewpager);
-        viewPager.setAdapter(new AppsFragmentPagerAdapter(getChildFragmentManager(), getContext()));
-        viewPager.setOffscreenPageLimit(4);
+        TabLayout tabLayout = view.findViewById(R.id.others_sliding_tabs);
+        ViewPager viewPager = view.findViewById(R.id.others_viewpager);
+        viewPager.setAdapter(new OtherPagerAdapter(getChildFragmentManager(), getContext()));
         tabLayout.setupWithViewPager(viewPager);
         for (int i = 0; i < imageResId.length; i++) {
-            tabLayout.getTabAt(i).setIcon(imageResId[i]);
+            TabLayout.Tab tab = tabLayout.getTabAt(i);
+            if (tab != null) {
+                tab.setIcon(imageResId[i]);
+            }
         }
+
         return view;
     }
 }

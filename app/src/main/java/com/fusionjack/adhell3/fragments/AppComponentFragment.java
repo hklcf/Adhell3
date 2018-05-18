@@ -104,7 +104,7 @@ public class AppComponentFragment extends Fragment {
             AppInfo appInfo = adapter.getItem(position);
             bundle.putString("packageName", appInfo.packageName);
             bundle.putString("appName", appInfo.appName);
-            ComponentFragment fragment = new ComponentFragment();
+            ComponentTabFragment fragment = new ComponentTabFragment();
             fragment.setArguments(bundle);
 
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
