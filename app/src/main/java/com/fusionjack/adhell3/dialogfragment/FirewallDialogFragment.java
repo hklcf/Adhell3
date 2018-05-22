@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.fusionjack.adhell3.R;
@@ -14,6 +15,7 @@ import com.fusionjack.adhell3.R;
 public class FirewallDialogFragment extends DialogFragment {
     private TextView titleTextView;
     private TextView logTextView;
+    private ScrollView scrollView;
     private Button closeButton;
     private String text = "";
 
@@ -41,6 +43,7 @@ public class FirewallDialogFragment extends DialogFragment {
             titleTextView.setText(bundle.getString("title"));
         }
 
+        scrollView  = view.findViewById(R.id.scrollView);
         logTextView = view.findViewById(R.id.logTextView);
         closeButton = view.findViewById(R.id.closeButton);
         closeButton.setOnClickListener(v -> {
@@ -52,6 +55,11 @@ public class FirewallDialogFragment extends DialogFragment {
     public void appendText(String text) {
         this.text += text + "\n";
         logTextView.setText(this.text);
+        scrollToBottom();
+    }
+
+    private void scrollToBottom() {
+        scrollView.post(() -> scrollView.smoothScrollTo(0, logTextView.getBottom()));
     }
 
     public void enableCloseButton() {
