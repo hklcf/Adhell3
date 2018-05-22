@@ -40,6 +40,8 @@
         <item name="android:paddingBottom">2dp</item>
         <item name="android:background">@drawable/border</item>
         <item name="android:listSelector">@drawable/list_selector</item>
+        <item name="android:fastScrollEnabled">true</item>
+        <item name="android:scrollbarStyle">outsideInset</item>
     </style>
 
     <style name="menu_labels_style">
