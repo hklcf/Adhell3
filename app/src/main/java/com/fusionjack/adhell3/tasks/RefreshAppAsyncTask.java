@@ -1,26 +1,13 @@
 package com.fusionjack.adhell3.tasks;
 
 import android.app.Activity;
-import android.app.enterprise.ApplicationPolicy;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.support.v4.widget.SwipeRefreshLayout;
 
-import com.fusionjack.adhell3.db.AppDatabase;
-import com.fusionjack.adhell3.db.DatabaseFactory;
-import com.fusionjack.adhell3.db.entity.AppInfo;
-import com.fusionjack.adhell3.db.entity.DnsPackage;
-import com.fusionjack.adhell3.db.entity.DisabledPackage;
-import com.fusionjack.adhell3.db.entity.FirewallWhitelistedPackage;
-import com.fusionjack.adhell3.db.entity.RestrictedPackage;
 import com.fusionjack.adhell3.model.AppFlag;
-import com.fusionjack.adhell3.utils.AdhellAppIntegrity;
-import com.fusionjack.adhell3.utils.AdhellFactory;
-import com.fusionjack.adhell3.utils.AppsListDBInitializer;
 
 import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-import java.util.List;
 
 public class RefreshAppAsyncTask extends AsyncTask<Void, Void, Void> {
     private WeakReference<Context> contextReference;
@@ -33,103 +20,6 @@ public class RefreshAppAsyncTask extends AsyncTask<Void, Void, Void> {
 
     @Override
     protected Void doInBackground(Void... voids) {
-        // Get first disabled, restricted and whitelisted apps before they get deleted
-        AppDatabase appDatabase = AdhellFactory.getInstance().getAppDatabase();
-        List<AppInfo> disabledApps = appDatabase.applicationInfoDao().getDisabledApps();
-        List<AppInfo> mobileRestrictedApps = appDatabase.applicationInfoDao().getMobileRestrictedApps();
-        List<AppInfo> wifiRestrictedApps = appDatabase.applicationInfoDao().getWifiRestrictedApps();
-        List<FirewallWhitelistedPackage> whitelistedApps = appDatabase.firewallWhitelistedPackageDao().getAll();
-        List<DnsPackage> dnsPackageApps = appDatabase.dnsPackageDao().getAll();
-
-        // Delete all apps info
-        appDatabase.applicationInfoDao().deleteAll();
-        AppsListDBInitializer.getInstance().fillPackageDb(AdhellFactory.getInstance().getPackageManager());
-
-        // Disable apps
-        ApplicationPolicy appPolicy = AdhellFactory.getInstance().getAppPolicy();
-        appDatabase.disabledPackageDao().deleteAll();
-        List<DisabledPackage> disabledPackages = new ArrayList<>();
-        for (AppInfo oldAppInfo : disabledApps) {
-            appPolicy.setEnableApplication(oldAppInfo.packageName);
-            AppInfo newAppInfo = appDatabase.applicationInfoDao().getAppByPackageName(oldAppInfo.packageName);
-            if (newAppInfo != null) {
-                newAppInfo.disabled = true;
-                appDatabase.applicationInfoDao().insert(newAppInfo);
-                appPolicy.setDisableApplication(newAppInfo.packageName);
-
-                DisabledPackage disabledPackage = new DisabledPackage();
-                disabledPackage.packageName = newAppInfo.packageName;
-                disabledPackage.policyPackageId = AdhellAppIntegrity.DEFAULT_POLICY_ID;
-                disabledPackages.add(disabledPackage);
-            }
-        }
-        appDatabase.disabledPackageDao().insertAll(disabledPackages);
-
-        // Restricted apps
-        appDatabase.restrictedPackageDao().deleteAll();
-        List<RestrictedPackage> restrictedPackages = new ArrayList<>();
-        for (AppInfo oldAppInfo : mobileRestrictedApps) {
-            AppInfo newAppInfo = appDatabase.applicationInfoDao().getAppByPackageName(oldAppInfo.packageName);
-            if (newAppInfo != null) {
-                newAppInfo.mobileRestricted = true;
-                appDatabase.applicationInfoDao().insert(newAppInfo);
-
-                RestrictedPackage restrictedPackage = new RestrictedPackage();
-                restrictedPackage.packageName = newAppInfo.packageName;
-                restrictedPackage.type = DatabaseFactory.MOBILE_RESTRICTED_TYPE;
-                restrictedPackage.policyPackageId = AdhellAppIntegrity.DEFAULT_POLICY_ID;
-                restrictedPackages.add(restrictedPackage);
-            }
-        }
-        for (AppInfo oldAppInfo : wifiRestrictedApps) {
-            AppInfo newAppInfo = appDatabase.applicationInfoDao().getAppByPackageName(oldAppInfo.packageName);
-            if (newAppInfo != null) {
-                newAppInfo.wifiRestricted = true;
-                appDatabase.applicationInfoDao().insert(newAppInfo);
-
-                RestrictedPackage restrictedPackage = new RestrictedPackage();
-                restrictedPackage.packageName = newAppInfo.packageName;
-                restrictedPackage.type = DatabaseFactory.WIFI_RESTRICTED_TYPE;
-                restrictedPackage.policyPackageId = AdhellAppIntegrity.DEFAULT_POLICY_ID;
-                restrictedPackages.add(restrictedPackage);
-            }
-        }
-        appDatabase.restrictedPackageDao().insertAll(restrictedPackages);
-
-        // Whitelisted apps
-        appDatabase.firewallWhitelistedPackageDao().deleteAll();
-        List<FirewallWhitelistedPackage> whitelistedPackages = new ArrayList<>();
-        for (FirewallWhitelistedPackage oldAppInfo : whitelistedApps) {
-            AppInfo newAppInfo = appDatabase.applicationInfoDao().getAppByPackageName(oldAppInfo.packageName);
-            if (newAppInfo != null) {
-                newAppInfo.adhellWhitelisted = true;
-                appDatabase.applicationInfoDao().insert(newAppInfo);
-
-                FirewallWhitelistedPackage whitelistedPackage = new FirewallWhitelistedPackage();
-                whitelistedPackage.packageName = newAppInfo.packageName;
-                whitelistedPackage.policyPackageId = AdhellAppIntegrity.DEFAULT_POLICY_ID;
-                whitelistedPackages.add(whitelistedPackage);
-            }
-        }
-        appDatabase.firewallWhitelistedPackageDao().insertAll(whitelistedPackages);
-
-        // DNS apps
-        appDatabase.dnsPackageDao().deleteAll();
-        List<DnsPackage> dnsPackages = new ArrayList<>();
-        for (DnsPackage oldAppInfo : dnsPackageApps) {
-            AppInfo newAppInfo = appDatabase.applicationInfoDao().getAppByPackageName(oldAppInfo.packageName);
-            if (newAppInfo != null) {
-                newAppInfo.hasCustomDns = true;
-                appDatabase.applicationInfoDao().insert(newAppInfo);
-
-                DnsPackage dnsPackage = new DnsPackage();
-                dnsPackage.packageName = newAppInfo.packageName;
-                dnsPackage.policyPackageId = AdhellAppIntegrity.DEFAULT_POLICY_ID;
-                dnsPackages.add(dnsPackage);
-            }
-        }
-        appDatabase.dnsPackageDao().insertAll(dnsPackages);
-
         return null;
     }
 

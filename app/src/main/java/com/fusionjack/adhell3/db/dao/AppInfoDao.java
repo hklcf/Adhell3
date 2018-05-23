@@ -135,4 +135,7 @@ public interface AppInfoDao {
 
     @Query("SELECT * FROM AppInfo WHERE (appName LIKE :str OR packageName LIKE :str) AND system = 0 AND disabled = 0 ORDER BY hasCustomDns DESC, appName ASC")
     List<AppInfo> getAppsInDnsOrder(String str);
+
+    @Query("SELECT * FROM AppInfo WHERE adhellWhitelisted = 1 OR disabled = 1 OR mobileRestricted = 1 OR wifiRestricted = 1 OR hasCustomDns = 1")
+    List<AppInfo> getModifiedApps();
 }

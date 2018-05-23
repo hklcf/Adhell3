@@ -3,7 +3,6 @@ package com.fusionjack.adhell3.utils;
 import android.app.enterprise.AppPermissionControlInfo;
 import android.app.enterprise.ApplicationPermissionControlPolicy;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.util.Log;
 
 import com.fusionjack.adhell3.db.AppDatabase;
@@ -36,14 +35,12 @@ public class AdhellAppIntegrity {
 
     private AppDatabase appDatabase;
     private SharedPreferences sharedPreferences;
-    private PackageManager packageManager;
     private ApplicationPermissionControlPolicy appPermissionControlPolicy;
 
     private static AdhellAppIntegrity instance;
 
     private AdhellAppIntegrity() {
         this.appDatabase = AdhellFactory.getInstance().getAppDatabase();
-        this.packageManager = AdhellFactory.getInstance().getPackageManager();
         this.sharedPreferences = AdhellFactory.getInstance().getSharedPreferences();
         this.appPermissionControlPolicy = AdhellFactory.getInstance().getAppControlPolicy();
     }
@@ -238,6 +235,6 @@ public class AdhellAppIntegrity {
         if (appDatabase.applicationInfoDao().getAppSize() > 0) {
             return;
         }
-        AppsListDBInitializer.getInstance().fillPackageDb(packageManager);
+        AppCache.reload(null, null);
     }
 }

@@ -44,15 +44,6 @@
                 <action android:name="android.app.action.DEVICE_ADMIN_ENABLED"/>
             </intent-filter>
         </receiver>
-
-        <receiver android:name="com.fusionjack.adhell3.receiver.ApplicationsListChangedReceiver">
-            <intent-filter>
-                <action android:name="android.intent.action.PACKAGE_ADDED"/>
-                <action android:name="android.intent.action.PACKAGE_REMOVED"/>
-                <action android:name="android.intent.action.PACKAGE_REPLACED"/>
-                <data android:scheme="package"/>
-            </intent-filter>
-        </receiver>
     </application>
 
 </manifest>

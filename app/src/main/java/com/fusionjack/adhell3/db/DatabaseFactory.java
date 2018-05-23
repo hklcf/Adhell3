@@ -86,8 +86,6 @@ public final class DatabaseFactory {
             DeviceAdminInteractor.getInstance().getContentBlocker().disableFirewallRules();
             AdhellAppIntegrity appIntegrity = AdhellAppIntegrity.getInstance();
             appIntegrity.checkDefaultPolicyExists();
-
-            appDatabase.applicationInfoDao().deleteAll();
             appIntegrity.fillPackageDb();
 
             try (JsonReader reader = new JsonReader(new InputStreamReader(new FileInputStream(backupFile), "UTF-8"))) {
