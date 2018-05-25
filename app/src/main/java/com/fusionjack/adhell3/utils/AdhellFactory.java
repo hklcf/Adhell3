@@ -247,19 +247,24 @@ public final class AdhellFactory {
             if (Patterns.IP_ADDRESS.matcher(dns1).matches() && Patterns.IP_ADDRESS.matcher(dns2).matches()) {
                 LogUtils.getInstance().writeInfo("\nProcessing DNS...", handler);
 
-                List<DomainFilterRule> rules = new ArrayList<>();
                 List<AppInfo> dnsPackages = AdhellFactory.getInstance().getAppDatabase().applicationInfoDao().getDnsApps();
-                for (AppInfo app : dnsPackages) {
-                    DomainFilterRule rule = new DomainFilterRule(new AppIdentity(app.packageName, null));
-                    rule.setDns1(dns1);
-                    rule.setDns2(dns2);
-                    rules.add(rule);
-                }
+                if (dnsPackages.size() == 0) {
+                    LogUtils.getInstance().writeInfo("No app is selected", handler);
+                } else {
+                    LogUtils.getInstance().writeInfo("DNS app size: " + dnsPackages.size(), handler);
+                    List<DomainFilterRule> rules = new ArrayList<>();
+                    for (AppInfo app : dnsPackages) {
+                        DomainFilterRule rule = new DomainFilterRule(new AppIdentity(app.packageName, null));
+                        rule.setDns1(dns1);
+                        rule.setDns2(dns2);
+                        rules.add(rule);
+                    }
 
-                try {
-                    addDomainFilterRules(rules, handler);
-                } catch (Exception e) {
-                    e.printStackTrace();
+                    try {
+                        addDomainFilterRules(rules, handler);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         }
