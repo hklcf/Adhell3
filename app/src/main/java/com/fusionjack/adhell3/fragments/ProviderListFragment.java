@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -85,6 +86,11 @@ public class ProviderListFragment extends Fragment {
             }
         });
 
+        SwipeRefreshLayout dnsSwipeContainer = view.findViewById(R.id.providerSwipeContainer);
+        dnsSwipeContainer.setOnRefreshListener(() ->
+                new UpdateProviderAsyncTask(context).execute()
+        );
+
         FloatingActionsMenu providerFloatMenu = view.findViewById(R.id.provider_actions);
         FloatingActionButton actionAddProvider = view.findViewById(R.id.action_add_provider);
         actionAddProvider.setIcon(R.drawable.ic_event_note_black_24dp);
@@ -105,12 +111,6 @@ public class ProviderListFragment extends Fragment {
                     .setNegativeButton(android.R.string.no, null).show();
         });
 
-        FloatingActionButton actionUpdateProviders = view.findViewById(R.id.action_update_providers);
-        actionUpdateProviders.setIcon(R.drawable.ic_update_black_24dp);
-        actionUpdateProviders.setOnClickListener(v -> {
-            providerFloatMenu.collapse();
-            new UpdateProviderAsyncTask(context).execute();
-        });
         return view;
     }
 
@@ -208,13 +208,39 @@ public class ProviderListFragment extends Fragment {
 
         @Override
         protected Void doInBackground(Void... voids) {
-            AppDatabase appDatabase = AdhellFactory.getInstance().getAppDatabase();
-            appDatabase.blockUrlDao().deleteAll();
+            AdhellFactory.getInstance().updateAllProviders();
             return null;
         }
 
         @Override
         protected void onPostExecute(Void aVoid) {
+            Context context = contextWeakReference.get();
+            if (context != null) {
+                new SetProviderAsyncTask(context).execute();
+
+                SwipeRefreshLayout swipeContainer = ((Activity) context).findViewById(R.id.providerSwipeContainer);
+                if (swipeContainer != null) {
+                    swipeContainer.setRefreshing(false);
+                }
+            }
+        }
+    }
+
+    private static class SetProviderAsyncTask extends AsyncTask<Void, Void, List<BlockUrlProvider>> {
+        private WeakReference<Context> contextWeakReference;
+
+        SetProviderAsyncTask(Context context) {
+            this.contextWeakReference = new WeakReference<>(context);
+        }
+
+        @Override
+        protected List<BlockUrlProvider> doInBackground(Void... voids) {
+            AppDatabase appDatabase = AdhellFactory.getInstance().getAppDatabase();
+            return appDatabase.blockUrlProviderDao().getAll2();
+        }
+
+        @Override
+        protected void onPostExecute(List<BlockUrlProvider> providers) {
             Context context = contextWeakReference.get();
             if (context != null) {
                 ListView listView = ((Activity) context).findViewById(R.id.providerListView);
@@ -223,11 +249,27 @@ public class ProviderListFragment extends Fragment {
                         BlockUrlProviderAdapter adapter = (BlockUrlProviderAdapter) listView.getAdapter();
                         for (int i = 0; i < adapter.getCount(); i++) {
                             BlockUrlProvider provider = adapter.getItem(i);
-                            new LoadProviderAsyncTask(provider, context).execute();
+                            if (provider != null) {
+                                BlockUrlProvider dbProvider = getProvider(provider.id, providers);
+                                if (dbProvider != null) {
+                                    provider.count = dbProvider.count;
+                                    provider.lastUpdated = dbProvider.lastUpdated;
+                                }
+                            }
                         }
+                        adapter.notifyDataSetChanged();
                     }
                 }
             }
+        }
+
+        private BlockUrlProvider getProvider(long id, List<BlockUrlProvider> providers) {
+            for (BlockUrlProvider provider : providers) {
+                if (provider.id == id) {
+                    return provider;
+                }
+            }
+            return null;
         }
     }
 }

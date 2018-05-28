@@ -23,18 +23,14 @@ import com.fusionjack.adhell3.R;
 import com.fusionjack.adhell3.blocker.ContentBlocker;
 import com.fusionjack.adhell3.db.AppDatabase;
 import com.fusionjack.adhell3.db.DatabaseFactory;
-import com.fusionjack.adhell3.db.entity.BlockUrl;
-import com.fusionjack.adhell3.db.entity.BlockUrlProvider;
 import com.fusionjack.adhell3.db.entity.DisabledPackage;
 import com.fusionjack.adhell3.model.AppFlag;
 import com.fusionjack.adhell3.receiver.CustomDeviceAdminReceiver;
 import com.fusionjack.adhell3.tasks.LoadAppAsyncTask;
 import com.fusionjack.adhell3.utils.AdhellFactory;
-import com.fusionjack.adhell3.utils.BlockUrlUtils;
 import com.fusionjack.adhell3.utils.DeviceAdminInteractor;
 
 import java.lang.ref.WeakReference;
-import java.util.Date;
 import java.util.List;
 
 public class SettingsFragment extends Fragment {
@@ -181,20 +177,7 @@ public class SettingsFragment extends Fragment {
                 DatabaseFactory.getInstance().restoreDatabase();
 
                 publishProgress("Updating all providers...");
-
-                List<BlockUrlProvider> providers = appDatabase.blockUrlProviderDao().getAll2();
-                appDatabase.blockUrlDao().deleteAll();
-                for (BlockUrlProvider provider : providers) {
-                    try {
-                        List<BlockUrl> blockUrls = BlockUrlUtils.loadBlockUrls(provider);
-                        provider.count = blockUrls.size();
-                        provider.lastUpdated = new Date();
-                        appDatabase.blockUrlProviderDao().updateBlockUrlProviders(provider);
-                        appDatabase.blockUrlDao().insertAll(blockUrls);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
+                AdhellFactory.getInstance().updateAllProviders();
 
                 publishProgress("Disabling apps...");
                 List<DisabledPackage> disabledPackages = appDatabase.disabledPackageDao().getAll();

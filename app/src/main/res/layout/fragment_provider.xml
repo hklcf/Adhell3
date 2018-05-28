@@ -12,12 +12,20 @@
         android:text="@string/provider_info"
         android:background="@drawable/border" />
 
-    <ListView
-        android:id="@+id/providerListView"
+    <android.support.v4.widget.SwipeRefreshLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/providerSwipeContainer"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
-        android:layout_below="@+id/providerInfoTextView"/>
+        android:layout_below="@+id/providerInfoTextView">
+
+        <ListView
+            android:id="@+id/providerListView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+    </android.support.v4.widget.SwipeRefreshLayout>
 
     <com.getbase.floatingactionbutton.FloatingActionsMenu
         android:id="@+id/provider_actions"
@@ -41,14 +49,6 @@
             android:layout_height="wrap_content"
             fab:fab_colorNormal="@color/colorFab"
             fab:fab_title="@string/dialog_add_provider_title"
-            fab:fab_colorPressed="@color/colorSelector"/>
-
-        <com.getbase.floatingactionbutton.FloatingActionButton
-            android:id="@+id/action_update_providers"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            fab:fab_colorNormal="@color/colorFab"
-            fab:fab_title="@string/dialog_update_providers_title"
             fab:fab_colorPressed="@color/colorSelector"/>
 
     </com.getbase.floatingactionbutton.FloatingActionsMenu>

@@ -21,6 +21,8 @@ import com.fusionjack.adhell3.blocker.ContentBlocker57;
 import com.fusionjack.adhell3.db.AppDatabase;
 import com.fusionjack.adhell3.db.entity.AppInfo;
 import com.fusionjack.adhell3.db.entity.AppPermission;
+import com.fusionjack.adhell3.db.entity.BlockUrl;
+import com.fusionjack.adhell3.db.entity.BlockUrlProvider;
 import com.sec.enterprise.AppIdentity;
 import com.sec.enterprise.firewall.DomainFilterRule;
 import com.sec.enterprise.firewall.Firewall;
@@ -30,6 +32,7 @@ import com.sec.enterprise.firewall.FirewallRule;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.StringTokenizer;
 
@@ -266,6 +269,22 @@ public final class AdhellFactory {
                         e.printStackTrace();
                     }
                 }
+            }
+        }
+    }
+
+    public void updateAllProviders() {
+        List<BlockUrlProvider> providers = appDatabase.blockUrlProviderDao().getAll2();
+        appDatabase.blockUrlDao().deleteAll();
+        for (BlockUrlProvider provider : providers) {
+            try {
+                List<BlockUrl> blockUrls = BlockUrlUtils.loadBlockUrls(provider);
+                provider.count = blockUrls.size();
+                provider.lastUpdated = new Date();
+                appDatabase.blockUrlProviderDao().updateBlockUrlProviders(provider);
+                appDatabase.blockUrlDao().insertAll(blockUrls);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
     }
