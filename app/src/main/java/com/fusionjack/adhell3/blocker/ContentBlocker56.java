@@ -171,18 +171,40 @@ public class ContentBlocker56 implements ContentBlocker {
             if (userBlockUrl.url.indexOf('|') != -1) {
                 StringTokenizer tokens = new StringTokenizer(userBlockUrl.url, "|");
                 if (tokens.countTokens() == 3) {
-                    String packageName = tokens.nextToken();
-                    String ipAddress = tokens.nextToken();
-                    String port = tokens.nextToken();
+                    String packageName = tokens.nextToken().trim();
+                    String ip = tokens.nextToken().trim();
+                    String port = tokens.nextToken().trim();
+                    LogUtils.getInstance().writeInfo(packageName + "|" + ip + "|" + port, handler);
 
                     // Define firewall rule
-                    FirewallRule[] firewallRules = new FirewallRule[1];
+                    FirewallRule[] firewallRules = new FirewallRule[2];
                     firewallRules[0] = new FirewallRule(FirewallRule.RuleType.DENY, Firewall.AddressType.IPV4);
-                    firewallRules[0].setIpAddress(ipAddress);
+                    firewallRules[0].setIpAddress(ip);
                     firewallRules[0].setPortNumber(port);
                     firewallRules[0].setApplication(new AppIdentity(packageName, null));
 
-                    AdhellFactory.getInstance().addFirewallRules(firewallRules, handler);
+                    firewallRules[1] = new FirewallRule(FirewallRule.RuleType.DENY, Firewall.AddressType.IPV6);
+                    firewallRules[1].setIpAddress(ip);
+                    firewallRules[1].setPortNumber(port);
+                    firewallRules[1].setApplication(new AppIdentity(packageName, null));
+
+                    boolean add = true;
+                    FirewallRule[] enabledFirewallRules = firewall.getRules(Firewall.FIREWALL_DENY_RULE, FirewallRule.Status.ENABLED);
+                    for (FirewallRule enabledFirewallRule : enabledFirewallRules) {
+                        String packageName1 = enabledFirewallRule.getApplication().getPackageName();
+                        String ip1 = enabledFirewallRule.getIpAddress();
+                        String port1 = enabledFirewallRule.getPortNumber();
+                        if (packageName1.equalsIgnoreCase(packageName) && ip1.equalsIgnoreCase(ip) && port1.equalsIgnoreCase(port)) {
+                            add = false;
+                        }
+                    }
+
+                    if (add) {
+                        AdhellFactory.getInstance().addFirewallRules(firewallRules, handler);
+                    } else {
+                        LogUtils.getInstance().writeInfo("The firewall rule is already been enabled", handler);
+                    }
+
                     ++count;
                 }
             }
