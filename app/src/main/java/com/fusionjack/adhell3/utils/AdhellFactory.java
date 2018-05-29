@@ -288,4 +288,18 @@ public final class AdhellFactory {
             }
         }
     }
+
+     public FirewallRule[] createFirewallRules(String packageName, Firewall.NetworkInterface networkInterface) {
+         FirewallRule[] rules = new FirewallRule[2];
+
+         rules[0] = new FirewallRule(FirewallRule.RuleType.DENY, Firewall.AddressType.IPV4);
+         rules[0].setNetworkInterface(networkInterface);
+         rules[0].setApplication(new AppIdentity(packageName, null));
+
+         rules[1] = new FirewallRule(FirewallRule.RuleType.DENY, Firewall.AddressType.IPV6);
+         rules[1].setNetworkInterface(networkInterface);
+         rules[1].setApplication(new AppIdentity(packageName, null));
+
+         return rules;
+     }
 }

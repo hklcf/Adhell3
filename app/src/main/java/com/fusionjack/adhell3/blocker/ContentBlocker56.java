@@ -165,6 +165,7 @@ public class ContentBlocker56 implements ContentBlocker {
     private void processCustomRules() throws Exception {
         LogUtils.getInstance().writeInfo("\nProcessing custom rules...", handler);
 
+        FirewallRule[] enabledRules = firewall.getRules(Firewall.FIREWALL_DENY_RULE, FirewallRule.Status.ENABLED);
         int count = 0;
         List<UserBlockUrl> userBlockUrls = appDatabase.userBlockUrlDao().getAll2();
         for (UserBlockUrl userBlockUrl : userBlockUrls) {
@@ -174,32 +175,30 @@ public class ContentBlocker56 implements ContentBlocker {
                     String packageName = tokens.nextToken().trim();
                     String ip = tokens.nextToken().trim();
                     String port = tokens.nextToken().trim();
-                    LogUtils.getInstance().writeInfo(packageName + "|" + ip + "|" + port, handler);
-
-                    // Define firewall rule
-                    FirewallRule[] firewallRules = new FirewallRule[2];
-                    firewallRules[0] = new FirewallRule(FirewallRule.RuleType.DENY, Firewall.AddressType.IPV4);
-                    firewallRules[0].setIpAddress(ip);
-                    firewallRules[0].setPortNumber(port);
-                    firewallRules[0].setApplication(new AppIdentity(packageName, null));
-
-                    firewallRules[1] = new FirewallRule(FirewallRule.RuleType.DENY, Firewall.AddressType.IPV6);
-                    firewallRules[1].setIpAddress(ip);
-                    firewallRules[1].setPortNumber(port);
-                    firewallRules[1].setApplication(new AppIdentity(packageName, null));
 
                     boolean add = true;
-                    FirewallRule[] enabledFirewallRules = firewall.getRules(Firewall.FIREWALL_DENY_RULE, FirewallRule.Status.ENABLED);
-                    for (FirewallRule enabledFirewallRule : enabledFirewallRules) {
-                        String packageName1 = enabledFirewallRule.getApplication().getPackageName();
-                        String ip1 = enabledFirewallRule.getIpAddress();
-                        String port1 = enabledFirewallRule.getPortNumber();
+                    for (FirewallRule enabledRule : enabledRules) {
+                        String packageName1 = enabledRule.getApplication().getPackageName();
+                        String ip1 = enabledRule.getIpAddress();
+                        String port1 = enabledRule.getPortNumber();
                         if (packageName1.equalsIgnoreCase(packageName) && ip1.equalsIgnoreCase(ip) && port1.equalsIgnoreCase(port)) {
                             add = false;
                         }
                     }
 
+                    LogUtils.getInstance().writeInfo("\nProcessing firewall rule for '" + packageName + "|" + ip + "|" + port + "'...", handler);
                     if (add) {
+                        FirewallRule[] firewallRules = new FirewallRule[2];
+                        firewallRules[0] = new FirewallRule(FirewallRule.RuleType.DENY, Firewall.AddressType.IPV4);
+                        firewallRules[0].setIpAddress(ip);
+                        firewallRules[0].setPortNumber(port);
+                        firewallRules[0].setApplication(new AppIdentity(packageName, null));
+
+                        firewallRules[1] = new FirewallRule(FirewallRule.RuleType.DENY, Firewall.AddressType.IPV6);
+                        firewallRules[1].setIpAddress(ip);
+                        firewallRules[1].setPortNumber(port);
+                        firewallRules[1].setApplication(new AppIdentity(packageName, null));
+
                         AdhellFactory.getInstance().addFirewallRules(firewallRules, handler);
                     } else {
                         LogUtils.getInstance().writeInfo("The firewall rule is already been enabled", handler);
@@ -217,40 +216,70 @@ public class ContentBlocker56 implements ContentBlocker {
         LogUtils.getInstance().writeInfo("\nProcessing mobile restricted apps...", handler);
 
         List<AppInfo> restrictedApps = appDatabase.applicationInfoDao().getMobileRestrictedApps();
-        LogUtils.getInstance().writeInfo("Restricted apps size: " + restrictedApps.size(), handler);
-        if (restrictedApps.size() == 0) {
+        int size = restrictedApps.size();
+        LogUtils.getInstance().writeInfo("Restricted apps size: " + size, handler);
+        if (size == 0) {
             return;
         }
 
-        // Define DENY rules for mobile data
-        FirewallRule[] mobileRules = new FirewallRule[restrictedApps.size()];
-        for (int i = 0; i < restrictedApps.size(); i++) {
-            mobileRules[i] = new FirewallRule(FirewallRule.RuleType.DENY, Firewall.AddressType.IPV4);
-            mobileRules[i].setNetworkInterface(Firewall.NetworkInterface.MOBILE_DATA_ONLY);
-            mobileRules[i].setApplication(new AppIdentity(restrictedApps.get(i).packageName, null));
-        }
+        FirewallRule[] enabledRules = firewall.getRules(Firewall.FIREWALL_DENY_RULE, FirewallRule.Status.ENABLED);
+        for (AppInfo app : restrictedApps) {
+            String packageName = app.packageName;
 
-        AdhellFactory.getInstance().addFirewallRules(mobileRules, handler);
+            boolean add = true;
+            for (FirewallRule enabledRule : enabledRules) {
+                String packageName1 = enabledRule.getPackageName();
+                Firewall.NetworkInterface networkInterface = enabledRule.getNetworkInterface();
+                if (packageName1.equalsIgnoreCase(packageName) && networkInterface == Firewall.NetworkInterface.MOBILE_DATA_ONLY) {
+                    add = false;
+                    break;
+                }
+            }
+
+            LogUtils.getInstance().writeInfo("\nProcessing firewall rule for '" + packageName + "'...", handler);
+            if (add) {
+                FirewallRule[] mobileRules = AdhellFactory.getInstance().createFirewallRules(packageName,
+                        Firewall.NetworkInterface.MOBILE_DATA_ONLY);
+                AdhellFactory.getInstance().addFirewallRules(mobileRules, handler);
+            } else {
+                LogUtils.getInstance().writeInfo("The firewall rule is already been enabled", handler);
+            }
+        }
     }
 
     private void processWifiRestrictedApps() throws Exception {
         LogUtils.getInstance().writeInfo("\nProcessing wifi restricted apps...", handler);
 
         List<AppInfo> restrictedApps = appDatabase.applicationInfoDao().getWifiRestrictedApps();
-        LogUtils.getInstance().writeInfo("Restricted apps size: " + restrictedApps.size(), handler);
-        if (restrictedApps.size() == 0) {
+        int size = restrictedApps.size();
+        LogUtils.getInstance().writeInfo("Restricted apps size: " + size, handler);
+        if (size == 0) {
             return;
         }
 
-        // Define DENY rules for wifi
-        FirewallRule[] wifiRules = new FirewallRule[restrictedApps.size()];
-        for (int i = 0; i < restrictedApps.size(); i++) {
-            wifiRules[i] = new FirewallRule(FirewallRule.RuleType.DENY, Firewall.AddressType.IPV4);
-            wifiRules[i].setNetworkInterface(Firewall.NetworkInterface.WIFI_DATA_ONLY);
-            wifiRules[i].setApplication(new AppIdentity(restrictedApps.get(i).packageName, null));
-        }
+        FirewallRule[] enabledRules = firewall.getRules(Firewall.FIREWALL_DENY_RULE, FirewallRule.Status.ENABLED);
+        for (AppInfo app : restrictedApps) {
+            String packageName = app.packageName;
 
-        AdhellFactory.getInstance().addFirewallRules(wifiRules, handler);
+            boolean add = true;
+            for (FirewallRule enabledRule : enabledRules) {
+                String packageName1 = enabledRule.getPackageName();
+                Firewall.NetworkInterface networkInterface = enabledRule.getNetworkInterface();
+                if (packageName1.equalsIgnoreCase(packageName) && networkInterface == Firewall.NetworkInterface.WIFI_DATA_ONLY) {
+                    add = false;
+                    break;
+                }
+            }
+
+            LogUtils.getInstance().writeInfo("\nProcessing firewall rule for '" + packageName + "'...", handler);
+            if (add) {
+                FirewallRule[] wifiRules = AdhellFactory.getInstance().createFirewallRules(packageName,
+                        Firewall.NetworkInterface.WIFI_DATA_ONLY);
+                AdhellFactory.getInstance().addFirewallRules(wifiRules, handler);
+            } else {
+                LogUtils.getInstance().writeInfo("The firewall rule is already been enabled", handler);
+            }
+        }
     }
 
     private void processWhitelistedApps() throws Exception {
