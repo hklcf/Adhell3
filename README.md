@@ -45,6 +45,11 @@ With this feature, there is no need to export or import functionality again. The
 - Backup and restore database<br/>
 Backup the content of the database on internal storage so that later it can be used to restore the database if the database is somehow damage.
 
+- App components<br/>
+Ability to disable app's permissions, services and receivers. Only user apps are supported.
+
+- DNS per application basis<br/>
+Set custom DNS for selected apps. Only user apps are supported.
 
 ## Prerequisite for building apk
 ### Source code
@@ -56,13 +61,14 @@ Backup the content of the database on internal storage so that later it can be u
 - Download and install latest Android Studio from https://developer.android.com/studio/index.html
 - Open the downloaded project in Android Studio
 - Install missing SDK and build-tools
+- For `Configuration on demand is not supported` error, see this comment https://gitlab.com/fusionjack/adhell3/commit/1fb8ea98cf43507b32db56d9fb584b33dc6579f1#note_74463246
 
 ### Knox Standard SDK
 - Download it from https://seap.samsung.com/sdk/knox-standard-android
 - Take the `libs` content and put it to `app\libs` folder in the project 
 
 ## How to build apk
-- Update the source code with `git pull --rebase` or re-download the source code as a zip file
+- Update the source code with `git stash && git pull --rebase && git stash pop` or re-download the source code as a zip file
 - Run these following commands in a console: <br/>
 `cd adhell3`<br/>
 `gradlew clean assembleDebug`
