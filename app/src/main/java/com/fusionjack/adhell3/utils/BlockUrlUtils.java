@@ -38,15 +38,31 @@ public class BlockUrlUtils {
         }
 
         List<BlockUrl> blockUrls = new ArrayList<>();
+
+        // Create a new StringBuilder object to hold our host file
+        StringBuilder hostFile = new StringBuilder();
         String inputLine;
+        // Add all lines to the StringBuilder
         while ((inputLine = bufferedReader.readLine()) != null) {
-            inputLine = getDomain(inputLine).trim().toLowerCase();
-            if (BlockUrlPatternsMatch.isUrlValid(inputLine)) {
-                BlockUrl blockUrl = new BlockUrl(inputLine, blockUrlProvider.id);
+            hostFile.append(getDomain(inputLine.trim().toLowerCase()));
+            hostFile.append("\n");
+        }
+        bufferedReader.close();
+
+        // Convert host file to string
+        String hostFileStr = hostFile.toString();
+
+        // If we received any host file data
+        if(!hostFileStr.isEmpty()) {
+            // Fetch valid domains
+            String[] validated_hosts = BlockUrlPatternsMatch.getValidHostFileDomains(hostFileStr).split("\n");
+            // Add each domain to blockUrls
+            for (String validatedDomain : validated_hosts) {
+                BlockUrl blockUrl = new BlockUrl(validatedDomain, blockUrlProvider.id);
                 blockUrls.add(blockUrl);
             }
         }
-        bufferedReader.close();
+
         return blockUrls;
     }
 
