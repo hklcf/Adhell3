@@ -84,13 +84,13 @@ public class AppInfoAdapter extends BaseAdapter {
         boolean checked = false;
         switch (appFlag.getFlag()) {
             case DISABLER_FLAG:
-                checked = appInfo.disabled;
+                checked = !appInfo.disabled;
                 break;
             case MOBILE_RESTRICTED_FLAG:
-                checked = appInfo.mobileRestricted;
+                checked = !appInfo.mobileRestricted;
                 break;
             case WIFI_RESTRICTED_FLAG:
-                checked = appInfo.wifiRestricted;
+                checked = !appInfo.wifiRestricted;
                 break;
             case WHITELISTED_FLAG:
                 checked = appInfo.adhellWhitelisted;
@@ -104,10 +104,10 @@ public class AppInfoAdapter extends BaseAdapter {
                 } else {
                     holder.switchH.setEnabled(false);
                 }
-                checked = !appInfo.hasCustomDns;
+                checked = appInfo.hasCustomDns;
                 break;
         }
-        holder.switchH.setChecked(!checked);
+        holder.switchH.setChecked(checked);
 
         if (appInfo.system) {
             convertView.findViewById(R.id.systemOrNot).setVisibility(View.VISIBLE);
