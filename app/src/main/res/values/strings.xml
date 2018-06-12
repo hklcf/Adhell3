@@ -117,7 +117,7 @@
     </string>
     <string name="whitelisted_app_info">
         Whitelist an app to bypass the firewall.
-        \nToggle Firewall rules to apply changes.
+        \nToggle Domain rules to apply changes.
     </string>
     <string name="app_component_info">
         Disable app components (permissions, services and receivers).
