@@ -11,7 +11,7 @@ public final class BlockUrlPatternsMatch {
     private static final Pattern domain_r = Pattern.compile(DOMAIN_PATTERN);
 
     // Define pattern for filter files: ||something.com^ or ||something.com^$third-party
-    private static final String FILTER_PATTERN = "(?im)((?<=^\\|\\|)([A-Z0-9-_.]+)(?=\\^([$]third-party)?$))";
+    private static final String FILTER_PATTERN = "(?im)(?=.{4,253}\\^)((?<=^[|]{2})(((?!-)[a-z0-9-]{1,63}(?<!-)\\.)+[a-z]{2,63})(?=\\^([$]third-party)?$))";
     private static final Pattern filter_r = Pattern.compile(FILTER_PATTERN);
 
     private BlockUrlPatternsMatch() {
