@@ -160,6 +160,8 @@ public class ContentBlocker56 implements ContentBlocker {
         if (firewall.isDomainFilterReportEnabled()) {
             firewall.enableDomainFilterReport(false);
         }
+
+        BlockUrlUtils.resetBlockedDomainsCount();
     }
 
     private void processCustomRules() throws Exception {

@@ -208,7 +208,7 @@ public class HomeTabFragment extends Fragment {
                 packageNameList.add(Firewall.FIREWALL_ALL_PACKAGES);
                 List<DomainFilterRule> domainRules = firewall.getDomainFilterRules(packageNameList);
                 if (domainRules == null && BlockUrlUtils.isDomainLimitAboveDefault()) {
-                    domainSize = BlockUrlUtils.getTotalDomainsCount(appDatabase);
+                    domainSize = BlockUrlUtils.getBlockedDomainsCount();
                 } else if (domainRules != null && domainRules.size() > 0) {
                     domainSize = domainRules.get(0).getDenyDomains().size();
                 }

@@ -1,5 +1,6 @@
 package com.fusionjack.adhell3.utils;
 
+import android.content.SharedPreferences;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.webkit.URLUtil;
@@ -24,6 +25,8 @@ import java.util.List;
 import java.util.Set;
 
 public class BlockUrlUtils {
+
+    private static final String BLOCKED_DOMAINS_COUNT = "blockedDomainsCount";
 
     @NonNull
     public static List<BlockUrl> loadBlockUrls(BlockUrlProvider blockUrlProvider) throws IOException, URISyntaxException {
@@ -119,6 +122,11 @@ public class BlockUrlUtils {
             LogUtils.getInstance().writeInfo("Total unique domains to block: " + denyList.size(), handler);
         }
 
+        SharedPreferences sharedPreferences = AdhellFactory.getInstance().getSharedPreferences();
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putInt(BLOCKED_DOMAINS_COUNT, denyList.size());
+        editor.apply();
+
         return denyList;
     }
 
@@ -170,13 +178,16 @@ public class BlockUrlUtils {
         return domainLimit > defaultDomainLimit;
     }
 
-    public static int getTotalDomainsCount(AppDatabase appDatabase) {
-        int total = 0;
-        List<BlockUrlProvider> blockUrlProviders = appDatabase.blockUrlProviderDao().getBlockUrlProviderBySelectedFlag(1);
-        for (BlockUrlProvider blockUrlProvider : blockUrlProviders) {
-            total += appDatabase.blockUrlDao().getUrlCountByProviderId(blockUrlProvider.id);
-        }
-        return total;
+    public static int getBlockedDomainsCount() {
+        SharedPreferences sharedPreferences = AdhellFactory.getInstance().getSharedPreferences();
+        return sharedPreferences.getInt(BLOCKED_DOMAINS_COUNT, 0);
+    }
+
+    public static void resetBlockedDomainsCount() {
+        SharedPreferences sharedPreferences = AdhellFactory.getInstance().getSharedPreferences();
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.remove(BLOCKED_DOMAINS_COUNT);
+        editor.apply();
     }
 
 }
