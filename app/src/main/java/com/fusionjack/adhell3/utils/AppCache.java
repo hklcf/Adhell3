@@ -169,8 +169,8 @@ public class AppCache {
                             dnsPackage.policyPackageId = AdhellAppIntegrity.DEFAULT_POLICY_ID;
                             appDatabase.dnsPackageDao().insert(dnsPackage);
                         }
+                        appDatabase.applicationInfoDao().update(appInfo);
                     }
-                    appDatabase.applicationInfoDao().update(appInfo);
                 }
             }
 
