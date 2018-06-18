@@ -13,6 +13,11 @@
         \n%2$d apps\' Wi-Fi data is restricted.
         \n%3$d denial rules are active.
     </string>
+    <string name="app_disabler_enabled">App disabler is enabled.</string>
+    <string name="app_disabler_disabled">App disabler is disabled.</string>
+    <string name="app_disabler_info">
+        %1$d apps are disabled.
+    </string>
     <string name="adhell_not_supported">Adhell is not yet supported on your device.</string>
     <string name="enable_adhell_title">Enable Adhell</string>
     <string name="enable_adhell_info">
@@ -108,7 +113,7 @@
     <string name="total_domains">Total domains:&#160;</string>
     <string name="package_disabler_info">
         Disable an app entirely and hide it on app drawer.
-        \nChanges take effect immediately.
+        \nIf App disabler is enabled, changes take effect immediately.
     </string>
     <string name="mobile_restricter_info">
         Block or allow an app\'s mobile data usage.

@@ -1,6 +1,7 @@
 package com.fusionjack.adhell3.fragments;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -37,6 +38,7 @@ import com.fusionjack.adhell3.dialogfragment.FirewallDialogFragment;
 import com.fusionjack.adhell3.utils.AdhellAppIntegrity;
 import com.fusionjack.adhell3.utils.AdhellFactory;
 import com.fusionjack.adhell3.utils.AppCache;
+import com.fusionjack.adhell3.utils.AppPreferences;
 import com.fusionjack.adhell3.utils.BlockUrlUtils;
 import com.fusionjack.adhell3.utils.DeviceAdminInteractor;
 import com.sec.enterprise.firewall.DomainFilterReport;
@@ -59,6 +61,8 @@ public class HomeTabFragment extends Fragment {
     private Switch domainSwitch;
     private TextView firewallStatusTextView;
     private Switch firewallSwitch;
+    private TextView disablerStatusTextView;
+    private Switch disablerSwitch;
     private TextView infoTextView;
     private SwipeRefreshLayout swipeContainer;
     private ContentBlocker contentBlocker;
@@ -92,6 +96,8 @@ public class HomeTabFragment extends Fragment {
         domainStatusTextView = view.findViewById(R.id.domainStatusTextView);
         firewallSwitch = view.findViewById(R.id.firewallRulesSwitch);
         firewallStatusTextView = view.findViewById(R.id.firewallStatusTextView);
+        disablerSwitch = view.findViewById(R.id.appDisablerSwitch);
+        disablerStatusTextView = view.findViewById(R.id.disablerStatusTextView);
         swipeContainer = view.findViewById(R.id.swipeContainer);
         infoTextView = view.findViewById(R.id.infoTextView);
         TextView warningMessageTextView = view.findViewById(R.id.warningMessageTextView);
@@ -112,6 +118,10 @@ public class HomeTabFragment extends Fragment {
         firewallSwitch.setOnClickListener(v -> {
             Log.d(TAG, "Firewall switch button has been clicked");
             new SetFirewallAsyncTask(false, this, fragmentManager).execute();
+        });
+        disablerSwitch.setOnClickListener(v -> {
+            Log.d(TAG, "App disabler switch button has been clicked");
+            new AppDisablerAsyncTask(this, getActivity()).execute();
         });
 
         AsyncTask.execute(() -> {
@@ -167,6 +177,15 @@ public class HomeTabFragment extends Fragment {
             }
         }
 
+        boolean disablerEnabled = AppPreferences.getInstance().isAppDisablerEnabled();
+        if (disablerEnabled) {
+            disablerStatusTextView.setText(R.string.app_disabler_enabled);
+            disablerSwitch.setChecked(true);
+        } else {
+            disablerStatusTextView.setText(R.string.app_disabler_disabled);
+            disablerSwitch.setChecked(false);
+        }
+
         new SetInfoAsyncTask(getContext()).execute();
     }
 
@@ -177,6 +196,7 @@ public class HomeTabFragment extends Fragment {
         private int whitelistedSize;
         private int domainSize;
         private int denyFirewallSize;
+        private int disablerSize;
 
         SetInfoAsyncTask(Context context) {
             this.contextWeakReference = new WeakReference<>(context);
@@ -196,14 +216,21 @@ public class HomeTabFragment extends Fragment {
                     String firewallInfo = context.getResources().getString(R.string.firewall_rules_info);
                     firewallInfoTextView.setText(String.format(firewallInfo, 0, 0, 0));
                 }
+                TextView disablerInfoTextView = ((Activity) context).findViewById(R.id.disablerInfoTextView);
+                if (disablerInfoTextView != null) {
+                    String disablerInfo = context.getResources().getString(R.string.app_disabler_info);
+                    disablerInfoTextView.setText(String.format(disablerInfo, 0));
+                }
             }
         }
 
         @Override
         protected Void doInBackground(Void... voids) {
+            AppDatabase appDatabase = AdhellFactory.getInstance().getAppDatabase();
+            disablerSize = appDatabase.disabledPackageDao().getAll().size();
+
             Firewall firewall = AdhellFactory.getInstance().getFirewall();
             if (firewall != null) {
-                AppDatabase appDatabase = AdhellFactory.getInstance().getAppDatabase();
                 List<String> packageNameList = new ArrayList<>();
                 packageNameList.add(Firewall.FIREWALL_ALL_PACKAGES);
                 List<DomainFilterRule> domainRules = firewall.getDomainFilterRules(packageNameList);
@@ -263,7 +290,46 @@ public class HomeTabFragment extends Fragment {
                     String firewallInfo = context.getResources().getString(R.string.firewall_rules_info);
                     firewallInfoTextView.setText(String.format(firewallInfo, mobileSize, wifiSize, denyFirewallSize));
                 }
+                TextView disablerInfoTextView = ((Activity) context).findViewById(R.id.disablerInfoTextView);
+                if (disablerInfoTextView != null) {
+                    String disablerInfo = context.getResources().getString(R.string.app_disabler_info);
+                    boolean enabled = AppPreferences.getInstance().isAppDisablerEnabled();
+                    disablerInfoTextView.setText(String.format(disablerInfo, enabled ? disablerSize : 0));
+                }
             }
+        }
+    }
+
+    private static class AppDisablerAsyncTask extends AsyncTask<Void, Void, Void> {
+        private HomeTabFragment parentFragment;
+        private ProgressDialog dialog;
+
+        AppDisablerAsyncTask(HomeTabFragment parentFragment, Activity activity) {
+            this.parentFragment = parentFragment;
+            this.dialog = new ProgressDialog(activity);
+        }
+
+        @Override
+        protected void onPreExecute() {
+            boolean enabled = AppPreferences.getInstance().isAppDisablerEnabled();
+            dialog.setMessage(enabled ? "Enabling apps..." : "Disabling apps...");
+            dialog.show();
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            boolean disablerEnabled = AppPreferences.getInstance().isAppDisablerEnabled();
+            AppPreferences.getInstance().enableAppDisabler(!disablerEnabled);
+            AdhellFactory.getInstance().applyAppDisabler();
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            if (dialog.isShowing()) {
+                dialog.dismiss();
+            }
+            parentFragment.updateUserInterface();
         }
     }
 

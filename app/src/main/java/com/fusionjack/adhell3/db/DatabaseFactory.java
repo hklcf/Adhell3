@@ -16,6 +16,7 @@ import com.fusionjack.adhell3.db.entity.UserBlockUrl;
 import com.fusionjack.adhell3.db.entity.WhiteUrl;
 import com.fusionjack.adhell3.utils.AdhellAppIntegrity;
 import com.fusionjack.adhell3.utils.AdhellFactory;
+import com.fusionjack.adhell3.utils.AppPreferences;
 import com.fusionjack.adhell3.utils.DeviceAdminInteractor;
 
 import java.io.File;
@@ -82,8 +83,6 @@ public final class DatabaseFactory {
         copy(dbFile, backupDbFile);
 
         try {
-            DeviceAdminInteractor.getInstance().getContentBlocker().disableDomainRules();
-            DeviceAdminInteractor.getInstance().getContentBlocker().disableFirewallRules();
             AdhellAppIntegrity appIntegrity = AdhellAppIntegrity.getInstance();
             appIntegrity.checkDefaultPolicyExists();
             appIntegrity.fillPackageDb();

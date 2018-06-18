@@ -23,6 +23,7 @@ import com.fusionjack.adhell3.db.entity.AppInfo;
 import com.fusionjack.adhell3.db.entity.AppPermission;
 import com.fusionjack.adhell3.db.entity.BlockUrl;
 import com.fusionjack.adhell3.db.entity.BlockUrlProvider;
+import com.fusionjack.adhell3.db.entity.DisabledPackage;
 import com.sec.enterprise.AppIdentity;
 import com.sec.enterprise.firewall.DomainFilterRule;
 import com.sec.enterprise.firewall.Firewall;
@@ -269,6 +270,24 @@ public final class AdhellFactory {
                         e.printStackTrace();
                     }
                 }
+            }
+        }
+    }
+
+    public void applyAppDisabler() {
+        ApplicationPolicy appPolicy = AdhellFactory.getInstance().getAppPolicy();
+        if (appPolicy == null) {
+            return;
+        }
+
+        boolean enabled = AppPreferences.getInstance().isAppDisablerEnabled();
+        AppDatabase appDatabase = AdhellFactory.getInstance().getAppDatabase();
+        List<DisabledPackage> disabledPackages = appDatabase.disabledPackageDao().getAll();
+        for (DisabledPackage disabledPackage : disabledPackages) {
+            if (enabled) {
+                appPolicy.setDisableApplication(disabledPackage.packageName);
+            } else {
+                appPolicy.setEnableApplication(disabledPackage.packageName);
             }
         }
     }

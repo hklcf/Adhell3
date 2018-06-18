@@ -3,7 +3,6 @@ package com.fusionjack.adhell3.fragments;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.app.admin.DevicePolicyManager;
-import android.app.enterprise.ApplicationPolicy;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -21,17 +20,15 @@ import android.widget.TextView;
 import com.fusionjack.adhell3.BuildConfig;
 import com.fusionjack.adhell3.R;
 import com.fusionjack.adhell3.blocker.ContentBlocker;
-import com.fusionjack.adhell3.db.AppDatabase;
 import com.fusionjack.adhell3.db.DatabaseFactory;
-import com.fusionjack.adhell3.db.entity.DisabledPackage;
 import com.fusionjack.adhell3.model.AppFlag;
 import com.fusionjack.adhell3.receiver.CustomDeviceAdminReceiver;
 import com.fusionjack.adhell3.tasks.LoadAppAsyncTask;
 import com.fusionjack.adhell3.utils.AdhellFactory;
+import com.fusionjack.adhell3.utils.AppPreferences;
 import com.fusionjack.adhell3.utils.DeviceAdminInteractor;
 
 import java.lang.ref.WeakReference;
-import java.util.List;
 
 public class SettingsFragment extends Fragment {
     private Context context;
@@ -106,8 +103,6 @@ public class SettingsFragment extends Fragment {
         return view;
     }
 
-
-
     private static class BackupDatabaseAsyncTask extends AsyncTask<Void, Void, String> {
         private ProgressDialog dialog;
         private AlertDialog.Builder builder;
@@ -153,16 +148,12 @@ public class SettingsFragment extends Fragment {
     private static class RestoreDatabaseAsyncTask extends AsyncTask<Void, String, String> {
         private ProgressDialog dialog;
         private AlertDialog.Builder builder;
-        private AppDatabase appDatabase;
-        private ApplicationPolicy appPolicy;
         private WeakReference<Activity> activityWeakReference;
 
         RestoreDatabaseAsyncTask(Activity activity) {
             this.activityWeakReference = new WeakReference<>(activity);
             this.builder = new AlertDialog.Builder(activity);
             this.dialog = new ProgressDialog(activity);
-            this.appDatabase = AdhellFactory.getInstance().getAppDatabase();
-            this.appPolicy = AdhellFactory.getInstance().getAppPolicy();
         }
 
         @Override
@@ -174,16 +165,15 @@ public class SettingsFragment extends Fragment {
         @Override
         protected String doInBackground(Void... args) {
             try {
+                DeviceAdminInteractor.getInstance().getContentBlocker().disableDomainRules();
+                DeviceAdminInteractor.getInstance().getContentBlocker().disableFirewallRules();
+                AppPreferences.getInstance().enableAppDisabler(false);
+                AdhellFactory.getInstance().applyAppDisabler();
+
                 DatabaseFactory.getInstance().restoreDatabase();
 
                 publishProgress("Updating all providers...");
                 AdhellFactory.getInstance().updateAllProviders();
-
-                publishProgress("Disabling apps...");
-                List<DisabledPackage> disabledPackages = appDatabase.disabledPackageDao().getAll();
-                for (DisabledPackage disabledPackage : disabledPackages) {
-                    appPolicy.setDisableApplication(disabledPackage.packageName);
-                }
 
                 publishProgress("Disabling app components...");
                 AdhellFactory.getInstance().setAppComponentState(false);
