@@ -25,7 +25,10 @@
         \nA developer license key needs to be renewed every 3 months.
     </string>
     <string name="license_key">Enterprise (ELM) license key</string>
-    <string name="activate_knox">Activate Knox</string>
+    <string name="activate_license">Activate License</string>
+    <string name="license_activated">License Activated</string>
+    <string name="enable_admin">Enable Admin</string>
+    <string name="admin_enabled">Admin Enabled</string>
     <string name="no_internet_connection">Your device is not connected to the Internet.</string>
     <string name="activating_knox_license">Activating…</string>
     <string name="block_button_text_turn_off">Turn Off</string>

@@ -55,35 +55,14 @@
         android:hint="@string/license_key"
         android:inputType="text" />
 
-    <LinearLayout
-        android:id="@+id/knoxButtonLayout"
-        android:layout_width="match_parent"
+    <Button
+        android:id="@+id/activateKnoxButton"
+        android:layout_width="150dp"
         android:layout_height="wrap_content"
         android:layout_below="@+id/knoxKeyEditText"
-        android:orientation="horizontal"
-        android:paddingTop="10dp"
-        android:paddingLeft="20dp"
-        android:paddingRight="20dp"
-        android:paddingBottom="20dp">
-
-        <Button
-            android:id="@+id/submitKnoxKeyButton"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="5dp"
-            android:layout_marginEnd="5dp"
-            android:layout_weight="1"
-            android:text="Submit Knox Key" />
-
-        <Button
-            android:id="@+id/activateKnoxButton"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
-            android:layout_marginStart="5dp"
-            android:layout_weight="1"
-            android:text="@string/activate_knox" />
-
-    </LinearLayout>
+        android:layout_centerInParent="true"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="20dp"
+        android:text="@string/activate_license" />
 
 </RelativeLayout>

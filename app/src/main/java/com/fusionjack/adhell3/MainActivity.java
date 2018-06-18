@@ -27,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String BACK_STACK_TAB_TAG = "tab_fragment";
     protected DeviceAdminInteractor mAdminInteractor;
     private FragmentManager fragmentManager;
-    private ActivationDialogFragment turnOnDialogFragment;
+    private ActivationDialogFragment activationDialogFragment;
     private boolean doubleBackToExitPressedOnce = false;
 
     @Override
@@ -59,8 +59,8 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
-        turnOnDialogFragment = ActivationDialogFragment.newInstance("Adhell Turn On");
-        turnOnDialogFragment.setCancelable(false);
+        activationDialogFragment = new ActivationDialogFragment();
+        activationDialogFragment.setCancelable(false);
         setContentView(R.layout.activity_main);
         BottomBar bottomBar = findViewById(R.id.bottomBar);
         bottomBar.setTabTitleTextAppearance(R.style.bottomBarTextView);
@@ -93,8 +93,8 @@ public class MainActivity extends AppCompatActivity {
 
         if (!mAdminInteractor.isActiveAdmin()) {
             Log.d(TAG, "Admin is not active. Request enabling");
-            if (!turnOnDialogFragment.isVisible()) {
-                turnOnDialogFragment.show(fragmentManager, "dialog_fragment_turn_on_adhell");
+            if (!activationDialogFragment.isVisible()) {
+                activationDialogFragment.show(fragmentManager, "dialog_fragment_activation_adhell");
             }
             return;
         }
@@ -113,8 +113,8 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
 
-            if (!turnOnDialogFragment.isVisible()) {
-                turnOnDialogFragment.show(fragmentManager, "dialog_fragment_turn_on_adhell");
+            if (!activationDialogFragment.isVisible()) {
+                activationDialogFragment.show(fragmentManager, "dialog_fragment_activation_adhell");
             }
         }
         Log.d(TAG, "Everything is okay");

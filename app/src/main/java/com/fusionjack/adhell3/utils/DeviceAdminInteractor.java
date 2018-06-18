@@ -29,6 +29,8 @@ public class DeviceAdminInteractor {
     private static final String TAG = DeviceAdminInteractor.class.getCanonicalName();
     private static DeviceAdminInteractor mInstance = null;
 
+    private final String KNOX_KEY = "knox_key";
+
     @Nullable
     @Inject
     EnterpriseLicenseManager enterpriseLicenseManager;
@@ -119,7 +121,13 @@ public class DeviceAdminInteractor {
     }
 
     public String getKnoxKey(SharedPreferences sharedPreferences) {
-        return sharedPreferences.getString("knox_key", null);
+        return sharedPreferences.getString(KNOX_KEY, null);
+    }
+
+    public void setKnoxKey(SharedPreferences sharedPreferences, String key) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(KNOX_KEY, key);
+        editor.apply();
     }
 
     public boolean installApk(String pathToApk) {
