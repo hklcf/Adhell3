@@ -7,6 +7,7 @@ import com.fusionjack.adhell3.db.entity.AppInfo;
 import com.fusionjack.adhell3.db.entity.UserBlockUrl;
 import com.fusionjack.adhell3.db.entity.WhiteUrl;
 import com.fusionjack.adhell3.utils.AdhellFactory;
+import com.fusionjack.adhell3.utils.AppPreferences;
 import com.fusionjack.adhell3.utils.BlockUrlPatternsMatch;
 import com.fusionjack.adhell3.utils.BlockUrlUtils;
 import com.fusionjack.adhell3.utils.LogUtils;
@@ -161,7 +162,7 @@ public class ContentBlocker56 implements ContentBlocker {
             firewall.enableDomainFilterReport(false);
         }
 
-        BlockUrlUtils.resetBlockedDomainsCount();
+        AppPreferences.getInstance().resetBlockedDomainsCount();
     }
 
     private void processCustomRules() throws Exception {

@@ -1,6 +1,5 @@
 package com.fusionjack.adhell3.db;
 
-import android.content.SharedPreferences;
 import android.os.Environment;
 import android.util.JsonReader;
 import android.util.JsonWriter;
@@ -8,8 +7,8 @@ import android.util.JsonWriter;
 import com.fusionjack.adhell3.db.entity.AppInfo;
 import com.fusionjack.adhell3.db.entity.AppPermission;
 import com.fusionjack.adhell3.db.entity.BlockUrlProvider;
-import com.fusionjack.adhell3.db.entity.DnsPackage;
 import com.fusionjack.adhell3.db.entity.DisabledPackage;
+import com.fusionjack.adhell3.db.entity.DnsPackage;
 import com.fusionjack.adhell3.db.entity.FirewallWhitelistedPackage;
 import com.fusionjack.adhell3.db.entity.RestrictedPackage;
 import com.fusionjack.adhell3.db.entity.UserBlockUrl;
@@ -17,7 +16,6 @@ import com.fusionjack.adhell3.db.entity.WhiteUrl;
 import com.fusionjack.adhell3.utils.AdhellAppIntegrity;
 import com.fusionjack.adhell3.utils.AdhellFactory;
 import com.fusionjack.adhell3.utils.AppPreferences;
-import com.fusionjack.adhell3.utils.DeviceAdminInteractor;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -251,10 +249,9 @@ public final class DatabaseFactory {
 
         writer.name("DNSAddresses");
         writer.beginObject();
-        if (AdhellFactory.getInstance().isDnsNotEmpty()) {
-            SharedPreferences sharedPreferences = AdhellFactory.getInstance().getSharedPreferences();
-            writer.name("dns1").value(sharedPreferences.getString("dns1", "0.0.0.0"));
-            writer.name("dns2").value(sharedPreferences.getString("dns2", "0.0.0.0"));
+        if (AppPreferences.getInstance().isDnsNotEmpty()) {
+            writer.name("dns1").value(AppPreferences.getInstance().getDns1());
+            writer.name("dns2").value(AppPreferences.getInstance().getDns2());
         }
         writer.endObject();
     }

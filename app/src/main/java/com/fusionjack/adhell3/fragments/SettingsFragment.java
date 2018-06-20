@@ -167,7 +167,7 @@ public class SettingsFragment extends Fragment {
             try {
                 DeviceAdminInteractor.getInstance().getContentBlocker().disableDomainRules();
                 DeviceAdminInteractor.getInstance().getContentBlocker().disableFirewallRules();
-                AppPreferences.getInstance().enableAppDisabler(false);
+                AppPreferences.getInstance().setAppDisabler(false);
                 AdhellFactory.getInstance().applyAppDisabler();
 
                 DatabaseFactory.getInstance().restoreDatabase();

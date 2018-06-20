@@ -26,8 +26,6 @@ import java.util.Set;
 
 public class BlockUrlUtils {
 
-    private static final String BLOCKED_DOMAINS_COUNT = "blockedDomainsCount";
-
     @NonNull
     public static List<BlockUrl> loadBlockUrls(BlockUrlProvider blockUrlProvider) throws IOException, URISyntaxException {
         BufferedReader bufferedReader;
@@ -122,10 +120,7 @@ public class BlockUrlUtils {
             LogUtils.getInstance().writeInfo("Total unique domains to block: " + denyList.size(), handler);
         }
 
-        SharedPreferences sharedPreferences = AdhellFactory.getInstance().getSharedPreferences();
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putInt(BLOCKED_DOMAINS_COUNT, denyList.size());
-        editor.apply();
+        AppPreferences.getInstance().setBlockedDomainsCount(denyList.size());
 
         return denyList;
     }
@@ -176,18 +171,6 @@ public class BlockUrlUtils {
         int defaultDomainLimit = 15000;
         int domainLimit = AdhellAppIntegrity.BLOCK_URL_LIMIT;
         return domainLimit > defaultDomainLimit;
-    }
-
-    public static int getBlockedDomainsCount() {
-        SharedPreferences sharedPreferences = AdhellFactory.getInstance().getSharedPreferences();
-        return sharedPreferences.getInt(BLOCKED_DOMAINS_COUNT, 0);
-    }
-
-    public static void resetBlockedDomainsCount() {
-        SharedPreferences sharedPreferences = AdhellFactory.getInstance().getSharedPreferences();
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.remove(BLOCKED_DOMAINS_COUNT);
-        editor.apply();
     }
 
 }

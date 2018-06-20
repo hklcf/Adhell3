@@ -16,8 +16,8 @@ import android.widget.TextView;
 import com.fusionjack.adhell3.R;
 import com.fusionjack.adhell3.db.entity.AppInfo;
 import com.fusionjack.adhell3.model.AppFlag;
-import com.fusionjack.adhell3.utils.AdhellFactory;
 import com.fusionjack.adhell3.utils.AppCache;
+import com.fusionjack.adhell3.utils.AppPreferences;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
@@ -98,7 +98,7 @@ public class AppInfoAdapter extends BaseAdapter {
             case COMPONENT_FLAG:
                 holder.switchH.setVisibility(View.GONE);
             case DNS_FLAG:
-                boolean isDnsNotEmpty = AdhellFactory.getInstance().isDnsNotEmpty();
+                boolean isDnsNotEmpty = AppPreferences.getInstance().isDnsNotEmpty();
                 if (isDnsNotEmpty) {
                     holder.switchH.setEnabled(true);
                 } else {

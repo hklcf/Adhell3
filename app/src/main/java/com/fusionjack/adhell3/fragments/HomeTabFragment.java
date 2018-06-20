@@ -235,7 +235,7 @@ public class HomeTabFragment extends Fragment {
                 packageNameList.add(Firewall.FIREWALL_ALL_PACKAGES);
                 List<DomainFilterRule> domainRules = firewall.getDomainFilterRules(packageNameList);
                 if (domainRules == null && BlockUrlUtils.isDomainLimitAboveDefault()) {
-                    domainSize = BlockUrlUtils.getBlockedDomainsCount();
+                    domainSize = AppPreferences.getInstance().getBlockedDomainsCount();
                 } else if (domainRules != null && domainRules.size() > 0) {
                     domainSize = domainRules.get(0).getDenyDomains().size();
                 }
@@ -319,7 +319,7 @@ public class HomeTabFragment extends Fragment {
         @Override
         protected Void doInBackground(Void... voids) {
             boolean disablerEnabled = AppPreferences.getInstance().isAppDisablerEnabled();
-            AppPreferences.getInstance().enableAppDisabler(!disablerEnabled);
+            AppPreferences.getInstance().setAppDisabler(!disablerEnabled);
             AdhellFactory.getInstance().applyAppDisabler();
             return null;
         }

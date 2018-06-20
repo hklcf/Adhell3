@@ -213,16 +213,9 @@ public final class AdhellFactory {
         return contentBlocker instanceof ContentBlocker56 || contentBlocker instanceof ContentBlocker57;
     }
 
-    public boolean isDnsNotEmpty() {
-        return sharedPreferences.contains("dns1") && sharedPreferences.contains("dns2");
-    }
-
     public void setDns(String primaryDns, String secondaryDns, Handler handler) {
         if (primaryDns.isEmpty() && secondaryDns.isEmpty()) {
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.remove("dns1");
-            editor.remove("dns2");
-            editor.apply();
+            AppPreferences.getInstance().removeDns();
             if (handler != null) {
                 Message message = handler.obtainMessage(0, R.string.restored_dns);
                 message.sendToTarget();
@@ -233,10 +226,7 @@ public final class AdhellFactory {
                 message.sendToTarget();
             }
         } else {
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putString("dns1", primaryDns);
-            editor.putString("dns2", secondaryDns);
-            editor.apply();
+            AppPreferences.getInstance().setDns(primaryDns, secondaryDns);
             if (handler != null) {
                 Message message = handler.obtainMessage(0, R.string.changed_dns);
                 message.sendToTarget();
@@ -245,9 +235,9 @@ public final class AdhellFactory {
     }
 
     public void applyDns(Handler handler) {
-        if (isDnsNotEmpty()) {
-            String dns1 = sharedPreferences.getString("dns1", "0.0.0.0");
-            String dns2 = sharedPreferences.getString("dns2", "0.0.0.0");
+        if (AppPreferences.getInstance().isDnsNotEmpty()) {
+            String dns1 = AppPreferences.getInstance().getDns1();
+            String dns2 = AppPreferences.getInstance().getDns2();
             if (Patterns.IP_ADDRESS.matcher(dns1).matches() && Patterns.IP_ADDRESS.matcher(dns2).matches()) {
                 LogUtils.getInstance().writeInfo("\nProcessing DNS...", handler);
 

@@ -1,7 +1,6 @@
 package com.fusionjack.adhell3.fragments;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -35,6 +34,7 @@ import com.fusionjack.adhell3.tasks.SetAppAsyncTask;
 import com.fusionjack.adhell3.utils.AdhellAppIntegrity;
 import com.fusionjack.adhell3.utils.AdhellFactory;
 import com.fusionjack.adhell3.utils.AppCache;
+import com.fusionjack.adhell3.utils.AppPreferences;
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
 
@@ -42,7 +42,6 @@ import java.util.List;
 
 public class DnsFragment extends Fragment {
     private Context context;
-    private final static String DNS_ALL_APPS_ENBLED = "dnsAllAppsEnabled";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -97,10 +96,9 @@ public class DnsFragment extends Fragment {
             .setView(dialogView)
             .setPositiveButton(android.R.string.yes, (dialog, whichButton) ->
                 AsyncTask.execute(() -> {
-                    SharedPreferences sharedPreferences = AdhellFactory.getInstance().getSharedPreferences();
                     AppDatabase appDatabase = AdhellFactory.getInstance().getAppDatabase();
 
-                    boolean isAllEnabled = sharedPreferences.getBoolean(DNS_ALL_APPS_ENBLED, false);
+                    boolean isAllEnabled = AppPreferences.getInstance().isDnsAllAppsEnabled();
                     if (isAllEnabled) {
                         List<AppInfo> dnsApps = appDatabase.applicationInfoDao().getDnsApps();
                         for (AppInfo app : dnsApps) {
@@ -121,9 +119,7 @@ public class DnsFragment extends Fragment {
                         }
                     }
 
-                    SharedPreferences.Editor editor = sharedPreferences.edit();
-                    editor.putBoolean(DNS_ALL_APPS_ENBLED, !isAllEnabled);
-                    editor.apply();
+                    AppPreferences.getInstance().setDnsAllApps(!isAllEnabled);
 
                     AppFlag appFlag = AppFlag.createDnsFlag();
                     new LoadAppAsyncTask("", appFlag, getContext()).execute();
@@ -142,7 +138,7 @@ public class DnsFragment extends Fragment {
 
             AppFlag appFlag = AppFlag.createDnsFlag();
             ListView listView = view.findViewById(R.id.dns_apps_list);
-            if (AdhellFactory.getInstance().isDnsNotEmpty()) {
+            if (AppPreferences.getInstance().isDnsNotEmpty()) {
                 listView.setOnItemClickListener((AdapterView<?> adView, View view2, int position, long id) -> {
                     AppInfoAdapter adapter = (AppInfoAdapter) adView.getAdapter();
                     new SetAppAsyncTask(adapter.getItem(position), appFlag, context).execute();
@@ -166,10 +162,9 @@ public class DnsFragment extends Fragment {
                 View dialogView = inflater.inflate(R.layout.dialog_set_dns, container, false);
                 EditText primaryDnsEditText = dialogView.findViewById(R.id.primaryDnsEditText);
                 EditText secondaryDnsEditText = dialogView.findViewById(R.id.secondaryDnsEditText);
-                if (AdhellFactory.getInstance().isDnsNotEmpty()) {
-                    SharedPreferences sharedPreferences = AdhellFactory.getInstance().getSharedPreferences();
-                    primaryDnsEditText.setText(sharedPreferences.getString("dns1", "0.0.0.0"));
-                    secondaryDnsEditText.setText(sharedPreferences.getString("dns2", "0.0.0.0"));
+                if (AppPreferences.getInstance().isDnsNotEmpty()) {
+                    primaryDnsEditText.setText(AppPreferences.getInstance().getDns1());
+                    secondaryDnsEditText.setText(AppPreferences.getInstance().getDns2());
                 }
                 primaryDnsEditText.requestFocus();
 
@@ -187,7 +182,7 @@ public class DnsFragment extends Fragment {
                             String secondaryDns = secondaryDnsEditText.getText().toString();
                             AdhellFactory.getInstance().setDns(primaryDns, secondaryDns, handler);
 
-                            if (AdhellFactory.getInstance().isDnsNotEmpty()) {
+                            if (AppPreferences.getInstance().isDnsNotEmpty()) {
                                 listView.setEnabled(true);
                                 listView.setOnItemClickListener((AdapterView<?> adView, View view2, int position, long id) -> {
                                     AppInfoAdapter adapter = (AppInfoAdapter) adView.getAdapter();
