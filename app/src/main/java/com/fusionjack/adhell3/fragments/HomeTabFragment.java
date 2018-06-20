@@ -241,15 +241,9 @@ public class HomeTabFragment extends Fragment {
                     }
 
                     // Dirty solution: Every deny firewall is created for IPv4 and IPv6.
-                    if (denyFirewallSize > 0) {
-                        denyFirewallSize /= 2;
-                    }
-                    if (mobileSize > 0) {
-                        mobileSize /= 2;
-                    }
-                    if (wifiSize > 0) {
-                        wifiSize /= 2;
-                    }
+                    denyFirewallSize /= 2;
+                    mobileSize /= 2;
+                    wifiSize /= 2;
                 }
             }
             return null;
