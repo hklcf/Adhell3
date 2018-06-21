@@ -41,52 +41,44 @@ public final class BlockUrlPatternsMatch {
         StringBuilder validDomainsStrBuilder = new StringBuilder();
 
         // If the input file is in filter file format
-        if(filterPatternMatch.find())
-        {
+        if (filterPatternMatch.find()) {
             // Reset the find()
             filterPatternMatch.reset();
             // While there are matches, add each to the StringBuilder
-            while(filterPatternMatch.find())
-            {
+            while (filterPatternMatch.find()) {
                 String filterListDomain = filterPatternMatch.group();
                 validDomainsStrBuilder.append(filterListDomain);
                 validDomainsStrBuilder.append("\n");
             }
         }
         // Otherwise, process as a standard host file
-        else
-        {
+        else {
             // If we find valid hosts
-            if(domainPatternMatch.find())
-            {
+            if (domainPatternMatch.find()) {
                 // Reset the find()
                 domainPatternMatch.reset();
                 // While there are matches, add each to the StringBuilder
-                while(domainPatternMatch.find())
-                {
-                    String Domain = domainPatternMatch.group();
-                    validDomainsStrBuilder.append(Domain);
+                while (domainPatternMatch.find()) {
+                    String domain = domainPatternMatch.group();
+                    validDomainsStrBuilder.append(domain);
                     validDomainsStrBuilder.append("\n");
                 }
             }
 
             // If we find valid wildcards
-            if(wildcardPatternMatch.find()) {
+            if (wildcardPatternMatch.find()) {
                 // Reset the find()
                 wildcardPatternMatch.reset();
                 // While there are matches, add each to the StringBuilder
-                while (wildcardPatternMatch.find())
-                {
-                    String Wildcard = wildcardPatternMatch.group();
-                    validDomainsStrBuilder.append(Wildcard);
+                while (wildcardPatternMatch.find()) {
+                    String wildcard = wildcardPatternMatch.group();
+                    validDomainsStrBuilder.append(wildcard);
                     validDomainsStrBuilder.append("\n");
                 }
             }
         }
 
-        String validDomainsStr = validDomainsStrBuilder.toString();
-
-        return validDomainsStr;
+        return validDomainsStrBuilder.toString();
     }
 
     public static boolean isUrlValid(String url) {
@@ -107,16 +99,18 @@ public final class BlockUrlPatternsMatch {
 
         // If we have a wildcard, skip and pattern compiling / matching
         // Otherwise process it as an invalid url
-        if(url.contains("*")){return url;}
-        else {
-            // Get the prefix
-            final String url_prefix = url.replaceAll("[.](.*)$", "");
-            // Regex: must contain a letter (excl wildcards)
-            final Matcher prefix_valid = knox_valid_r.matcher(url_prefix);
-            // If we don't have any letters in the prefix
-            // Add a wildcard prefix as a safety net
-            return (prefix_valid.find() ? url : "*" + url);
+        if (url.contains("*")) {
+            return url;
         }
+
+        // Get the prefix
+        final String url_prefix = url.replaceAll("[.](.*)$", "");
+        // Regex: must contain a letter (excl wildcards)
+        final Matcher prefix_valid = knox_valid_r.matcher(url_prefix);
+
+        // If we don't have any letters in the prefix
+        // Add a wildcard prefix as a safety net
+        return (prefix_valid.find() ? url : "*" + url);
     }
 
 }

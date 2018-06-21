@@ -1,6 +1,5 @@
 package com.fusionjack.adhell3.utils;
 
-import android.content.SharedPreferences;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.webkit.URLUtil;
@@ -43,6 +42,7 @@ public class BlockUrlUtils {
         // Create a new StringBuilder object to hold our host file
         StringBuilder hostFile = new StringBuilder();
         String inputLine;
+
         // Add all lines to the StringBuilder
         while ((inputLine = bufferedReader.readLine()) != null) {
             hostFile.append(getDomain(inputLine.trim().toLowerCase()));
@@ -54,9 +54,10 @@ public class BlockUrlUtils {
         String hostFileStr = hostFile.toString();
 
         // If we received any host file data
-        if(!hostFileStr.isEmpty()) {
+        if (!hostFileStr.isEmpty()) {
             // Fetch valid domains
             String[] validated_hosts = BlockUrlPatternsMatch.getValidHostFileDomains(hostFileStr).split("\n");
+
             // Add each domain to blockUrls
             for (String validatedDomain : validated_hosts) {
                 BlockUrl blockUrl = new BlockUrl(validatedDomain, blockUrlProvider.id);
