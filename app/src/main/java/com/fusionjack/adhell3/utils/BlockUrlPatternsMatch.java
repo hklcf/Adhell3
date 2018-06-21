@@ -92,7 +92,7 @@ public final class BlockUrlPatternsMatch {
         return BlockUrlPatternsMatch.validHostFileDomains(hostFileStr);
     }
 
-    public static String getValidatedUrl(String url) {
+    public static String getValidKnoxUrl(String url) {
         // We have discovered that restricting by a wildcard prefix programmatically is too restrictive.
         // Knox seems invalidate a domain if the prefix does not contain any letters.
         // We will programmatically prefix domains such as 123.test.com, but not t123.test.com

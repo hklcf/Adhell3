@@ -35,10 +35,12 @@ public class AddUrlAsyncTask extends AsyncTask<Void, Void, Void> {
         switch (page) {
             case BLACKLIST_PAGE:
                 UserBlockUrl userBlockUrl = new UserBlockUrl(url);
+                url = userBlockUrl.url;
                 appDatabase.userBlockUrlDao().insert(userBlockUrl);
                 break;
             case WHITELIST_PAGE:
                 WhiteUrl whiteUrl = new WhiteUrl(url);
+                url = whiteUrl.url;
                 appDatabase.whiteUrlDao().insert(whiteUrl);
                 break;
         }

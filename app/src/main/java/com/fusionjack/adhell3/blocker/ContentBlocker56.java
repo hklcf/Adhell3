@@ -8,7 +8,6 @@ import com.fusionjack.adhell3.db.entity.UserBlockUrl;
 import com.fusionjack.adhell3.db.entity.WhiteUrl;
 import com.fusionjack.adhell3.utils.AdhellFactory;
 import com.fusionjack.adhell3.utils.AppPreferences;
-import com.fusionjack.adhell3.utils.BlockUrlPatternsMatch;
 import com.fusionjack.adhell3.utils.BlockUrlUtils;
 import com.fusionjack.adhell3.utils.LogUtils;
 import com.google.common.collect.Lists;
@@ -338,7 +337,7 @@ public class ContentBlocker56 implements ContentBlocker {
         Set<String> allowList = new HashSet<>();
         for (WhiteUrl whiteUrl : whiteUrls) {
             if (whiteUrl.url.indexOf('|') == -1) {
-                final String url = BlockUrlPatternsMatch.getValidatedUrl(whiteUrl.url);
+                final String url = whiteUrl.url;
                 allowList.add(url);
                 LogUtils.getInstance().writeInfo("WhiteUrl: " + url, handler);
             }

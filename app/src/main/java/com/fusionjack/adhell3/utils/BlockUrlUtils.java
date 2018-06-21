@@ -91,8 +91,8 @@ public class BlockUrlUtils {
         int userBlockUrlCount = 0;
         List<UserBlockUrl> userBlockUrls = appDatabase.userBlockUrlDao().getAll2();
         for (UserBlockUrl userBlockUrl : userBlockUrls) {
-            if (userBlockUrl.url.indexOf('|') == -1) {
-                final String url = BlockUrlPatternsMatch.getValidatedUrl(userBlockUrl.url);
+            final String url = userBlockUrl.url;
+            if (url.indexOf('|') == -1) {
                 denyList.add(url);
                 if (enableLog) {
                     LogUtils.getInstance().writeInfo("UserBlockUrl: " + url, handler);
@@ -113,7 +113,7 @@ public class BlockUrlUtils {
             }
 
             for (BlockUrl blockUrl : blockUrls) {
-                denyList.add(BlockUrlPatternsMatch.getValidatedUrl(blockUrl.url));
+                denyList.add(blockUrl.url);
             }
         }
 
