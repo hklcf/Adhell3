@@ -1,5 +1,4 @@
 package com.fusionjack.adhell3.utils;
-import android.provider.Settings;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
