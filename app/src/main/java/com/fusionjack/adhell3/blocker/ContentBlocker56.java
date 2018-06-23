@@ -189,7 +189,7 @@ public class ContentBlocker56 implements ContentBlocker {
                         }
                     }
 
-                    LogUtils.getInstance().writeInfo("\nProcessing firewall rule for '" + packageName + "|" + ip + "|" + port + "'...", handler);
+                    LogUtils.getInstance().writeInfo("\nRule: " + packageName + "|" + ip + "|" + port, handler);
                     if (add) {
                         FirewallRule[] firewallRules = new FirewallRule[2];
                         firewallRules[0] = new FirewallRule(FirewallRule.RuleType.DENY, Firewall.AddressType.IPV4);
@@ -220,7 +220,7 @@ public class ContentBlocker56 implements ContentBlocker {
 
         List<AppInfo> restrictedApps = appDatabase.applicationInfoDao().getMobileRestrictedApps();
         int size = restrictedApps.size();
-        LogUtils.getInstance().writeInfo("Restricted apps size: " + size, handler);
+        LogUtils.getInstance().writeInfo("Size: " + size, handler);
         if (size == 0) {
             return;
         }
@@ -239,7 +239,7 @@ public class ContentBlocker56 implements ContentBlocker {
                 }
             }
 
-            LogUtils.getInstance().writeInfo("\nProcessing firewall rule for '" + packageName + "'...", handler);
+            LogUtils.getInstance().writeInfo("Package name: " + packageName, handler);
             if (add) {
                 FirewallRule[] mobileRules = AdhellFactory.getInstance().createFirewallRules(packageName,
                         Firewall.NetworkInterface.MOBILE_DATA_ONLY);
@@ -255,7 +255,7 @@ public class ContentBlocker56 implements ContentBlocker {
 
         List<AppInfo> restrictedApps = appDatabase.applicationInfoDao().getWifiRestrictedApps();
         int size = restrictedApps.size();
-        LogUtils.getInstance().writeInfo("Restricted apps size: " + size, handler);
+        LogUtils.getInstance().writeInfo("Size: " + size, handler);
         if (size == 0) {
             return;
         }
@@ -274,7 +274,7 @@ public class ContentBlocker56 implements ContentBlocker {
                 }
             }
 
-            LogUtils.getInstance().writeInfo("\nProcessing firewall rule for '" + packageName + "'...", handler);
+            LogUtils.getInstance().writeInfo("Package name: " + packageName, handler);
             if (add) {
                 FirewallRule[] wifiRules = AdhellFactory.getInstance().createFirewallRules(packageName,
                         Firewall.NetworkInterface.WIFI_DATA_ONLY);
@@ -290,7 +290,7 @@ public class ContentBlocker56 implements ContentBlocker {
 
         // Create domain filter rule for white listed apps
         List<AppInfo> whitelistedApps = appDatabase.applicationInfoDao().getWhitelistedApps();
-        LogUtils.getInstance().writeInfo("Whitelisted apps size: " + whitelistedApps.size(), handler);
+        LogUtils.getInstance().writeInfo("Size: " + whitelistedApps.size(), handler);
         if (whitelistedApps.size() == 0) {
             return;
         }
@@ -299,20 +299,20 @@ public class ContentBlocker56 implements ContentBlocker {
         List<String> superAllow = new ArrayList<>();
         superAllow.add("*");
         for (AppInfo app : whitelistedApps) {
-            LogUtils.getInstance().writeInfo("Whitelisted app: " + app.packageName, handler);
+            LogUtils.getInstance().writeInfo("Package name: " + app.packageName, handler);
             rules.add(new DomainFilterRule(new AppIdentity(app.packageName, null), new ArrayList<>(), superAllow));
         }
         AdhellFactory.getInstance().addDomainFilterRules(rules, handler);
     }
 
     private void processWhitelistedDomains() throws Exception {
-        LogUtils.getInstance().writeInfo("\nProcessing white-listed domains...", handler);
+        LogUtils.getInstance().writeInfo("\nProcessing domain whitelist...", handler);
 
         // Process user-defined white list
         // 1. URL for all packages: url
         // 2. URL for individual package: packageName|url
         List<WhiteUrl> whiteUrls = appDatabase.whiteUrlDao().getAll2();
-        LogUtils.getInstance().writeInfo("User whitelisted URL size: " + whiteUrls.size(), handler);
+        LogUtils.getInstance().writeInfo("Size: " + whiteUrls.size(), handler);
         if (whiteUrls.size() == 0) {
             return;
         }
@@ -326,7 +326,7 @@ public class ContentBlocker56 implements ContentBlocker {
                 if (tokens.countTokens() == 2) {
                     final String packageName = tokens.nextToken();
                     final String url = tokens.nextToken();
-                    LogUtils.getInstance().writeInfo("PackageName: " + packageName + ", WhiteUrl: " + url, handler);
+                    LogUtils.getInstance().writeInfo("PackageName: " + packageName + ", Domain: " + url, handler);
 
                     final AppIdentity appIdentity = new AppIdentity(packageName, null);
                     List<String> allowList = new ArrayList<>();
@@ -342,7 +342,7 @@ public class ContentBlocker56 implements ContentBlocker {
             if (whiteUrl.url.indexOf('|') == -1) {
                 final String url = whiteUrl.url;
                 allowList.add(url);
-                LogUtils.getInstance().writeInfo("WhiteUrl: " + url, handler);
+                LogUtils.getInstance().writeInfo("Domain: " + url, handler);
             }
         }
         if (allowList.size() > 0) {
@@ -354,7 +354,7 @@ public class ContentBlocker56 implements ContentBlocker {
     }
 
     private void processUserBlockedDomains() throws Exception {
-        LogUtils.getInstance().writeInfo("\nProcessing user blocked domains...", handler);
+        LogUtils.getInstance().writeInfo("\nProcessing domain blacklist...", handler);
 
         List<String> denyList = BlockUrlUtils.getUserBlockedUrls(appDatabase, true, handler);
         List<DomainFilterRule> rules = new ArrayList<>();

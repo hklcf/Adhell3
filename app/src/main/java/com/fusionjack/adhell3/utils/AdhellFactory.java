@@ -132,7 +132,6 @@ public final class AdhellFactory {
         }
 
         try {
-            LogUtils.getInstance().writeInfo("Adding rule(s) to Knox Firewall...", handler);
             FirewallResponse[] response = firewall.addDomainFilterRules(domainRules);
             handleResponse(response, handler);
         } catch (SecurityException ex) {
@@ -147,7 +146,6 @@ public final class AdhellFactory {
         }
 
         try {
-            LogUtils.getInstance().writeInfo("Adding rule(s) to Knox Firewall...", handler);
             FirewallResponse[] response = firewall.addRules(firewallRules);
             handleResponse(response, handler);
         } catch (SecurityException ex) {
@@ -162,7 +160,7 @@ public final class AdhellFactory {
             LogUtils.getInstance().writeError("There was no response from Knox Firewall", ex, handler);
             throw ex;
         } else {
-            LogUtils.getInstance().writeInfo("Result: " + response[0].getMessage(), handler);
+            LogUtils.getInstance().writeInfo("Result: Success", handler);
             if (FirewallResponse.Result.SUCCESS != response[0].getResult()) {
                 Exception ex = new Exception(response[0].getMessage());
                 StringWriter sw = new StringWriter();
@@ -241,11 +239,13 @@ public final class AdhellFactory {
             if (Patterns.IP_ADDRESS.matcher(dns1).matches() && Patterns.IP_ADDRESS.matcher(dns2).matches()) {
                 LogUtils.getInstance().writeInfo("\nProcessing DNS...", handler);
 
+                LogUtils.getInstance().writeInfo("DNS 1: " + dns1, handler);
+                LogUtils.getInstance().writeInfo("DNS 2: " + dns2, handler);
                 List<AppInfo> dnsPackages = AdhellFactory.getInstance().getAppDatabase().applicationInfoDao().getDnsApps();
                 if (dnsPackages.size() == 0) {
                     LogUtils.getInstance().writeInfo("No app is selected", handler);
                 } else {
-                    LogUtils.getInstance().writeInfo("DNS app size: " + dnsPackages.size(), handler);
+                    LogUtils.getInstance().writeInfo("Size: " + dnsPackages.size(), handler);
                     List<DomainFilterRule> rules = new ArrayList<>();
                     for (AppInfo app : dnsPackages) {
                         DomainFilterRule rule = new DomainFilterRule(new AppIdentity(app.packageName, null));

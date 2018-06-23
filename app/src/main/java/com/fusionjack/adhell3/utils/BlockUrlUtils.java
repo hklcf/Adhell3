@@ -91,13 +91,13 @@ public class BlockUrlUtils {
             if (url.indexOf('|') == -1) {
                 list.add(url);
                 if (enableLog) {
-                    LogUtils.getInstance().writeInfo("UserBlockUrl: " + url, handler);
+                    LogUtils.getInstance().writeInfo("Domain: " + url, handler);
                 }
                 userBlockUrlCount++;
             }
         }
         if (enableLog) {
-            LogUtils.getInstance().writeInfo("User blocked URL size: " + userBlockUrlCount, handler);
+            LogUtils.getInstance().writeInfo("Size: " + userBlockUrlCount, handler);
         }
         return list;
     }
