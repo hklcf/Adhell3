@@ -24,6 +24,12 @@ public interface BlockUrlProviderDao {
     @Query("SELECT * FROM BlockUrlProviders WHERE selected = :selected")
     List<BlockUrlProvider> getBlockUrlProviderBySelectedFlag(int selected);
 
+    @Query("SELECT DISTINCT BlockUrl.url FROM BlockUrlProviders INNER JOIN BlockUrl ON BlockUrl.urlProviderId = BlockUrlProviders._id WHERE selected = 1 ORDER BY BlockUrl.url")
+    List<String> getUniqueBlockedUrls();
+
+    @Query("SELECT COUNT(DISTINCT BlockUrl.url) FROM BlockUrlProviders INNER JOIN BlockUrl ON BlockUrl.urlProviderId = BlockUrlProviders._id WHERE selected = 1 ORDER BY BlockUrl.url")
+    int getUniqueBlockedUrlsCount();
+
     @Query("SELECT * FROM BlockUrlProviders WHERE url = :url")
     BlockUrlProvider getByUrl(String url);
 

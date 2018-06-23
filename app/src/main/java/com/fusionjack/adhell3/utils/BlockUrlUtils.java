@@ -19,9 +19,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 public class BlockUrlUtils {
 
@@ -84,16 +82,14 @@ public class BlockUrlUtils {
                 .replaceAll("^(www)([0-9]{0,3})?(\\.)","");
     }
 
-    public static Set<String> getUniqueBlockedUrls(AppDatabase appDatabase, Handler handler, boolean enableLog) {
-        Set<String> denyList = new HashSet<>();
-
-        // Process user-defined blocked URLs
+    public static List<String> getUserBlockedUrls(AppDatabase appDatabase, boolean enableLog, Handler handler) {
+        List<String> list = new ArrayList<>();
         int userBlockUrlCount = 0;
         List<UserBlockUrl> userBlockUrls = appDatabase.userBlockUrlDao().getAll2();
         for (UserBlockUrl userBlockUrl : userBlockUrls) {
             final String url = userBlockUrl.url;
             if (url.indexOf('|') == -1) {
-                denyList.add(url);
+                list.add(url);
                 if (enableLog) {
                     LogUtils.getInstance().writeInfo("UserBlockUrl: " + url, handler);
                 }
@@ -103,48 +99,19 @@ public class BlockUrlUtils {
         if (enableLog) {
             LogUtils.getInstance().writeInfo("User blocked URL size: " + userBlockUrlCount, handler);
         }
+        return list;
+    }
 
-        // Process all blocked URL providers
-        List<BlockUrlProvider> blockUrlProviders = appDatabase.blockUrlProviderDao().getBlockUrlProviderBySelectedFlag(1);
-        for (BlockUrlProvider blockUrlProvider : blockUrlProviders) {
-            List<BlockUrl> blockUrls = appDatabase.blockUrlDao().getUrlsByProviderId(blockUrlProvider.id);
-            if (enableLog) {
-                LogUtils.getInstance().writeInfo("Included url provider: " + blockUrlProvider.url + ", size: " + blockUrls.size(), handler);
-            }
-
-            for (BlockUrl blockUrl : blockUrls) {
-                denyList.add(blockUrl.url);
-            }
-        }
-
-        if (enableLog) {
-            LogUtils.getInstance().writeInfo("Total unique domains to block: " + denyList.size(), handler);
-        }
-
-        AppPreferences.getInstance().setBlockedDomainsCount(denyList.size());
-
-        return denyList;
+    public static int getAllBlockedUrlsCount(AppDatabase appDatabase) {
+        return appDatabase.blockUrlProviderDao().getUniqueBlockedUrlsCount();
     }
 
     public static List<String> getAllBlockedUrls(AppDatabase appDatabase) {
-        List<String> result = new ArrayList<>();
-        List<BlockUrlProvider> blockUrlProviders = appDatabase.blockUrlProviderDao().getBlockUrlProviderBySelectedFlag(1);
-        for (BlockUrlProvider blockUrlProvider : blockUrlProviders) {
-            List<BlockUrl> blockUrls = appDatabase.blockUrlDao().getUrlsByProviderId(blockUrlProvider.id);
-            for (BlockUrl blockUrl : blockUrls) {
-                result.add(blockUrl.url);
-            }
-        }
-        return result;
+        return appDatabase.blockUrlProviderDao().getUniqueBlockedUrls();
     }
 
     public static List<String> getBlockedUrls(long providerId, AppDatabase appDatabase) {
-        List<String> result = new ArrayList<>();
-        List<BlockUrl> blockUrls = appDatabase.blockUrlDao().getUrlsByProviderId(providerId);
-        for (BlockUrl blockUrl : blockUrls) {
-            result.add(blockUrl.url);
-        }
-        return result;
+        return appDatabase.blockUrlDao().getUrlsByProviderId(providerId);
     }
 
     public static List<String> getFilteredBlockedUrls(String filterText, AppDatabase appDatabase) {

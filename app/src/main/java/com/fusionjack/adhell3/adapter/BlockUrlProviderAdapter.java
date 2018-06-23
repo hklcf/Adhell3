@@ -24,7 +24,6 @@ import com.fusionjack.adhell3.utils.BlockUrlUtils;
 import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
 
 public class BlockUrlProviderAdapter extends ArrayAdapter<BlockUrlProvider> {
@@ -120,7 +119,7 @@ public class BlockUrlProviderAdapter extends ArrayAdapter<BlockUrlProvider> {
             provider.selected = isChecked;
             AppDatabase appDatabase = AdhellFactory.getInstance().getAppDatabase();
             appDatabase.blockUrlProviderDao().updateBlockUrlProviders(provider);
-            int totalUrls = new HashSet<>(BlockUrlUtils.getAllBlockedUrls(appDatabase)).size();
+            int totalUrls = BlockUrlUtils.getAllBlockedUrlsCount(appDatabase);
             if (totalUrls > AdhellAppIntegrity.BLOCK_URL_LIMIT) {
                 provider.selected = false;
                 appDatabase.blockUrlProviderDao().updateBlockUrlProviders(provider);

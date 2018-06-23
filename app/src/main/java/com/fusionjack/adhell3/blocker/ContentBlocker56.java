@@ -116,6 +116,7 @@ public class ContentBlocker56 implements ContentBlocker {
         try {
             processWhitelistedApps();
             processWhitelistedDomains();
+            processUserBlockedDomains();
             processBlockedDomains();
 
             LogUtils.getInstance().writeInfo("\nDomain rules are enabled.", handler);
@@ -316,7 +317,9 @@ public class ContentBlocker56 implements ContentBlocker {
             return;
         }
 
-        Set<String> denyList = BlockUrlUtils.getUniqueBlockedUrls(appDatabase, handler, false);
+        List<String> denyList = BlockUrlUtils.getAllBlockedUrls(appDatabase);
+        List<String> userList = BlockUrlUtils.getUserBlockedUrls(appDatabase, false, null);
+        denyList.addAll(userList);
         for (WhiteUrl whiteUrl : whiteUrls) {
             if (whiteUrl.url.indexOf('|') != -1) {
                 StringTokenizer tokens = new StringTokenizer(whiteUrl.url, "|");
@@ -328,7 +331,7 @@ public class ContentBlocker56 implements ContentBlocker {
                     final AppIdentity appIdentity = new AppIdentity(packageName, null);
                     List<String> allowList = new ArrayList<>();
                     allowList.add(url);
-                    processDomains(appIdentity, new ArrayList<>(denyList), allowList);
+                    processDomains(appIdentity, denyList, allowList);
                 }
             }
         }
@@ -350,12 +353,24 @@ public class ContentBlocker56 implements ContentBlocker {
         }
     }
 
+    private void processUserBlockedDomains() throws Exception {
+        LogUtils.getInstance().writeInfo("\nProcessing user blocked domains...", handler);
+
+        List<String> denyList = BlockUrlUtils.getUserBlockedUrls(appDatabase, true, handler);
+        List<DomainFilterRule> rules = new ArrayList<>();
+        final AppIdentity appIdentity = new AppIdentity("*", null);
+        rules.add(new DomainFilterRule(appIdentity, denyList, new ArrayList<>()));
+        AdhellFactory.getInstance().addDomainFilterRules(rules, handler);
+    }
+
     private void processBlockedDomains() throws Exception {
         LogUtils.getInstance().writeInfo("\nProcessing blocked domains...", handler);
 
-        Set<String> denyList = BlockUrlUtils.getUniqueBlockedUrls(appDatabase, handler, true);
+        List<String> denyList = BlockUrlUtils.getAllBlockedUrls(appDatabase);
+        LogUtils.getInstance().writeInfo("Total unique domains to block: " + denyList.size(), handler);
+
         final AppIdentity appIdentity = new AppIdentity("*", null);
-        processDomains(appIdentity, new ArrayList<>(denyList), new ArrayList<>());
+        processDomains(appIdentity, denyList, new ArrayList<>());
     }
 
     private void processDomains(AppIdentity appIdentity, List<String> denyList, List<String> allowList) throws Exception {

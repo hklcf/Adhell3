@@ -5,12 +5,11 @@ import android.os.Handler;
 import android.util.Log;
 
 import com.fusionjack.adhell3.db.AppDatabase;
-import com.fusionjack.adhell3.db.entity.BlockUrl;
 import com.fusionjack.adhell3.db.entity.BlockUrlProvider;
-import com.fusionjack.adhell3.db.entity.UserBlockUrl;
 import com.fusionjack.adhell3.db.entity.WhiteUrl;
 import com.fusionjack.adhell3.utils.AdhellAppIntegrity;
 import com.fusionjack.adhell3.utils.AdhellFactory;
+import com.fusionjack.adhell3.utils.BlockUrlUtils;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -120,16 +119,10 @@ public class ContentBlocker20 implements ContentBlocker {
         Log.d(LOG_TAG, "Entering prepareUrls");
         BlockUrlProvider standardBlockUrlProvider =
                 appDatabase.blockUrlProviderDao().getByUrl(AdhellAppIntegrity.ADHELL_STANDARD_PACKAGE);
-        List<BlockUrl> standardList = appDatabase.blockUrlDao().getUrlsByProviderId(standardBlockUrlProvider.id);
-        List<UserBlockUrl> userBlockUrls = appDatabase.userBlockUrlDao().getAll2();
 
-        List<String> denyList = new ArrayList<>();
-        for (UserBlockUrl userBlockUrl : userBlockUrls) {
-            denyList.add(userBlockUrl.url);
-        }
-        for (BlockUrl blockUrl : standardList) {
-            denyList.add(blockUrl.url);
-        }
+        List<String> denyList = appDatabase.blockUrlDao().getUrlsByProviderId(standardBlockUrlProvider.id);
+        List<String> userList = BlockUrlUtils.getUserBlockedUrls(appDatabase, false, null);
+        denyList.addAll(userList);
 
         List<WhiteUrl> whiteUrls = appDatabase.whiteUrlDao().getAll2();
 
