@@ -9,12 +9,9 @@ import android.widget.ListView;
 
 import com.fusionjack.adhell3.R;
 import com.fusionjack.adhell3.db.AppDatabase;
-import com.fusionjack.adhell3.db.entity.UserBlockUrl;
-import com.fusionjack.adhell3.db.entity.WhiteUrl;
 import com.fusionjack.adhell3.utils.AdhellFactory;
 
 import java.lang.ref.WeakReference;
-import java.util.ArrayList;
 import java.util.List;
 
 import static com.fusionjack.adhell3.fragments.DomainTabPageFragment.BLACKLIST_PAGE;
@@ -32,19 +29,13 @@ public class RefreshListAsyncTask extends AsyncTask<Void, Void, List<String>> {
     @Override
     protected List<String> doInBackground(Void... voids) {
         AppDatabase appDatabase = AdhellFactory.getInstance().getAppDatabase();
-        List<String> domainList = new ArrayList<>();
+        List<String> domainList = null;
         switch (page) {
             case BLACKLIST_PAGE:
-                List<UserBlockUrl> urlList = appDatabase.userBlockUrlDao().getAll2();
-                for (UserBlockUrl blockUrl : urlList) {
-                    domainList.add(blockUrl.url);
-                }
+                domainList = appDatabase.userBlockUrlDao().getAll3();
                 break;
             case WHITELIST_PAGE:
-                List<WhiteUrl> whiteUrlList = appDatabase.whiteUrlDao().getAll2();
-                for (WhiteUrl whiteUrl : whiteUrlList) {
-                    domainList.add(whiteUrl.url);
-                }
+                domainList = appDatabase.whiteUrlDao().getAll3();
                 break;
         }
         return domainList;

@@ -6,7 +6,6 @@ import android.util.Log;
 
 import com.fusionjack.adhell3.db.AppDatabase;
 import com.fusionjack.adhell3.db.entity.BlockUrlProvider;
-import com.fusionjack.adhell3.db.entity.WhiteUrl;
 import com.fusionjack.adhell3.utils.AdhellAppIntegrity;
 import com.fusionjack.adhell3.utils.AdhellFactory;
 import com.fusionjack.adhell3.utils.BlockUrlUtils;
@@ -124,13 +123,9 @@ public class ContentBlocker20 implements ContentBlocker {
         List<String> userList = BlockUrlUtils.getUserBlockedUrls(appDatabase, false, null);
         denyList.addAll(userList);
 
-        List<WhiteUrl> whiteUrls = appDatabase.whiteUrlDao().getAll2();
+        List<String> whiteList = appDatabase.whiteUrlDao().getAll3();
+        denyList.removeAll(whiteList);
 
-        List<String> whiteUrlsString = new ArrayList<>();
-        for (WhiteUrl whiteUrl : whiteUrls) {
-            whiteUrlsString.add(whiteUrl.url);
-        }
-        denyList.removeAll(whiteUrlsString);
         denyList = denyList.subList(0, urlBlockLimit);
         Log.i(LOG_TAG, denyList.toString());
         return denyList;

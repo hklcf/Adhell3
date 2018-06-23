@@ -7,7 +7,6 @@ import android.webkit.URLUtil;
 import com.fusionjack.adhell3.db.AppDatabase;
 import com.fusionjack.adhell3.db.entity.BlockUrl;
 import com.fusionjack.adhell3.db.entity.BlockUrlProvider;
-import com.fusionjack.adhell3.db.entity.UserBlockUrl;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -85,9 +84,8 @@ public class BlockUrlUtils {
     public static List<String> getUserBlockedUrls(AppDatabase appDatabase, boolean enableLog, Handler handler) {
         List<String> list = new ArrayList<>();
         int userBlockUrlCount = 0;
-        List<UserBlockUrl> userBlockUrls = appDatabase.userBlockUrlDao().getAll2();
-        for (UserBlockUrl userBlockUrl : userBlockUrls) {
-            final String url = userBlockUrl.url;
+        List<String> urls = appDatabase.userBlockUrlDao().getAll3();
+        for (String url : urls) {
             if (url.indexOf('|') == -1) {
                 list.add(url);
                 if (enableLog) {

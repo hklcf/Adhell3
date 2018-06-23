@@ -23,6 +23,9 @@ public interface WhiteUrlDao {
     @Query("SELECT * FROM WhiteUrl")
     List<WhiteUrl> getAll2();
 
+    @Query("SELECT url FROM WhiteUrl")
+    List<String> getAll3();
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(WhiteUrl whiteUrl);
 

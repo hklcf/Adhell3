@@ -4,8 +4,6 @@ import android.os.Handler;
 
 import com.fusionjack.adhell3.db.AppDatabase;
 import com.fusionjack.adhell3.db.entity.AppInfo;
-import com.fusionjack.adhell3.db.entity.UserBlockUrl;
-import com.fusionjack.adhell3.db.entity.WhiteUrl;
 import com.fusionjack.adhell3.utils.AdhellFactory;
 import com.fusionjack.adhell3.utils.AppPreferences;
 import com.fusionjack.adhell3.utils.BlockUrlUtils;
@@ -170,10 +168,10 @@ public class ContentBlocker56 implements ContentBlocker {
 
         FirewallRule[] enabledRules = firewall.getRules(Firewall.FIREWALL_DENY_RULE, FirewallRule.Status.ENABLED);
         int count = 0;
-        List<UserBlockUrl> userBlockUrls = appDatabase.userBlockUrlDao().getAll2();
-        for (UserBlockUrl userBlockUrl : userBlockUrls) {
-            if (userBlockUrl.url.indexOf('|') != -1) {
-                StringTokenizer tokens = new StringTokenizer(userBlockUrl.url, "|");
+        List<String> urls = appDatabase.userBlockUrlDao().getAll3();
+        for (String url : urls) {
+            if (url.indexOf('|') != -1) {
+                StringTokenizer tokens = new StringTokenizer(url, "|");
                 if (tokens.countTokens() == 3) {
                     String packageName = tokens.nextToken().trim();
                     String ip = tokens.nextToken().trim();
@@ -311,7 +309,7 @@ public class ContentBlocker56 implements ContentBlocker {
         // Process user-defined white list
         // 1. URL for all packages: url
         // 2. URL for individual package: packageName|url
-        List<WhiteUrl> whiteUrls = appDatabase.whiteUrlDao().getAll2();
+        List<String> whiteUrls = appDatabase.whiteUrlDao().getAll3();
         LogUtils.getInstance().writeInfo("Size: " + whiteUrls.size(), handler);
         if (whiteUrls.size() == 0) {
             return;
@@ -320,9 +318,9 @@ public class ContentBlocker56 implements ContentBlocker {
         List<String> denyList = BlockUrlUtils.getAllBlockedUrls(appDatabase);
         List<String> userList = BlockUrlUtils.getUserBlockedUrls(appDatabase, false, null);
         denyList.addAll(userList);
-        for (WhiteUrl whiteUrl : whiteUrls) {
-            if (whiteUrl.url.indexOf('|') != -1) {
-                StringTokenizer tokens = new StringTokenizer(whiteUrl.url, "|");
+        for (String whiteUrl : whiteUrls) {
+            if (whiteUrl.indexOf('|') != -1) {
+                StringTokenizer tokens = new StringTokenizer(whiteUrl, "|");
                 if (tokens.countTokens() == 2) {
                     final String packageName = tokens.nextToken();
                     final String url = tokens.nextToken();
@@ -338,11 +336,10 @@ public class ContentBlocker56 implements ContentBlocker {
 
         // Whitelist URL for all apps
         Set<String> allowList = new HashSet<>();
-        for (WhiteUrl whiteUrl : whiteUrls) {
-            if (whiteUrl.url.indexOf('|') == -1) {
-                final String url = whiteUrl.url;
-                allowList.add(url);
-                LogUtils.getInstance().writeInfo("Domain: " + url, handler);
+        for (String whiteUrl : whiteUrls) {
+            if (whiteUrl.indexOf('|') == -1) {
+                allowList.add(whiteUrl);
+                LogUtils.getInstance().writeInfo("Domain: " + whiteUrl, handler);
             }
         }
         if (allowList.size() > 0) {

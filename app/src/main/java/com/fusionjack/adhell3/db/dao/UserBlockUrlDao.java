@@ -22,6 +22,9 @@ public interface UserBlockUrlDao {
     @Query("SELECT * FROM UserBlockUrl")
     List<UserBlockUrl> getAll2();
 
+    @Query("SELECT url FROM UserBlockUrl")
+    List<String> getAll3();
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     long insert(UserBlockUrl userBlockUrl);
 
