@@ -70,15 +70,10 @@ public class BlockUrlUtils {
                 // Remove 'deadzone' - We only want the domain
                 .replace("127.0.0.1", "")
                 .replace("0.0.0.0", "")
-
-                // Remove whitespace
-                .replaceAll("\\s","")
-
                 // Remove comments
-                .replaceAll("(#.*)|((\\s)+#.*)","")
-
-                // Remove WWW, WWW1 etc. prefix
-                .replaceAll("^(www)([0-9]{0,3})?(\\.)","");
+                .replaceAll("\\s*(?:#.*)$","")
+                // Remove whitespace
+                .replaceAll("\\s+","");
     }
 
     public static List<String> getUserBlockedUrls(AppDatabase appDatabase, boolean enableLog, Handler handler) {
