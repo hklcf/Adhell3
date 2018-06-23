@@ -304,7 +304,7 @@ public class ContentBlocker56 implements ContentBlocker {
     }
 
     private void processWhitelistedDomains() throws Exception {
-        LogUtils.getInstance().writeInfo("\nProcessing domain whitelist...", handler);
+        LogUtils.getInstance().writeInfo("\nProcessing whitelist...", handler);
 
         // Process user-defined white list
         // 1. URL for all packages: url
@@ -351,13 +351,15 @@ public class ContentBlocker56 implements ContentBlocker {
     }
 
     private void processUserBlockedDomains() throws Exception {
-        LogUtils.getInstance().writeInfo("\nProcessing domain blacklist...", handler);
+        LogUtils.getInstance().writeInfo("\nProcessing blacklist...", handler);
 
         List<String> denyList = BlockUrlUtils.getUserBlockedUrls(appDatabase, true, handler);
-        List<DomainFilterRule> rules = new ArrayList<>();
-        final AppIdentity appIdentity = new AppIdentity("*", null);
-        rules.add(new DomainFilterRule(appIdentity, denyList, new ArrayList<>()));
-        AdhellFactory.getInstance().addDomainFilterRules(rules, handler);
+        if (denyList.size() > 0) {
+            List<DomainFilterRule> rules = new ArrayList<>();
+            final AppIdentity appIdentity = new AppIdentity("*", null);
+            rules.add(new DomainFilterRule(appIdentity, denyList, new ArrayList<>()));
+            AdhellFactory.getInstance().addDomainFilterRules(rules, handler);
+        }
     }
 
     private void processBlockedDomains() throws Exception {
