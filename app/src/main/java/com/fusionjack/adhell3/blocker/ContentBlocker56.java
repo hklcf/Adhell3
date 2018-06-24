@@ -367,6 +367,7 @@ public class ContentBlocker56 implements ContentBlocker {
 
         List<String> denyList = BlockUrlUtils.getAllBlockedUrls(appDatabase);
         LogUtils.getInstance().writeInfo("Total unique domains to block: " + denyList.size(), handler);
+        AppPreferences.getInstance().setBlockedDomainsCount(denyList.size());
 
         final AppIdentity appIdentity = new AppIdentity("*", null);
         processDomains(appIdentity, denyList, new ArrayList<>());
