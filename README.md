@@ -52,7 +52,7 @@ Ability to disable app's permissions, services and receivers. Only user apps are
 Set custom DNS for selected apps. Only user apps are supported.
 
 ## Prerequisite for building apk
-### Java (Optional - Only if you build apk with command line)
+### Java
 - Install JDK 8 for your platform http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html
 - Don't use JDK 9 as there is issue with Gradle. See Issue #78.
  
@@ -61,7 +61,7 @@ Set custom DNS for selected apps. Only user apps are supported.
 
 ### Source code
 - Using git: Clone the project with `git clone git@gitlab.com:fusionjack/adhell3.git adhell3`
-- Using zip file: Download the source code as a zip file: https://gitlab.com/fusionjack/adhell3/repository/master/archive.zip
+- Without git: Download the source code as a zip file: https://gitlab.com/fusionjack/adhell3/repository/master/archive.zip
 - Set `applicationId` with a valid package name in `app\build.gradle`, e.g.: com.dhf.erz58384
 
 ### Android Studio
@@ -77,7 +77,7 @@ Set custom DNS for selected apps. Only user apps are supported.
 ## How to build apk
 
 ### With Git
-Plugin your device and run this following commands in a bash console:<br/>
+Plug in your device and run this following commands in a bash console:<br/>
 1. `cd adhell3`<br/>
 2. `git stash && git pull --rebase && git stash pop`<br/>
 3. `bash gradlew clean installDebug`
@@ -88,15 +88,10 @@ Explanation:
 3. Build and install apk on the device
 
 ### Without Git
-Plugin your device and run this following commands in a console:<br/>
-1. `cd adhell3`<br/>
-2. Re-download the source code as a zip file and re-applies your changes manually<br/>
-3. `gradlew clean installDebug`
-
-Explanation:
-1. Enter adhell3 folder
-2. Update source code
-3. Build and install apk on the device
+1. Re-download the source code as a zip file and re-applies your changes manually<br/>
+2. Plug in your device and run this following commands in Windows console:<br/>
+`cd adhell3`<br/>
+`gradlew clean installDebug`
 
 
 ## Prerequisite for using Adhell3
