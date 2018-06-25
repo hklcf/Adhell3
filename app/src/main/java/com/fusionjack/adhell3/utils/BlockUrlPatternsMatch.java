@@ -14,12 +14,7 @@ public final class BlockUrlPatternsMatch {
     // Define pattern for filter files: ||something.com^ or ||something.com^$third-party
     private static final String FILTER_PATTERN = "(?im)(?=.{4,253}\\^)((?<=^[|]{2})(((?!-)[a-z0-9-]{1,63}(?<!-)\\.)+[a-z]{2,63})(?=\\^([$]third-party)?$))";
     private static final Pattern filter_r = Pattern.compile(FILTER_PATTERN);
-
-    // Knox URL - Must contain a letter in prefix / domain
-    private static final String KNOX_VALID_PATTERN = "(?i)(^(?=.*[a-z]).*$)";
-    private static final Pattern knox_valid_r = Pattern.compile(KNOX_VALID_PATTERN);
-
-
+    
     private BlockUrlPatternsMatch() {
     }
 
@@ -93,24 +88,7 @@ public final class BlockUrlPatternsMatch {
     }
 
     public static String getValidKnoxUrl(String url) {
-        // We have discovered that restricting by a wildcard prefix programmatically is too restrictive.
-        // Knox seems invalidate a domain if the prefix does not contain any letters.
-        // We will programmatically prefix domains such as 123.test.com, but not t123.test.com
-
-        // If we have a wildcard, skip and pattern compiling / matching
-        // Otherwise process it as an invalid url
-        if (url.contains("*")) {
-            return url;
-        }
-
-        // Get the prefix
-        final String url_prefix = url.replaceAll("[.](.*)$", "");
-        // Regex: must contain a letter (excl wildcards)
-        final Matcher prefix_valid = knox_valid_r.matcher(url_prefix);
-
-        // If we don't have any letters in the prefix
-        // Add a wildcard prefix as a safety net
-        return (prefix_valid.find() ? "" : "*") + url;
+        return (url.contains("*") ? "" : "*") + url;
     }
 
 }

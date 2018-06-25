@@ -73,7 +73,9 @@ public class BlockUrlUtils {
                 // Remove comments
                 .replaceAll("\\s*(?:#.*)$","")
                 // Remove whitespace
-                .replaceAll("\\s+","");
+                .replaceAll("\\s+","")
+                // Remove WWW
+                .replaceAll("^www(?:[0-9]{1,3})?(?:\\.)", "");
     }
 
     public static List<String> getUserBlockedUrls(AppDatabase appDatabase, boolean enableLog, Handler handler) {
