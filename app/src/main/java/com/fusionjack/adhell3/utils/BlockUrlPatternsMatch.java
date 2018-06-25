@@ -93,24 +93,7 @@ public final class BlockUrlPatternsMatch {
     }
 
     public static String getValidKnoxUrl(String url) {
-        // We have discovered that restricting by a wildcard prefix programmatically is too restrictive.
-        // Knox seems invalidate a domain if the prefix does not contain any letters.
-        // We will programmatically prefix domains such as 123.test.com, but not t123.test.com
-
-        // If we have a wildcard, skip and pattern compiling / matching
-        // Otherwise process it as an invalid url
-        if (url.contains("*")) {
-            return url;
-        }
-
-        // Get the prefix
-        final String url_prefix = url.replaceAll("[.](.*)$", "");
-        // Regex: must contain a letter (excl wildcards)
-        final Matcher prefix_valid = knox_valid_r.matcher(url_prefix);
-
-        // If we don't have any letters in the prefix
-        // Add a wildcard prefix as a safety net
-        return (prefix_valid.find() ? "" : "*") + url;
+        return (url.contains("*") ? "" : "*") + url;
     }
 
 }
