@@ -456,9 +456,8 @@ public class HomeTabFragment extends Fragment {
                             .setPositiveButton(android.R.string.yes, (dialog, whichButton) ->
                                 AsyncTask.execute(() -> {
                                     AppDatabase appDatabase = AdhellFactory.getInstance().getAppDatabase();
-                                    WhiteUrl whiteUrl = new WhiteUrl();
-                                    whiteUrl.url = reportBlockedUrls.get(position).url;
-                                    whiteUrl.insertedAt = new Date();
+                                    final String blockedUrl = reportBlockedUrls.get(position).url;
+                                    WhiteUrl whiteUrl = new WhiteUrl(blockedUrl, new Date());
                                     appDatabase.whiteUrlDao().insert(whiteUrl);
                                 })
                             )

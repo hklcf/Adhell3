@@ -468,9 +468,7 @@ public final class DatabaseFactory {
             }
             reader.endObject();
 
-            UserBlockUrl blockUrl = new UserBlockUrl();
-            blockUrl.url = url;
-            blockUrl.insertedAt = insertedAt;
+            UserBlockUrl blockUrl = new UserBlockUrl(url, insertedAt);
             userBlockUrls.add(blockUrl);
         }
         reader.endArray();
@@ -497,9 +495,7 @@ public final class DatabaseFactory {
             }
             reader.endObject();
 
-            WhiteUrl whiteUrl = new WhiteUrl();
-            whiteUrl.url = url;
-            whiteUrl.insertedAt = insertedAt;
+            WhiteUrl whiteUrl = new WhiteUrl(url, insertedAt);
             whiteUrls.add(whiteUrl);
         }
         reader.endArray();

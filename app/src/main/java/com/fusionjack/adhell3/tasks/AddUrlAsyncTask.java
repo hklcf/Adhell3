@@ -14,6 +14,7 @@ import com.fusionjack.adhell3.db.entity.WhiteUrl;
 import com.fusionjack.adhell3.utils.AdhellFactory;
 
 import java.lang.ref.WeakReference;
+import java.util.Date;
 
 import static com.fusionjack.adhell3.fragments.DomainTabPageFragment.BLACKLIST_PAGE;
 import static com.fusionjack.adhell3.fragments.DomainTabPageFragment.WHITELIST_PAGE;
@@ -34,12 +35,12 @@ public class AddUrlAsyncTask extends AsyncTask<Void, Void, Void> {
         AppDatabase appDatabase = AdhellFactory.getInstance().getAppDatabase();
         switch (page) {
             case BLACKLIST_PAGE:
-                UserBlockUrl userBlockUrl = new UserBlockUrl(url);
+                UserBlockUrl userBlockUrl = new UserBlockUrl(url, new Date());
                 url = userBlockUrl.url;
                 appDatabase.userBlockUrlDao().insert(userBlockUrl);
                 break;
             case WHITELIST_PAGE:
-                WhiteUrl whiteUrl = new WhiteUrl(url);
+                WhiteUrl whiteUrl = new WhiteUrl(url, new Date());
                 url = whiteUrl.url;
                 appDatabase.whiteUrlDao().insert(whiteUrl);
                 break;
