@@ -13,6 +13,8 @@ import com.fusionjack.adhell3.db.entity.BlockUrlProvider;
 import com.fusionjack.adhell3.db.entity.DisabledPackage;
 import com.fusionjack.adhell3.db.entity.FirewallWhitelistedPackage;
 import com.fusionjack.adhell3.db.entity.PolicyPackage;
+import com.fusionjack.adhell3.db.entity.UserBlockUrl;
+import com.fusionjack.adhell3.db.entity.WhiteUrl;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -236,5 +238,38 @@ public class AdhellAppIntegrity {
             return;
         }
         AppCache.reload(null, null);
+    }
+
+    // After commit c788db6fd, we are storing the valid Knox domain in the database.
+    // The process to prefix the domain with the wildcard is only done when a new domain for blacklist/whitelist or host provider is added.
+    // Therefore, for the domains that are already stored in the database, we need to prefixing them.
+    // This will only run once.
+    public void checkDomains() {
+        boolean checked = AppPreferences.getInstance().isDomainsChecked();
+        if (!checked) {
+            List<UserBlockUrl> blacklist = appDatabase.userBlockUrlDao().getAll2();
+            for (UserBlockUrl userBlockUrl : blacklist) {
+                final String url = userBlockUrl.url;
+                // Blacklist and whitelist might contains a rule
+                if (url.indexOf('|') == -1) {
+                    userBlockUrl.url = BlockUrlPatternsMatch.getValidKnoxUrl(url);
+                }
+                appDatabase.userBlockUrlDao().update(userBlockUrl);
+            }
+
+            List<WhiteUrl> whitelist = appDatabase.whiteUrlDao().getAll2();
+            for (WhiteUrl whiteUrl : whitelist) {
+                final String url = whiteUrl.url;
+                // Blacklist and whitelist might contains a rule
+                if (url.indexOf('|') == -1) {
+                    whiteUrl.url = BlockUrlPatternsMatch.getValidKnoxUrl(url);
+                }
+                appDatabase.whiteUrlDao().update(whiteUrl);
+            }
+
+            AdhellFactory.getInstance().updateAllProviders();
+
+            AppPreferences.getInstance().setDomainsChecked(true);
+        }
     }
 }

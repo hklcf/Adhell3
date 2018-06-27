@@ -7,6 +7,7 @@ import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.OnConflictStrategy;
 import android.arch.persistence.room.Query;
 import android.arch.persistence.room.TypeConverters;
+import android.arch.persistence.room.Update;
 
 import com.fusionjack.adhell3.db.DateConverter;
 import com.fusionjack.adhell3.db.entity.WhiteUrl;
@@ -40,5 +41,8 @@ public interface WhiteUrlDao {
 
     @Query("DELETE FROM WhiteUrl")
     void deleteAll();
+
+    @Update
+    void update(WhiteUrl whiteUrl);
 
 }

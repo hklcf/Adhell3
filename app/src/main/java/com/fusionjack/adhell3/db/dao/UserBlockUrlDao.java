@@ -7,6 +7,7 @@ import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.OnConflictStrategy;
 import android.arch.persistence.room.Query;
 import android.arch.persistence.room.TypeConverters;
+import android.arch.persistence.room.Update;
 
 import com.fusionjack.adhell3.db.DateConverter;
 import com.fusionjack.adhell3.db.entity.UserBlockUrl;
@@ -42,4 +43,7 @@ public interface UserBlockUrlDao {
 
     @Query("SELECT * FROM UserBlockUrl WHERE url LIKE :url")
     List<UserBlockUrl> getByUrl(String url);
+
+    @Update
+    void update(UserBlockUrl userBlockUrl);
 }

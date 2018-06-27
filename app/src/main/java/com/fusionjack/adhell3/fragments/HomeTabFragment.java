@@ -129,6 +129,7 @@ public class HomeTabFragment extends Fragment {
             adhellAppIntegrity.checkDefaultPolicyExists();
             adhellAppIntegrity.checkAdhellStandardPackage();
             adhellAppIntegrity.fillPackageDb();
+            adhellAppIntegrity.checkDomains();
         });
 
         updateUserInterface();
