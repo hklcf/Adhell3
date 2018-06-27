@@ -60,7 +60,7 @@ Set custom DNS for selected apps. Only user apps are supported.
 - Install git for your platform: https://git-scm.com/book/en/v2/Getting-Started-Installing-Git
 
 ### Source code
-- Using git: Clone the project with `git clone git@gitlab.com:fusionjack/adhell3.git adhell3`
+- Using git: Clone the project with `git clone https://gitlab.com/fusionjack/adhell3.git`
 - Without git: Download the source code as a zip file: https://gitlab.com/fusionjack/adhell3/repository/master/archive.zip
 - Set `applicationId` with a valid package name in `app\build.gradle`, e.g.: com.dhf.erz58384
 
