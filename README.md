@@ -106,6 +106,6 @@ As for developer, the license needs to be renewed every 3 months. Don't forget t
 
 
 ## Credits
-Adhell3 is based on FiendFyre's Adhell2 which is heavily modified by me.<br/>
-### Icons
-https://material.io/icons
+* Adhell3 is based on FiendFyre's Adhell2 which is heavily modified by me.<br/>
+* Big thanks to @mmotti who provides a host file for Adhell3. You can visit his Github here: https://github.com/mmotti/mmotti-host-file
+* Adhell3 is using icons from https://material.io/icons
