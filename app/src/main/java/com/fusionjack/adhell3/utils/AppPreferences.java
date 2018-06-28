@@ -11,7 +11,6 @@ public final class AppPreferences {
     private final static String DNS_ALL_APPS_ENABLED = "dnsAllAppsEnabled";
     private static final String DNS1 = "dns1";
     private static final String DNS2 = "dns2";
-    private static final String CHECK_DOMAINS = "checkDomains";
 
     private AppPreferences() {
         sharedPreferences = AdhellFactory.getInstance().getSharedPreferences();
@@ -83,16 +82,6 @@ public final class AppPreferences {
     public void resetBlockedDomainsCount() {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.remove(BLOCKED_DOMAINS_COUNT);
-        editor.apply();
-    }
-
-    public boolean isDomainsChecked() {
-        return sharedPreferences.getBoolean(CHECK_DOMAINS, false);
-    }
-
-    public void setDomainsChecked(boolean checked) {
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putBoolean(CHECK_DOMAINS, checked);
         editor.apply();
     }
 }
