@@ -6,7 +6,6 @@ import android.arch.persistence.room.PrimaryKey;
 import android.arch.persistence.room.TypeConverters;
 
 import com.fusionjack.adhell3.db.DateConverter;
-import com.fusionjack.adhell3.utils.BlockUrlPatternsMatch;
 
 import java.util.Date;
 
@@ -25,7 +24,7 @@ public class UserBlockUrl {
     public Date insertedAt;
 
     public UserBlockUrl(String url, Date insertedAt) {
-        this.url = BlockUrlPatternsMatch.getValidKnoxUrl(url);
+        this.url = url;
         this.insertedAt = insertedAt;
     }
 }
