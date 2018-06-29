@@ -22,9 +22,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Date;
@@ -75,11 +73,6 @@ public final class DatabaseFactory {
             throw new FileNotFoundException("Backup file " + BACKUP_FILENAME + " cannot be found");
         }
 
-        File dbFolder = new File(Environment.getExternalStorageDirectory(), AppDatabase.DATABASE_FOLDER);
-        File dbFile = new File(dbFolder, AppDatabase.DATABASE_FILE);
-        File backupDbFile = new File(dbFolder, AppDatabase.DATABASE_FILE + ".bak");
-        copy(dbFile, backupDbFile);
-
         try {
             AdhellAppIntegrity appIntegrity = AdhellAppIntegrity.getInstance();
             appIntegrity.checkDefaultPolicyExists();
@@ -113,23 +106,7 @@ public final class DatabaseFactory {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            copy(backupDbFile, dbFile);
-            backupDbFile.delete();
             throw e;
-        }
-
-        backupDbFile.delete();
-    }
-
-    private static void copy(File src, File dst) throws IOException {
-        try (InputStream in = new FileInputStream(src)) {
-            try (OutputStream out = new FileOutputStream(dst)) {
-                byte[] buf = new byte[1024];
-                int len;
-                while ((len = in.read(buf)) > 0) {
-                    out.write(buf, 0, len);
-                }
-            }
         }
     }
 

@@ -9,11 +9,11 @@ import com.fusionjack.adhell3.utils.AppPreferences;
 import com.fusionjack.adhell3.utils.BlockUrlUtils;
 import com.fusionjack.adhell3.utils.LogUtils;
 import com.google.common.collect.Lists;
-import com.sec.enterprise.AppIdentity;
-import com.sec.enterprise.firewall.DomainFilterRule;
-import com.sec.enterprise.firewall.Firewall;
-import com.sec.enterprise.firewall.FirewallResponse;
-import com.sec.enterprise.firewall.FirewallRule;
+import com.samsung.android.knox.AppIdentity;
+import com.samsung.android.knox.net.firewall.DomainFilterRule;
+import com.samsung.android.knox.net.firewall.Firewall;
+import com.samsung.android.knox.net.firewall.FirewallResponse;
+import com.samsung.android.knox.net.firewall.FirewallRule;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -116,6 +116,7 @@ public class ContentBlocker56 implements ContentBlocker {
             processWhitelistedDomains();
             processUserBlockedDomains();
             processBlockedDomains();
+            AdhellFactory.getInstance().applyDns(handler);
 
             LogUtils.getInstance().writeInfo("\nDomain rules are enabled.", handler);
 
@@ -229,7 +230,7 @@ public class ContentBlocker56 implements ContentBlocker {
 
             boolean add = true;
             for (FirewallRule enabledRule : enabledRules) {
-                String packageName1 = enabledRule.getPackageName();
+                String packageName1 = enabledRule.getApplication().getPackageName();
                 Firewall.NetworkInterface networkInterface = enabledRule.getNetworkInterface();
                 if (packageName1.equalsIgnoreCase(packageName) && networkInterface == Firewall.NetworkInterface.MOBILE_DATA_ONLY) {
                     add = false;
@@ -264,7 +265,7 @@ public class ContentBlocker56 implements ContentBlocker {
 
             boolean add = true;
             for (FirewallRule enabledRule : enabledRules) {
-                String packageName1 = enabledRule.getPackageName();
+                String packageName1 = enabledRule.getApplication().getPackageName();
                 Firewall.NetworkInterface networkInterface = enabledRule.getNetworkInterface();
                 if (packageName1.equalsIgnoreCase(packageName) && networkInterface == Firewall.NetworkInterface.WIFI_DATA_ONLY) {
                     add = false;

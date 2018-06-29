@@ -30,14 +30,14 @@ public interface AppPermissionDao {
     @Query("DELETE FROM AppPermission WHERE packageName = :packageName AND permissionName = :permissionName")
     void delete(String packageName, String permissionName);
 
-    @Query("DELETE FROM AppPermission WHERE permissionStatus = -1")
-    void deletePermissions();
+    @Query("DELETE FROM AppPermission WHERE permissionStatus = -1 AND packageName = :packageName")
+    void deletePermissions(String packageName);
 
-    @Query("DELETE FROM AppPermission WHERE permissionStatus = 2")
-    void deleteServices();
+    @Query("DELETE FROM AppPermission WHERE permissionStatus = 2 AND packageName = :packageName")
+    void deleteServices(String packageName);
 
-    @Query("DELETE FROM AppPermission WHERE permissionStatus = 5")
-    void deleteReceivers();
+    @Query("DELETE FROM AppPermission WHERE permissionStatus = 5 AND packageName = :packageName")
+    void deleteReceivers(String packageName);
 
     @Query("DELETE FROM AppPermission")
     void deleteAll();

@@ -1,13 +1,10 @@
 package com.fusionjack.adhell3.utils;
 
-import android.app.enterprise.AppPermissionControlInfo;
-import android.app.enterprise.ApplicationPermissionControlPolicy;
 import android.content.SharedPreferences;
 import android.util.Log;
 
 import com.fusionjack.adhell3.db.AppDatabase;
 import com.fusionjack.adhell3.db.entity.AppInfo;
-import com.fusionjack.adhell3.db.entity.AppPermission;
 import com.fusionjack.adhell3.db.entity.BlockUrl;
 import com.fusionjack.adhell3.db.entity.BlockUrlProvider;
 import com.fusionjack.adhell3.db.entity.DisabledPackage;
@@ -17,7 +14,6 @@ import com.fusionjack.adhell3.db.entity.PolicyPackage;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 public class AdhellAppIntegrity {
     public static final String ADHELL_STANDARD_PACKAGE = "https://raw.githubusercontent.com/mmotti/mmotti-host-file/master/hosts";
@@ -35,14 +31,12 @@ public class AdhellAppIntegrity {
 
     private AppDatabase appDatabase;
     private SharedPreferences sharedPreferences;
-    private ApplicationPermissionControlPolicy appPermissionControlPolicy;
 
     private static AdhellAppIntegrity instance;
 
     private AdhellAppIntegrity() {
         this.appDatabase = AdhellFactory.getInstance().getAppDatabase();
         this.sharedPreferences = AdhellFactory.getInstance().getSharedPreferences();
-        this.appPermissionControlPolicy = AdhellFactory.getInstance().getAppControlPolicy();
     }
 
     public static AdhellAppIntegrity getInstance() {
@@ -68,11 +62,6 @@ public class AdhellAppIntegrity {
         if (!firewallWhitelistedPackagesMoved) {
             copyDataFromAppInfoToFirewallWhitelistedPackage();
             sharedPreferences.edit().putBoolean(FIREWALL_WHITELISTED_PACKAGES_MOVED, true).apply();
-        }
-        boolean appPermissionsMoved = sharedPreferences.getBoolean(MOVE_APP_PERMISSIONS, false);
-        if (!appPermissionsMoved) {
-            moveAppPermissionsToAppPermissionTable();
-            sharedPreferences.edit().putBoolean(MOVE_APP_PERMISSIONS, true).apply();
         }
         boolean defaultPackagesFirewallWhitelisted
                 = sharedPreferences.getBoolean(DEFAULT_PACKAGES_FIREWALL_WHITELISTED, false);
@@ -152,40 +141,6 @@ public class AdhellAppIntegrity {
             firewallWhitelistedPackages.add(whitelistedPackage);
         }
         appDatabase.firewallWhitelistedPackageDao().insertAll(firewallWhitelistedPackages);
-    }
-
-    private void moveAppPermissionsToAppPermissionTable() {
-        if (appPermissionControlPolicy == null) {
-            Log.w(TAG, "applicationPermissionControlPolicy is null");
-            return;
-        }
-        List<AppPermission> appPermissions = appDatabase.appPermissionDao().getAll();
-        if (appPermissions.size() > 0) {
-            Log.d(TAG, "AppPermission size is " + appPermissions.size() + ". No need to move data");
-        }
-
-        List<AppPermissionControlInfo> appPermissionControlInfos
-                = appPermissionControlPolicy.getPackagesFromPermissionBlackList();
-        if (appPermissionControlInfos == null || appPermissionControlInfos.size() == 0) {
-            Log.d(TAG, "No blacklisted packages in applicationPermissionControlPolicy");
-            return;
-        }
-        appPermissions = new ArrayList<>();
-        AppPermissionControlInfo appPermissionControlInfo = appPermissionControlInfos.get(0);
-        for (String permissionName : appPermissionControlInfo.mapEntries.keySet()) {
-            Set<String> packageNames = appPermissionControlInfo.mapEntries.get(permissionName);
-            if (packageNames == null) {
-                continue;
-            }
-            for (String packageName : packageNames) {
-                AppPermission appPermission = new AppPermission();
-                appPermission.packageName = packageName;
-                appPermission.permissionName = permissionName;
-                appPermission.permissionStatus = AppPermission.STATUS_PERMISSION;
-                appPermissions.add(appPermission);
-            }
-        }
-        appDatabase.appPermissionDao().insertAll(appPermissions);
     }
 
     private void addDefaultAdblockWhitelist() {

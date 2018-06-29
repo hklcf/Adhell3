@@ -55,11 +55,22 @@
         android:hint="@string/license_key"
         android:inputType="text" />
 
+    <EditText
+        android:id="@+id/backwardKeyEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/knoxKeyEditText"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="10dp"
+        android:hint="@string/license_backward_key"
+        android:inputType="text" />
+
     <Button
         android:id="@+id/activateKnoxButton"
         android:layout_width="150dp"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/knoxKeyEditText"
+        android:layout_below="@+id/backwardKeyEditText"
         android:layout_centerInParent="true"
         android:layout_marginTop="10dp"
         android:layout_marginBottom="20dp"

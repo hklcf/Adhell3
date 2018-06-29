@@ -1,6 +1,5 @@
 package com.fusionjack.adhell3.adapter;
 
-import android.app.enterprise.ApplicationPolicy;
 import android.content.ComponentName;
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -15,6 +14,7 @@ import com.fusionjack.adhell3.R;
 import com.fusionjack.adhell3.model.IComponentInfo;
 import com.fusionjack.adhell3.model.ServiceInfo;
 import com.fusionjack.adhell3.utils.AdhellFactory;
+import com.samsung.android.knox.application.ApplicationPolicy;
 
 import java.util.List;
 

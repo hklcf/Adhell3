@@ -24,10 +24,10 @@ android {
         }
 
         applicationId "com."
-        minSdkVersion 16
+        minSdkVersion 23
         targetSdkVersion 27
         versionCode 1
-        versionName "3.0.0." + buildNumber
+        versionName "3.1.1." + buildNumber
     }
 
     buildTypes {
@@ -52,7 +52,8 @@ android {
 }
 
 dependencies {
-    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    compileOnly files('libs/knoxsdk.jar')
+    runtimeOnly files('libs/supportlib.jar')
     implementation 'com.android.support:appcompat-v7:27.1.1'
     implementation 'com.android.support:support-v4:27.1.1'
     implementation 'com.android.support:recyclerview-v7:27.1.1'

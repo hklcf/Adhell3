@@ -25,7 +25,7 @@ import com.roughike.bottombar.BottomBar;
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = MainActivity.class.getCanonicalName();
     private static final String BACK_STACK_TAB_TAG = "tab_fragment";
-    protected DeviceAdminInteractor mAdminInteractor;
+    protected DeviceAdminInteractor adminInteractor;
     private FragmentManager fragmentManager;
     private ActivationDialogFragment activationDialogFragment;
     private boolean doubleBackToExitPressedOnce = false;
@@ -52,8 +52,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         fragmentManager = getSupportFragmentManager();
-        mAdminInteractor = DeviceAdminInteractor.getInstance();
-        if (!mAdminInteractor.isContentBlockerSupported()) {
+        adminInteractor = DeviceAdminInteractor.getInstance();
+        if (!adminInteractor.isSupported()) {
             Log.i(TAG, "Device not supported");
             AdhellFactory.getInstance().createNotSupportedDialog(this);
             return;
@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
         BottomBar bottomBar = findViewById(R.id.bottomBar);
         bottomBar.setTabTitleTextAppearance(R.style.bottomBarTextView);
         bottomBar.setOnTabSelectListener(tabId -> {
-            if (mAdminInteractor.isActiveAdmin() && mAdminInteractor.isKnoxEnabled()) {
+            if (adminInteractor.isAdminActive() && adminInteractor.isKnoxEnabled(this)) {
                 onTabSelected(tabId);
             }
         });
@@ -85,13 +85,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        if (!mAdminInteractor.isContentBlockerSupported()) {
-            Log.i(TAG, "Device not supported");
-            AdhellFactory.getInstance().createNotSupportedDialog(this);
-            return;
-        }
-
-        if (!mAdminInteractor.isActiveAdmin()) {
+        if (!adminInteractor.isAdminActive()) {
             Log.d(TAG, "Admin is not active. Request enabling");
             if (!activationDialogFragment.isVisible()) {
                 activationDialogFragment.show(fragmentManager, "dialog_fragment_activation_adhell");
@@ -99,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
-        if (!mAdminInteractor.isKnoxEnabled()) {
+        if (!adminInteractor.isKnoxEnabled(this)) {
             Log.d(TAG, "Knox disabled");
 
             Log.d(TAG, "Checking if internet connection exists");

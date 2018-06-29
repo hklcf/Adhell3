@@ -1,8 +1,5 @@
 package com.fusionjack.adhell3.utils;
 
-import android.app.enterprise.ApplicationPermissionControlPolicy;
-import android.app.enterprise.ApplicationPolicy;
-import android.app.enterprise.FirewallPolicy;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -15,20 +12,20 @@ import android.util.Patterns;
 
 import com.fusionjack.adhell3.App;
 import com.fusionjack.adhell3.R;
-import com.fusionjack.adhell3.blocker.ContentBlocker;
-import com.fusionjack.adhell3.blocker.ContentBlocker56;
-import com.fusionjack.adhell3.blocker.ContentBlocker57;
 import com.fusionjack.adhell3.db.AppDatabase;
 import com.fusionjack.adhell3.db.entity.AppInfo;
 import com.fusionjack.adhell3.db.entity.AppPermission;
 import com.fusionjack.adhell3.db.entity.BlockUrl;
 import com.fusionjack.adhell3.db.entity.BlockUrlProvider;
 import com.fusionjack.adhell3.db.entity.DisabledPackage;
-import com.sec.enterprise.AppIdentity;
-import com.sec.enterprise.firewall.DomainFilterRule;
-import com.sec.enterprise.firewall.Firewall;
-import com.sec.enterprise.firewall.FirewallResponse;
-import com.sec.enterprise.firewall.FirewallRule;
+import com.samsung.android.knox.AppIdentity;
+import com.samsung.android.knox.EnterpriseDeviceManager;
+import com.samsung.android.knox.application.ApplicationPolicy;
+import com.samsung.android.knox.license.KnoxEnterpriseLicenseManager;
+import com.samsung.android.knox.net.firewall.DomainFilterRule;
+import com.samsung.android.knox.net.firewall.Firewall;
+import com.samsung.android.knox.net.firewall.FirewallResponse;
+import com.samsung.android.knox.net.firewall.FirewallRule;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -39,6 +36,11 @@ import java.util.StringTokenizer;
 
 import javax.inject.Inject;
 
+import static com.samsung.android.knox.application.ApplicationPolicy.ERROR_UNKNOWN;
+import static com.samsung.android.knox.application.ApplicationPolicy.PERMISSION_POLICY_STATE_DEFAULT;
+import static com.samsung.android.knox.application.ApplicationPolicy.PERMISSION_POLICY_STATE_DENY;
+import static com.samsung.android.knox.application.ApplicationPolicy.PERMISSION_POLICY_STATE_GRANT;
+
 public final class AdhellFactory {
     private static AdhellFactory instance;
 
@@ -48,15 +50,7 @@ public final class AdhellFactory {
 
     @Nullable
     @Inject
-    ApplicationPermissionControlPolicy appControlPolicy;
-
-    @Nullable
-    @Inject
     Firewall firewall;
-
-    @Nullable
-    @Inject
-    FirewallPolicy firewallPolicy;
 
     @Inject
     AppDatabase appDatabase;
@@ -66,6 +60,10 @@ public final class AdhellFactory {
 
     @Inject
     SharedPreferences sharedPreferences;
+
+    @Nullable
+    @Inject
+    KnoxEnterpriseLicenseManager knoxEnterpriseLicenseManager;
 
     private AdhellFactory() {
         App.get().getAppComponent().inject(this);
@@ -84,18 +82,8 @@ public final class AdhellFactory {
     }
 
     @Nullable
-    public ApplicationPermissionControlPolicy getAppControlPolicy() {
-        return appControlPolicy;
-    }
-
-    @Nullable
     public Firewall getFirewall() {
         return firewall;
-    }
-
-    @Nullable
-    public FirewallPolicy getFirewallPolicy() {
-        return firewallPolicy;
     }
 
     public AppDatabase getAppDatabase() {
@@ -110,11 +98,12 @@ public final class AdhellFactory {
         return sharedPreferences;
     }
 
-    public AlertDialog createNotSupportedDialog(Context context) {
-        return new AlertDialog.Builder(context)
-                .setIcon(R.drawable.ic_error_black_24dp)
+    public void createNotSupportedDialog(Context context) {
+        String knoxIsSupported = "Knox Enterprise License Manager is " + (knoxEnterpriseLicenseManager == null ? "not available" : "available");
+        String knoxApiLevel = "Knox API Level: " + EnterpriseDeviceManager.getAPILevel();
+        new AlertDialog.Builder(context)
                 .setTitle(context.getString(R.string.not_supported_dialog_title))
-                .setMessage(context.getString(R.string.adhell_not_supported))
+                .setMessage(knoxIsSupported + "\n" + knoxApiLevel)
                 .show();
     }
 
@@ -173,29 +162,27 @@ public final class AdhellFactory {
     }
 
     public void setAppComponentState(boolean state) {
-        if (appControlPolicy == null && appPolicy == null) {
+        if (appPolicy == null) {
             return;
         }
 
         List<AppPermission> appPermissions = appDatabase.appPermissionDao().getAll();
         for (AppPermission appPermission : appPermissions) {
-            List<String> packageList = new ArrayList<>();
-            packageList.add(appPermission.packageName);
+            String packageName = appPermission.packageName;
+            String permissionName = appPermission.permissionName;
             switch (appPermission.permissionStatus) {
                 case AppPermission.STATUS_PERMISSION:
-                    if (state) {
-                        appControlPolicy.removePackagesFromPermissionBlackList(appPermission.permissionName, packageList);
-                    } else {
-                        appControlPolicy.addPackagesToPermissionBlackList(appPermission.permissionName, packageList);
-                    }
+                    List<String> permissions = new ArrayList<>();
+                    permissions.add(permissionName);
+                    setAppPermission(packageName, permissions, state);
                     break;
                 case AppPermission.STATUS_SERVICE:
-                    ComponentName componentName = new ComponentName(appPermission.packageName, appPermission.permissionName);
+                    ComponentName componentName = new ComponentName(packageName, permissionName);
                     appPolicy.setApplicationComponentState(componentName, state);
                     break;
                 case AppPermission.STATUS_RECEIVER:
-                    StringTokenizer tokenizer = new StringTokenizer(appPermission.permissionName, "|");
-                    componentName = new ComponentName(appPermission.packageName, tokenizer.nextToken());
+                    StringTokenizer tokenizer = new StringTokenizer(permissionName, "|");
+                    componentName = new ComponentName(packageName, tokenizer.nextToken());
                     appPolicy.setApplicationComponentState(componentName, state);
                     break;
             }
@@ -206,9 +193,18 @@ public final class AdhellFactory {
         }
     }
 
-    public boolean isDnsAllowed() {
-        ContentBlocker contentBlocker = DeviceAdminInteractor.getInstance().getContentBlocker();
-        return contentBlocker instanceof ContentBlocker56 || contentBlocker instanceof ContentBlocker57;
+    public int setAppPermission(String packageName, List<String> permissions, boolean state) {
+        if (appPolicy == null) {
+            return ERROR_UNKNOWN;
+        }
+
+        if (state) {
+            int errorCode = appPolicy.applyRuntimePermissions(new AppIdentity(packageName, null), permissions, PERMISSION_POLICY_STATE_GRANT);
+            if (errorCode == ApplicationPolicy.ERROR_NONE) {
+                return appPolicy.applyRuntimePermissions(new AppIdentity(packageName, null), permissions, PERMISSION_POLICY_STATE_DEFAULT);
+            }
+        }
+        return appPolicy.applyRuntimePermissions(new AppIdentity(packageName, null), permissions, PERMISSION_POLICY_STATE_DENY);
     }
 
     public void setDns(String primaryDns, String secondaryDns, Handler handler) {

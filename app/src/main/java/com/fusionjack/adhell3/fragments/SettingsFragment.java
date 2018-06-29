@@ -20,13 +20,13 @@ import android.widget.TextView;
 import com.fusionjack.adhell3.BuildConfig;
 import com.fusionjack.adhell3.R;
 import com.fusionjack.adhell3.blocker.ContentBlocker;
+import com.fusionjack.adhell3.blocker.ContentBlocker56;
 import com.fusionjack.adhell3.db.DatabaseFactory;
 import com.fusionjack.adhell3.model.AppFlag;
 import com.fusionjack.adhell3.receiver.CustomDeviceAdminReceiver;
 import com.fusionjack.adhell3.tasks.LoadAppAsyncTask;
 import com.fusionjack.adhell3.utils.AdhellFactory;
 import com.fusionjack.adhell3.utils.AppPreferences;
-import com.fusionjack.adhell3.utils.DeviceAdminInteractor;
 
 import java.lang.ref.WeakReference;
 
@@ -43,7 +43,6 @@ public class SettingsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_app_settings, container, false);
 
-        ContentBlocker contentBlocker = DeviceAdminInteractor.getInstance().getContentBlocker();
         Button deleteAppButton = view.findViewById(R.id.deleteApp);
         deleteAppButton.setOnClickListener(v -> {
             View dialogView = LayoutInflater.from(getContext()).inflate(R.layout.dialog_question, (ViewGroup) getView(), false);
@@ -55,6 +54,7 @@ public class SettingsFragment extends Fragment {
             new AlertDialog.Builder(context)
                     .setView(dialogView)
                     .setPositiveButton(android.R.string.yes, (dialog, whichButton) -> {
+                        ContentBlocker contentBlocker = ContentBlocker56.getInstance();
                         contentBlocker.disableDomainRules();
                         contentBlocker.disableFirewallRules();
                         ComponentName devAdminReceiver = new ComponentName(context, CustomDeviceAdminReceiver.class);
@@ -165,8 +165,9 @@ public class SettingsFragment extends Fragment {
         @Override
         protected String doInBackground(Void... args) {
             try {
-                DeviceAdminInteractor.getInstance().getContentBlocker().disableDomainRules();
-                DeviceAdminInteractor.getInstance().getContentBlocker().disableFirewallRules();
+                ContentBlocker contentBlocker = ContentBlocker56.getInstance();
+                contentBlocker.disableDomainRules();
+                contentBlocker.disableFirewallRules();
                 AppPreferences.getInstance().setAppDisabler(false);
                 AdhellFactory.getInstance().applyAppDisabler();
 

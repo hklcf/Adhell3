@@ -6,14 +6,13 @@ import android.arch.persistence.room.Room;
 import android.arch.persistence.room.RoomDatabase;
 import android.arch.persistence.room.migration.Migration;
 import android.content.Context;
-import android.os.Environment;
 
 import com.fusionjack.adhell3.db.dao.AppInfoDao;
 import com.fusionjack.adhell3.db.dao.AppPermissionDao;
 import com.fusionjack.adhell3.db.dao.BlockUrlDao;
 import com.fusionjack.adhell3.db.dao.BlockUrlProviderDao;
-import com.fusionjack.adhell3.db.dao.DnsPackageDao;
 import com.fusionjack.adhell3.db.dao.DisabledPackageDao;
+import com.fusionjack.adhell3.db.dao.DnsPackageDao;
 import com.fusionjack.adhell3.db.dao.FirewallWhitelistedPackageDao;
 import com.fusionjack.adhell3.db.dao.PolicyPackageDao;
 import com.fusionjack.adhell3.db.dao.ReportBlockedUrlDao;
@@ -24,8 +23,8 @@ import com.fusionjack.adhell3.db.entity.AppInfo;
 import com.fusionjack.adhell3.db.entity.AppPermission;
 import com.fusionjack.adhell3.db.entity.BlockUrl;
 import com.fusionjack.adhell3.db.entity.BlockUrlProvider;
-import com.fusionjack.adhell3.db.entity.DnsPackage;
 import com.fusionjack.adhell3.db.entity.DisabledPackage;
+import com.fusionjack.adhell3.db.entity.DnsPackage;
 import com.fusionjack.adhell3.db.entity.FirewallWhitelistedPackage;
 import com.fusionjack.adhell3.db.entity.PolicyPackage;
 import com.fusionjack.adhell3.db.entity.ReportBlockedUrl;
@@ -44,8 +43,6 @@ import com.fusionjack.adhell3.db.migration.Migration_22_23;
 import com.fusionjack.adhell3.db.migration.Migration_23_24;
 import com.fusionjack.adhell3.db.migration.Migration_24_25;
 
-import java.io.File;
-
 @Database(entities = {
         AppInfo.class,
         AppPermission.class,
@@ -59,7 +56,7 @@ import java.io.File;
         UserBlockUrl.class,
         WhiteUrl.class,
         DnsPackage.class
-}, version = 25)
+}, version = 25, exportSchema = false)
 
 public abstract class AppDatabase extends RoomDatabase {
     private static final Migration MIGRATION_14_15 = new Migration_14_15(14, 15);
@@ -75,27 +72,13 @@ public abstract class AppDatabase extends RoomDatabase {
     private static final Migration MIGRATION_24_25 = new Migration_24_25(24, 25);
     private static AppDatabase INSTANCE;
 
-    public static final String DATABASE_FOLDER = "adhell3";
     public static final String DATABASE_FILE = "adhell-database";
 
     public static AppDatabase getAppDatabase(Context context) {
         if (INSTANCE == null) {
-            String location;
-            File sd = Environment.getExternalStorageDirectory();
-            if (sd.canWrite()) {
-                File adhell3 = new File(sd, DATABASE_FOLDER);
-                if (!adhell3.exists()) {
-                    adhell3.mkdir();
-                }
-                File db = new File(adhell3, DATABASE_FILE);
-                location = db.getAbsolutePath();
-            } else {
-                location = DATABASE_FILE;
-            }
-
             INSTANCE =
                     Room.databaseBuilder(context.getApplicationContext(),
-                            AppDatabase.class, location)
+                            AppDatabase.class, DATABASE_FILE)
                             .addMigrations(MIGRATION_14_15)
                             .addMigrations(MIGRATION_15_16)
                             .addMigrations(MIGRATION_16_17)

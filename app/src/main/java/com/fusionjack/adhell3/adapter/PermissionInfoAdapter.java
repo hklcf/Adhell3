@@ -1,7 +1,5 @@
 package com.fusionjack.adhell3.adapter;
 
-import android.app.enterprise.AppPermissionControlInfo;
-import android.app.enterprise.ApplicationPermissionControlPolicy;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -15,9 +13,12 @@ import com.fusionjack.adhell3.R;
 import com.fusionjack.adhell3.model.IComponentInfo;
 import com.fusionjack.adhell3.model.PermissionInfo;
 import com.fusionjack.adhell3.utils.AdhellFactory;
+import com.fusionjack.adhell3.utils.AppPermissionUtils;
+import com.samsung.android.knox.application.ApplicationPolicy;
 
 import java.util.List;
-import java.util.Set;
+
+import static com.samsung.android.knox.application.ApplicationPolicy.PERMISSION_POLICY_STATE_DENY;
 
 public class PermissionInfoAdapter extends ComponentAdapter {
 
@@ -45,37 +46,17 @@ public class PermissionInfoAdapter extends ComponentAdapter {
             Switch permissionSwitch = convertView.findViewById(R.id.switchDisable);
             permissionLabelTextView.setText(permissionInfo.label);
             permissionNameTextView.setText(permissionInfo.name);
-            protectionLevelTextView.setText(permissionInfo.getProtectionLevelLabel());
+            protectionLevelTextView.setText(AppPermissionUtils.getProtectionLevelLabel(permissionInfo.getLevel()));
 
             boolean checked = false;
-            Set<String> blacklistedPackageNames = getPermissionBlacklistedPackages(permissionInfo.name);
-            if (blacklistedPackageNames == null || !blacklistedPackageNames.contains(permissionInfo.getPackageName())) {
+            ApplicationPolicy appPolicy = AdhellFactory.getInstance().getAppPolicy();
+            List<String> deniedPermissions = appPolicy.getRuntimePermissions(permissionInfo.getPackageName(), PERMISSION_POLICY_STATE_DENY);
+            if (!deniedPermissions.contains(permissionInfo.name)) {
                 checked = true;
             }
             permissionSwitch.setChecked(checked);
         }
 
         return convertView;
-    }
-
-    private Set<String> getPermissionBlacklistedPackages(String permissionName) {
-        ApplicationPermissionControlPolicy permissionPolicy = AdhellFactory.getInstance().getAppControlPolicy();
-        if (permissionPolicy == null) {
-            return null;
-        }
-
-        List<AppPermissionControlInfo> permissionInfos = permissionPolicy.getPackagesFromPermissionBlackList();
-        if (permissionInfos == null || permissionInfos.size() == 0) {
-            return null;
-        }
-
-        for (AppPermissionControlInfo permissionInfo : permissionInfos) {
-            if (permissionInfo == null || permissionInfo.mapEntries == null) {
-                continue;
-            }
-            return permissionInfo.mapEntries.get(permissionName);
-        }
-
-        return null;
     }
 }

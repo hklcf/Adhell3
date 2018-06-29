@@ -29,7 +29,6 @@ import com.fusionjack.adhell3.R;
 import com.fusionjack.adhell3.adapter.ReportBlockedUrlAdapter;
 import com.fusionjack.adhell3.blocker.ContentBlocker;
 import com.fusionjack.adhell3.blocker.ContentBlocker56;
-import com.fusionjack.adhell3.blocker.ContentBlocker57;
 import com.fusionjack.adhell3.db.AppDatabase;
 import com.fusionjack.adhell3.db.entity.AppInfo;
 import com.fusionjack.adhell3.db.entity.ReportBlockedUrl;
@@ -40,11 +39,10 @@ import com.fusionjack.adhell3.utils.AdhellFactory;
 import com.fusionjack.adhell3.utils.AppCache;
 import com.fusionjack.adhell3.utils.AppPreferences;
 import com.fusionjack.adhell3.utils.BlockUrlUtils;
-import com.fusionjack.adhell3.utils.DeviceAdminInteractor;
-import com.sec.enterprise.firewall.DomainFilterReport;
-import com.sec.enterprise.firewall.DomainFilterRule;
-import com.sec.enterprise.firewall.Firewall;
-import com.sec.enterprise.firewall.FirewallRule;
+import com.samsung.android.knox.net.firewall.DomainFilterReport;
+import com.samsung.android.knox.net.firewall.DomainFilterRule;
+import com.samsung.android.knox.net.firewall.Firewall;
+import com.samsung.android.knox.net.firewall.FirewallRule;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -100,14 +98,8 @@ public class HomeTabFragment extends Fragment {
         disablerStatusTextView = view.findViewById(R.id.disablerStatusTextView);
         swipeContainer = view.findViewById(R.id.swipeContainer);
         infoTextView = view.findViewById(R.id.infoTextView);
-        TextView warningMessageTextView = view.findViewById(R.id.warningMessageTextView);
 
-        contentBlocker = DeviceAdminInteractor.getInstance().getContentBlocker();
-        if (contentBlocker instanceof ContentBlocker56 || contentBlocker instanceof ContentBlocker57) {
-            warningMessageTextView.setVisibility(View.GONE);
-        } else {
-            warningMessageTextView.setVisibility(View.VISIBLE);
-        }
+        contentBlocker = ContentBlocker56.getInstance();
 
         infoTextView.setVisibility(View.INVISIBLE);
         swipeContainer.setVisibility(View.INVISIBLE);
@@ -162,19 +154,17 @@ public class HomeTabFragment extends Fragment {
             firewallSwitch.setChecked(true);
         }
 
-        if (contentBlocker instanceof ContentBlocker56 || contentBlocker instanceof ContentBlocker57) {
-            if (!isDomainRuleEmpty) {
-                infoTextView.setVisibility(View.VISIBLE);
-                swipeContainer.setVisibility(View.VISIBLE);
-                swipeContainer.setOnRefreshListener(() ->
-                        new RefreshAsyncTask(getContext()).execute()
-                );
-                AppCache.getInstance(getContext(), null);
-                new RefreshAsyncTask(getContext()).execute();
-            } else {
-                infoTextView.setVisibility(View.INVISIBLE);
-                swipeContainer.setVisibility(View.INVISIBLE);
-            }
+        if (!isDomainRuleEmpty) {
+            infoTextView.setVisibility(View.VISIBLE);
+            swipeContainer.setVisibility(View.VISIBLE);
+            swipeContainer.setOnRefreshListener(() ->
+                    new RefreshAsyncTask(getContext()).execute()
+            );
+            AppCache.getInstance(getContext(), null);
+            new RefreshAsyncTask(getContext()).execute();
+        } else {
+            infoTextView.setVisibility(View.INVISIBLE);
+            swipeContainer.setVisibility(View.INVISIBLE);
         }
 
         boolean disablerEnabled = AppPreferences.getInstance().isAppDisablerEnabled();
@@ -347,7 +337,7 @@ public class HomeTabFragment extends Fragment {
             this.isDomain = isDomain;
             this.parentFragment = parentFragment;
             this.fragmentManager = fragmentManager;
-            this.contentBlocker = DeviceAdminInteractor.getInstance().getContentBlocker();
+            this.contentBlocker = ContentBlocker56.getInstance();
             this.isDomainRuleEmpty = contentBlocker.isDomainRuleEmpty();
             this.isFirewallRuleEmpty = contentBlocker.isFirewallRuleEmpty();
 

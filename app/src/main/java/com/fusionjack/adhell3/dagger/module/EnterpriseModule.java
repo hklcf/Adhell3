@@ -1,25 +1,35 @@
 package com.fusionjack.adhell3.dagger.module;
 
-import android.app.enterprise.ApplicationPermissionControlPolicy;
-import android.app.enterprise.ApplicationPolicy;
-import android.app.enterprise.EnterpriseDeviceManager;
-import android.app.enterprise.FirewallPolicy;
-import android.app.enterprise.license.EnterpriseLicenseManager;
 import android.content.Context;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.fusionjack.adhell3.dagger.scope.AdhellApplicationScope;
-import com.sec.enterprise.firewall.Firewall;
+import com.samsung.android.knox.EnterpriseDeviceManager;
+import com.samsung.android.knox.application.ApplicationPolicy;
+import com.samsung.android.knox.license.EnterpriseLicenseManager;
+import com.samsung.android.knox.license.KnoxEnterpriseLicenseManager;
+import com.samsung.android.knox.net.firewall.Firewall;
 
 import dagger.Module;
 import dagger.Provides;
 
-import static android.app.enterprise.EnterpriseDeviceManager.ENTERPRISE_POLICY_SERVICE;
-
 @Module(includes = {AppModule.class})
 public class EnterpriseModule {
     private static final String TAG = EnterpriseModule.class.getCanonicalName();
+
+    @Nullable
+    @Provides
+    @AdhellApplicationScope
+    KnoxEnterpriseLicenseManager providesKnoxEnterpriseLicenseManager(Context appContext) {
+        try {
+            Log.i(TAG, "Trying to get EnterpriseLicenseManager");
+            return KnoxEnterpriseLicenseManager.getInstance(appContext);
+        } catch (Throwable e) {
+            Log.e(TAG, "Failed to get EnterpriseLicenseManager. So it seems that Knox is not supported on this device", e);
+        }
+        return null;
+    }
 
     @Nullable
     @Provides
@@ -40,7 +50,7 @@ public class EnterpriseModule {
     EnterpriseDeviceManager providesEnterpriseDeviceManager(Context appContext) {
         try {
             Log.i(TAG, "Trying to get EnterpriseDeviceManager");
-            return (EnterpriseDeviceManager) appContext.getSystemService(ENTERPRISE_POLICY_SERVICE);
+            return EnterpriseDeviceManager.getInstance(appContext);
         } catch (Throwable e) {
             Log.w(TAG, "Failed to get EnterpriseDeviceManager", e);
             return null;
@@ -55,34 +65,6 @@ public class EnterpriseModule {
             return null;
         }
         return enterpriseDeviceManager.getApplicationPolicy();
-    }
-
-    @Nullable
-    @Provides
-    @AdhellApplicationScope
-    ApplicationPermissionControlPolicy providesApplicationPermissionControlPolicy(@Nullable EnterpriseDeviceManager enterpriseDeviceManager) {
-        if (enterpriseDeviceManager == null) {
-            Log.w(TAG, "enterpriseDeviceManager is null. Can't get ApplicationPermissionControlPolicy");
-            return null;
-        }
-        return enterpriseDeviceManager.getApplicationPermissionControlPolicy();
-    }
-
-    @Nullable
-    @Provides
-    @AdhellApplicationScope
-    FirewallPolicy providesFirewallPolicy(@Nullable EnterpriseDeviceManager enterpriseDeviceManager) {
-        if (enterpriseDeviceManager == null) {
-            Log.w(TAG, "enterpriseDeviceManager is null. Can't get FirewallPolicy");
-            return null;
-        }
-        try {
-            Log.i(TAG, "Trying to get FirewallPolicy");
-            return enterpriseDeviceManager.getFirewallPolicy();
-        } catch (Throwable e) {
-            Log.e(TAG, "Failed to get firewallPolicy", e);
-        }
-        return null;
     }
 
     @Nullable

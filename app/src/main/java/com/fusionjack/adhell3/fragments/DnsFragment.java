@@ -53,28 +53,26 @@ public class DnsFragment extends Fragment {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
 
-        if (AdhellFactory.getInstance().isDnsAllowed()) {
-            inflater.inflate(R.menu.app_menu, menu);
-            AppFlag appFlag = AppFlag.createDnsFlag();
+        inflater.inflate(R.menu.app_menu, menu);
+        AppFlag appFlag = AppFlag.createDnsFlag();
 
-            SearchView searchView = (SearchView) menu.findItem(R.id.search).getActionView();
-            searchView.setMaxWidth(Integer.MAX_VALUE);
-            searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-                @Override
-                public boolean onQueryTextSubmit(String query) {
+        SearchView searchView = (SearchView) menu.findItem(R.id.search).getActionView();
+        searchView.setMaxWidth(Integer.MAX_VALUE);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String text) {
+                if (searchView.isIconified()) {
                     return false;
                 }
-
-                @Override
-                public boolean onQueryTextChange(String text) {
-                    if (searchView.isIconified()) {
-                        return false;
-                    }
-                    new LoadAppAsyncTask(text, appFlag, getContext()).execute();
-                    return false;
-                }
-            });
-        }
+                new LoadAppAsyncTask(text, appFlag, getContext()).execute();
+                return false;
+            }
+        });
     }
 
     @Override
@@ -132,73 +130,70 @@ public class DnsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         setHasOptionsMenu(true);
 
-        View view = null;
-        if (AdhellFactory.getInstance().isDnsAllowed()) {
-            view = inflater.inflate(R.layout.fragment_dns, container, false);
+        View view = inflater.inflate(R.layout.fragment_dns, container, false);
 
-            AppFlag appFlag = AppFlag.createDnsFlag();
-            ListView listView = view.findViewById(R.id.dns_apps_list);
-            if (AppPreferences.getInstance().isDnsNotEmpty()) {
-                listView.setOnItemClickListener((AdapterView<?> adView, View view2, int position, long id) -> {
-                    AppInfoAdapter adapter = (AppInfoAdapter) adView.getAdapter();
-                    new SetAppAsyncTask(adapter.getItem(position), appFlag, context).execute();
-                });
-            }
-
-            SwipeRefreshLayout dnsSwipeContainer = view.findViewById(R.id.dnsSwipeContainer);
-            dnsSwipeContainer.setOnRefreshListener(() ->
-                    new RefreshAppAsyncTask(appFlag, context).execute()
-            );
-
-            AppCache.getInstance(context, null);
-            new LoadAppAsyncTask("", appFlag, context).execute();
-
-            FloatingActionsMenu dnsFloatMenu = view.findViewById(R.id.dns_actions);
-            FloatingActionButton actionSetDns = view.findViewById(R.id.action_set_dns);
-            actionSetDns.setIcon(R.drawable.ic_dns_black_24dp);
-            actionSetDns.setOnClickListener(v -> {
-                dnsFloatMenu.collapse();
-
-                View dialogView = inflater.inflate(R.layout.dialog_set_dns, container, false);
-                EditText primaryDnsEditText = dialogView.findViewById(R.id.primaryDnsEditText);
-                EditText secondaryDnsEditText = dialogView.findViewById(R.id.secondaryDnsEditText);
-                if (AppPreferences.getInstance().isDnsNotEmpty()) {
-                    primaryDnsEditText.setText(AppPreferences.getInstance().getDns1());
-                    secondaryDnsEditText.setText(AppPreferences.getInstance().getDns2());
-                }
-                primaryDnsEditText.requestFocus();
-
-                new AlertDialog.Builder(context)
-                        .setView(dialogView)
-                        .setPositiveButton(android.R.string.yes, (dialog, whichButton) -> {
-                            Handler handler = new Handler(Looper.getMainLooper()) {
-                                @Override
-                                public void handleMessage(Message msg) {
-                                    Toast.makeText(context, getString(Integer.parseInt(msg.obj.toString())), Toast.LENGTH_LONG).show();
-                                }
-                            };
-
-                            String primaryDns = primaryDnsEditText.getText().toString();
-                            String secondaryDns = secondaryDnsEditText.getText().toString();
-                            AdhellFactory.getInstance().setDns(primaryDns, secondaryDns, handler);
-
-                            if (AppPreferences.getInstance().isDnsNotEmpty()) {
-                                listView.setEnabled(true);
-                                listView.setOnItemClickListener((AdapterView<?> adView, View view2, int position, long id) -> {
-                                    AppInfoAdapter adapter = (AppInfoAdapter) adView.getAdapter();
-                                    new SetAppAsyncTask(adapter.getItem(position), appFlag, context).execute();
-                                });
-                            } else {
-                                listView.setEnabled(false);
-                            }
-
-                            if (listView.getAdapter() instanceof AppInfoAdapter) {
-                                ((AppInfoAdapter) listView.getAdapter()).notifyDataSetChanged();
-                            }
-                        })
-                        .setNegativeButton(android.R.string.no, null).show();
+        AppFlag appFlag = AppFlag.createDnsFlag();
+        ListView listView = view.findViewById(R.id.dns_apps_list);
+        if (AppPreferences.getInstance().isDnsNotEmpty()) {
+            listView.setOnItemClickListener((AdapterView<?> adView, View view2, int position, long id) -> {
+                AppInfoAdapter adapter = (AppInfoAdapter) adView.getAdapter();
+                new SetAppAsyncTask(adapter.getItem(position), appFlag, context).execute();
             });
         }
+
+        SwipeRefreshLayout dnsSwipeContainer = view.findViewById(R.id.dnsSwipeContainer);
+        dnsSwipeContainer.setOnRefreshListener(() ->
+                new RefreshAppAsyncTask(appFlag, context).execute()
+        );
+
+        AppCache.getInstance(context, null);
+        new LoadAppAsyncTask("", appFlag, context).execute();
+
+        FloatingActionsMenu dnsFloatMenu = view.findViewById(R.id.dns_actions);
+        FloatingActionButton actionSetDns = view.findViewById(R.id.action_set_dns);
+        actionSetDns.setIcon(R.drawable.ic_dns_black_24dp);
+        actionSetDns.setOnClickListener(v -> {
+            dnsFloatMenu.collapse();
+
+            View dialogView = inflater.inflate(R.layout.dialog_set_dns, container, false);
+            EditText primaryDnsEditText = dialogView.findViewById(R.id.primaryDnsEditText);
+            EditText secondaryDnsEditText = dialogView.findViewById(R.id.secondaryDnsEditText);
+            if (AppPreferences.getInstance().isDnsNotEmpty()) {
+                primaryDnsEditText.setText(AppPreferences.getInstance().getDns1());
+                secondaryDnsEditText.setText(AppPreferences.getInstance().getDns2());
+            }
+            primaryDnsEditText.requestFocus();
+
+            new AlertDialog.Builder(context)
+                    .setView(dialogView)
+                    .setPositiveButton(android.R.string.yes, (dialog, whichButton) -> {
+                        Handler handler = new Handler(Looper.getMainLooper()) {
+                            @Override
+                            public void handleMessage(Message msg) {
+                                Toast.makeText(context, getString(Integer.parseInt(msg.obj.toString())), Toast.LENGTH_LONG).show();
+                            }
+                        };
+
+                        String primaryDns = primaryDnsEditText.getText().toString();
+                        String secondaryDns = secondaryDnsEditText.getText().toString();
+                        AdhellFactory.getInstance().setDns(primaryDns, secondaryDns, handler);
+
+                        if (AppPreferences.getInstance().isDnsNotEmpty()) {
+                            listView.setEnabled(true);
+                            listView.setOnItemClickListener((AdapterView<?> adView, View view2, int position, long id) -> {
+                                AppInfoAdapter adapter = (AppInfoAdapter) adView.getAdapter();
+                                new SetAppAsyncTask(adapter.getItem(position), appFlag, context).execute();
+                            });
+                        } else {
+                            listView.setEnabled(false);
+                        }
+
+                        if (listView.getAdapter() instanceof AppInfoAdapter) {
+                            ((AppInfoAdapter) listView.getAdapter()).notifyDataSetChanged();
+                        }
+                    })
+                    .setNegativeButton(android.R.string.no, null).show();
+        });
 
         return view;
     }

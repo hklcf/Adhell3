@@ -4,15 +4,6 @@
               android:layout_height="match_parent"
               android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/warningMessageTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="5dp"
-        android:padding="10dp"
-        android:text="@string/your_device_running_old_knox_version"
-        android:background="@drawable/border" />
-
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/domainRulesLayout"
         android:layout_width="match_parent"

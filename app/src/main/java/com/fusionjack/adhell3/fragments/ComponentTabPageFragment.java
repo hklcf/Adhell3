@@ -1,9 +1,6 @@
 package com.fusionjack.adhell3.fragments;
 
 import android.app.Activity;
-import android.app.enterprise.AppPermissionControlInfo;
-import android.app.enterprise.ApplicationPermissionControlPolicy;
-import android.app.enterprise.ApplicationPolicy;
 import android.content.ComponentName;
 import android.content.Context;
 import android.os.AsyncTask;
@@ -33,11 +30,15 @@ import com.fusionjack.adhell3.model.ReceiverInfo;
 import com.fusionjack.adhell3.model.ServiceInfo;
 import com.fusionjack.adhell3.utils.AdhellAppIntegrity;
 import com.fusionjack.adhell3.utils.AdhellFactory;
+import com.fusionjack.adhell3.utils.AppPermissionUtils;
+import com.samsung.android.knox.application.ApplicationPolicy;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
+
+import static com.samsung.android.knox.application.ApplicationPolicy.ERROR_NONE;
+import static com.samsung.android.knox.application.ApplicationPolicy.PERMISSION_POLICY_STATE_DENY;
 
 public class ComponentTabPageFragment extends Fragment {
 
@@ -150,10 +151,12 @@ public class ComponentTabPageFragment extends Fragment {
             ApplicationPolicy appPolicy = AdhellFactory.getInstance().getAppPolicy();
             switch (page) {
                 case PERMISSIONS_PAGE:
-                    ApplicationPermissionControlPolicy policy = AdhellFactory.getInstance().getAppControlPolicy();
-                    if (policy != null) {
-                        policy.clearPackagesFromPermissionBlackList();
-                        appDatabase.appPermissionDao().deletePermissions();
+                    if (appPolicy != null) {
+                        List<String> deniedPermissions = appPolicy.getRuntimePermissions(packageName, PERMISSION_POLICY_STATE_DENY);
+                        int errorCode = AdhellFactory.getInstance().setAppPermission(packageName, deniedPermissions, true);
+                        if (errorCode == ERROR_NONE) {
+                            appDatabase.appPermissionDao().deletePermissions(packageName);
+                        }
                     }
                     break;
                 case SERVICES_PAGE:
@@ -164,7 +167,7 @@ public class ComponentTabPageFragment extends Fragment {
                             ComponentName serviceCompName = new ComponentName(packageName, serviceInfo.getName());
                             appPolicy.setApplicationComponentState(serviceCompName, true);
                         }
-                        appDatabase.appPermissionDao().deleteServices();
+                        appDatabase.appPermissionDao().deleteServices(packageName);
                     }
                     break;
                 case RECEIVERS_PAGE:
@@ -175,7 +178,7 @@ public class ComponentTabPageFragment extends Fragment {
                             ComponentName serviceCompName = new ComponentName(packageName, receiverInfo.getName());
                             appPolicy.setApplicationComponentState(serviceCompName, true);
                         }
-                        appDatabase.appPermissionDao().deleteReceivers();
+                        appDatabase.appPermissionDao().deleteReceivers(packageName);
                     }
                     break;
             }
@@ -214,7 +217,6 @@ public class ComponentTabPageFragment extends Fragment {
         private String packageName;
         private IComponentInfo componentInfo;
         private WeakReference<Context> contextWeakReference;
-        private ApplicationPermissionControlPolicy permissionPolicy;
         private ApplicationPolicy appPolicy;
 
         SetComponentAsyncTask(int page, String packageName, IComponentInfo componentInfo, Context context) {
@@ -222,7 +224,6 @@ public class ComponentTabPageFragment extends Fragment {
             this.packageName = packageName;
             this.componentInfo = componentInfo;
             this.contextWeakReference = new WeakReference<>(context);
-            this.permissionPolicy = AdhellFactory.getInstance().getAppControlPolicy();
             this.appPolicy = AdhellFactory.getInstance().getAppPolicy();
         }
 
@@ -231,40 +232,33 @@ public class ComponentTabPageFragment extends Fragment {
             AppDatabase appDatabase = AdhellFactory.getInstance().getAppDatabase();
             switch (page) {
                 case PERMISSIONS_PAGE:
-                    if (permissionPolicy == null) {
+                    if (appPolicy == null) {
                         return null;
                     }
+
                     PermissionInfo permissionInfo = (PermissionInfo) componentInfo;
                     String permissionName = permissionInfo.name;
-                    List<String> packageNameList = new ArrayList<>();
-                    packageNameList.add(packageName);
+                    List<String> permissions = new ArrayList<>();
+                    permissions.add(permissionName);
 
-                    Set<String> blacklistedPackageNames = getPermissionBlacklistedPackages(permissionName);
-                    if (blacklistedPackageNames == null || !blacklistedPackageNames.contains(packageName)) {
-                        boolean success = permissionPolicy.addPackagesToPermissionBlackList(permissionName, packageNameList);
-                        if (success) {
+                    List<String> deniedPermissions = appPolicy.getRuntimePermissions(packageName, PERMISSION_POLICY_STATE_DENY);
+                    if (deniedPermissions.contains(permissionName)) {
+                        int errorCode = AdhellFactory.getInstance().setAppPermission(packageName, permissions, true);
+                        if (errorCode == ApplicationPolicy.ERROR_NONE) {
+                            List<String> siblingPermissionNames = AppPermissionUtils.getSiblingPermissions(permissionName);
+                            for (String name : siblingPermissionNames) {
+                                appDatabase.appPermissionDao().delete(packageName, name);
+                            }
+                        }
+                    } else {
+                        int errorCode = AdhellFactory.getInstance().setAppPermission(packageName, permissions, false);
+                        if (errorCode == ApplicationPolicy.ERROR_NONE) {
                             AppPermission newAppPermission = new AppPermission();
                             newAppPermission.packageName = packageName;
                             newAppPermission.permissionName = permissionName;
                             newAppPermission.permissionStatus = AppPermission.STATUS_PERMISSION;
                             newAppPermission.policyPackageId = AdhellAppIntegrity.DEFAULT_POLICY_ID;
                             appDatabase.appPermissionDao().insert(newAppPermission);
-                        }
-                    } else {
-                        boolean isBlacklisted = permissionPolicy.removePackagesFromPermissionBlackList(permissionName, packageNameList);
-
-                        // There is a case when the permission is removed but the result is false
-                        // In this case, check whether the permission is removed
-                        boolean forceRemove = false;
-                        if (!isBlacklisted) {
-                            blacklistedPackageNames = getPermissionBlacklistedPackages(permissionName);
-                            if (blacklistedPackageNames == null || !blacklistedPackageNames.contains(packageName)) {
-                                forceRemove = true;
-                            }
-                        }
-
-                        if (isBlacklisted || forceRemove) {
-                            appDatabase.appPermissionDao().delete(packageName, permissionName);
                         }
                     }
                     break;
@@ -353,26 +347,6 @@ public class ComponentTabPageFragment extends Fragment {
                     }
                 }
             }
-        }
-
-        private Set<String> getPermissionBlacklistedPackages(String permissionName) {
-            if (permissionPolicy == null) {
-                return null;
-            }
-
-            List<AppPermissionControlInfo> permissionInfos = permissionPolicy.getPackagesFromPermissionBlackList();
-            if (permissionInfos == null || permissionInfos.size() == 0) {
-                return null;
-            }
-
-            for (AppPermissionControlInfo permissionInfo : permissionInfos) {
-                if (permissionInfo == null || permissionInfo.mapEntries == null) {
-                    continue;
-                }
-                return permissionInfo.mapEntries.get(permissionName);
-            }
-
-            return null;
         }
 
         private boolean getComponentState(String packageName, String serviceName) {

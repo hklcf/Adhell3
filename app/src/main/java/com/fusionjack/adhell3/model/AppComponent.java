@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import com.fusionjack.adhell3.db.AppDatabase;
 import com.fusionjack.adhell3.db.entity.AppPermission;
 import com.fusionjack.adhell3.utils.AdhellFactory;
+import com.fusionjack.adhell3.utils.AppPermissionUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -38,10 +39,12 @@ public class AppComponent {
         for (String permissionName : permissionNameList) {
             try {
                 android.content.pm.PermissionInfo info = packageManager.getPermissionInfo(permissionName, PackageManager.GET_META_DATA);
-                CharSequence description = info.loadDescription(packageManager);
-                permissionList.add(new PermissionInfo(permissionName,
-                        description == null ? "No description" : description.toString(),
-                        info.protectionLevel, packageName));
+                if (AppPermissionUtils.isDangerousLevel(info.protectionLevel)) {
+                    CharSequence description = info.loadDescription(packageManager);
+                    permissionList.add(new PermissionInfo(permissionName,
+                            description == null ? "No description" : description.toString(),
+                            info.protectionLevel, packageName));
+                }
             } catch (PackageManager.NameNotFoundException ignored) {
             }
         }

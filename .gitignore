@@ -10,6 +10,4 @@
 *.apk
 fabric.properties
 app/release
-/app/libs/edm.jar
-/app/libs/license.jar
-/app/libs/rc.jar
+app/libs
