@@ -184,8 +184,10 @@ public final class FirewallUtils {
             LogUtils.getInstance().writeError("There was no response from Knox Firewall", ex, handler);
             throw ex;
         } else {
-            LogUtils.getInstance().writeInfo("Result: Success", handler);
-            if (FirewallResponse.Result.SUCCESS != response[0].getResult()) {
+            if (FirewallResponse.Result.SUCCESS == response[0].getResult()) {
+                LogUtils.getInstance().writeInfo("Result: Success", handler);
+            } else {
+                LogUtils.getInstance().writeInfo("Result: Failed", handler);
                 Exception ex = new Exception(response[0].getMessage());
                 StringWriter sw = new StringWriter();
                 PrintWriter pw = new PrintWriter(sw);
