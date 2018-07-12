@@ -11,6 +11,13 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
 
+    <permission
+        android:name="com.example.supportlibclient.SUPPORT_PERMISSION"
+        android:label="Support permission"
+        android:protectionLevel="signature" />
+
+    <uses-permission android:name="com.example.supportlibclient.SUPPORT_PERMISSION" />
+
     <application
         android:name="com.fusionjack.adhell3.App"
         android:allowBackup="true"
@@ -41,6 +48,15 @@
                 android:resource="@xml/enterprise_device_admin"/>
             <intent-filter>
                 <action android:name="android.app.action.DEVICE_ADMIN_ENABLED"/>
+            </intent-filter>
+        </receiver>
+
+        <receiver
+            android:name="com.samsung.android.knox.IntentConverterReceiver"
+            android:permission="com.example.supportlibclient.SUPPORT_PERMISSION">
+            <intent-filter>
+                <action android:name="edm.intent.action.knox_license.status" />
+                <action android:name="edm.intent.action.license.status" />
             </intent-filter>
         </receiver>
     </application>
