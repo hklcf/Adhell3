@@ -207,8 +207,4 @@ public final class DeviceAdminInteractor {
                 return true;
         }
     }
-
-    public boolean isKnox26() {
-        return EnterpriseDeviceManager.getAPILevel() == KNOX_2_6;
-    }
 }
