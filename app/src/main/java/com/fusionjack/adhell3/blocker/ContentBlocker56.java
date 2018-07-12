@@ -7,6 +7,7 @@ import com.fusionjack.adhell3.db.entity.AppInfo;
 import com.fusionjack.adhell3.utils.AdhellFactory;
 import com.fusionjack.adhell3.utils.AppPreferences;
 import com.fusionjack.adhell3.utils.BlockUrlUtils;
+import com.fusionjack.adhell3.utils.FirewallUtils;
 import com.fusionjack.adhell3.utils.LogUtils;
 import com.google.common.collect.Lists;
 import com.samsung.android.knox.AppIdentity;
@@ -27,10 +28,12 @@ public class ContentBlocker56 implements ContentBlocker {
     private Firewall firewall;
     private AppDatabase appDatabase;
     private Handler handler;
+    private FirewallUtils firewallUtils;
 
     private ContentBlocker56() {
         this.appDatabase = AdhellFactory.getInstance().getAppDatabase();
         this.firewall = AdhellFactory.getInstance().getFirewall();
+        this.firewallUtils = FirewallUtils.getInstance();
     }
 
     public static ContentBlocker56 getInstance() {
@@ -201,7 +204,7 @@ public class ContentBlocker56 implements ContentBlocker {
                         firewallRules[1].setPortNumber(port);
                         firewallRules[1].setApplication(new AppIdentity(packageName, null));
 
-                        AdhellFactory.getInstance().addFirewallRules(firewallRules, handler);
+                        firewallUtils.addFirewallRules(firewallRules, handler);
                     } else {
                         LogUtils.getInstance().writeInfo("The firewall rule is already been enabled", handler);
                     }
@@ -240,9 +243,9 @@ public class ContentBlocker56 implements ContentBlocker {
 
             LogUtils.getInstance().writeInfo("Package name: " + packageName, handler);
             if (add) {
-                FirewallRule[] mobileRules = AdhellFactory.getInstance().createFirewallRules(packageName,
+                FirewallRule[] mobileRules = firewallUtils.createFirewallRules(packageName,
                         Firewall.NetworkInterface.MOBILE_DATA_ONLY);
-                AdhellFactory.getInstance().addFirewallRules(mobileRules, handler);
+                firewallUtils.addFirewallRules(mobileRules, handler);
             } else {
                 LogUtils.getInstance().writeInfo("The firewall rule is already been enabled", handler);
             }
@@ -275,9 +278,9 @@ public class ContentBlocker56 implements ContentBlocker {
 
             LogUtils.getInstance().writeInfo("Package name: " + packageName, handler);
             if (add) {
-                FirewallRule[] wifiRules = AdhellFactory.getInstance().createFirewallRules(packageName,
+                FirewallRule[] wifiRules = firewallUtils.createFirewallRules(packageName,
                         Firewall.NetworkInterface.WIFI_DATA_ONLY);
-                AdhellFactory.getInstance().addFirewallRules(wifiRules, handler);
+                firewallUtils.addFirewallRules(wifiRules, handler);
             } else {
                 LogUtils.getInstance().writeInfo("The firewall rule is already been enabled", handler);
             }
@@ -301,7 +304,7 @@ public class ContentBlocker56 implements ContentBlocker {
             LogUtils.getInstance().writeInfo("Package name: " + app.packageName, handler);
             rules.add(new DomainFilterRule(new AppIdentity(app.packageName, null), new ArrayList<>(), superAllow));
         }
-        AdhellFactory.getInstance().addDomainFilterRules(rules, handler);
+        firewallUtils.addDomainFilterRules(rules, handler);
     }
 
     private void processWhitelistedDomains() throws Exception {
@@ -347,7 +350,7 @@ public class ContentBlocker56 implements ContentBlocker {
             final AppIdentity appIdentity = new AppIdentity("*", null);
             List<DomainFilterRule> rules = new ArrayList<>();
             rules.add(new DomainFilterRule(appIdentity, new ArrayList<>(), new ArrayList<>(allowList)));
-            AdhellFactory.getInstance().addDomainFilterRules(rules, handler);
+            firewallUtils.addDomainFilterRules(rules, handler);
         }
     }
 
@@ -359,7 +362,7 @@ public class ContentBlocker56 implements ContentBlocker {
             List<DomainFilterRule> rules = new ArrayList<>();
             final AppIdentity appIdentity = new AppIdentity("*", null);
             rules.add(new DomainFilterRule(appIdentity, denyList, new ArrayList<>()));
-            AdhellFactory.getInstance().addDomainFilterRules(rules, handler);
+            firewallUtils.addDomainFilterRules(rules, handler);
         }
     }
 
@@ -383,7 +386,7 @@ public class ContentBlocker56 implements ContentBlocker {
 
             List<DomainFilterRule> rules = new ArrayList<>();
             rules.add(new DomainFilterRule(appIdentity, chunk, allowList));
-            AdhellFactory.getInstance().addDomainFilterRules(rules, handler);
+            firewallUtils.addDomainFilterRules(rules, handler);
         }
     }
 

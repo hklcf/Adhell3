@@ -30,7 +30,6 @@ import com.fusionjack.adhell3.adapter.ReportBlockedUrlAdapter;
 import com.fusionjack.adhell3.blocker.ContentBlocker;
 import com.fusionjack.adhell3.blocker.ContentBlocker56;
 import com.fusionjack.adhell3.db.AppDatabase;
-import com.fusionjack.adhell3.db.entity.AppInfo;
 import com.fusionjack.adhell3.db.entity.ReportBlockedUrl;
 import com.fusionjack.adhell3.db.entity.WhiteUrl;
 import com.fusionjack.adhell3.dialogfragment.FirewallDialogFragment;
@@ -38,15 +37,9 @@ import com.fusionjack.adhell3.utils.AdhellAppIntegrity;
 import com.fusionjack.adhell3.utils.AdhellFactory;
 import com.fusionjack.adhell3.utils.AppCache;
 import com.fusionjack.adhell3.utils.AppPreferences;
-import com.fusionjack.adhell3.utils.BlockUrlUtils;
-import com.samsung.android.knox.net.firewall.DomainFilterReport;
-import com.samsung.android.knox.net.firewall.DomainFilterRule;
-import com.samsung.android.knox.net.firewall.Firewall;
-import com.samsung.android.knox.net.firewall.FirewallRule;
+import com.fusionjack.adhell3.utils.FirewallUtils;
 
 import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -218,51 +211,15 @@ public class HomeTabFragment extends Fragment {
         protected Void doInBackground(Void... voids) {
             AppDatabase appDatabase = AdhellFactory.getInstance().getAppDatabase();
             disablerSize = appDatabase.disabledPackageDao().getAll().size();
+            domainSize = FirewallUtils.getInstance().getDomainCountFromKnox();
+            whitelistedSize = FirewallUtils.getInstance().getWhitelistedAppCountFromKnox();
 
-            Firewall firewall = AdhellFactory.getInstance().getFirewall();
-            if (firewall != null) {
-                List<String> packageNameList = new ArrayList<>();
-                packageNameList.add(Firewall.FIREWALL_ALL_PACKAGES);
-                List<DomainFilterRule> domainRules = firewall.getDomainFilterRules(packageNameList);
-                if (domainRules == null && BlockUrlUtils.isDomainLimitAboveDefault()) {
-                    domainSize = AppPreferences.getInstance().getBlockedDomainsCount();
-                } else if (domainRules != null && domainRules.size() > 0) {
-                    domainSize = domainRules.get(0).getDenyDomains().size();
-                }
+            // Dirty solution: Every deny firewall is created for IPv4 and IPv6.
+            FirewallUtils.FirewallStat stat = FirewallUtils.getInstance().getFirewallStat();
+            denyFirewallSize = stat.allNetworkSize / 2;
+            mobileSize = stat.mobileDataSize / 2;
+            wifiSize = stat.wifiDataSize / 2;
 
-                List<AppInfo> appInfos = appDatabase.applicationInfoDao().getWhitelistedApps();
-                for (AppInfo appInfo : appInfos) {
-                    packageNameList.clear();
-                    packageNameList.add(appInfo.packageName);
-                    domainRules = firewall.getDomainFilterRules(packageNameList);
-                    if (domainRules != null && domainRules.size() > 0) {
-                        whitelistedSize += domainRules.get(0).getAllowDomains().size();
-                    }
-                }
-
-                FirewallRule[] firewallRules = firewall.getRules(Firewall.FIREWALL_DENY_RULE, null);
-                if (firewallRules != null) {
-                    for (FirewallRule firewallRule : firewallRules) {
-                        Firewall.NetworkInterface networkInterfaces = firewallRule.getNetworkInterface();
-                        switch (networkInterfaces) {
-                            case ALL_NETWORKS:
-                                denyFirewallSize++;
-                                break;
-                            case MOBILE_DATA_ONLY:
-                                mobileSize++;
-                                break;
-                            case WIFI_DATA_ONLY:
-                                wifiSize++;
-                                break;
-                        }
-                    }
-
-                    // Dirty solution: Every deny firewall is created for IPv4 and IPv6.
-                    denyFirewallSize /= 2;
-                    mobileSize /= 2;
-                    wifiSize /= 2;
-                }
-            }
             return null;
         }
 
@@ -390,41 +347,14 @@ public class HomeTabFragment extends Fragment {
 
     private static class RefreshAsyncTask extends AsyncTask<Void, Void, List<ReportBlockedUrl>> {
         private WeakReference<Context> contextReference;
-        private Firewall firewall;
 
         RefreshAsyncTask(Context context) {
             this.contextReference = new WeakReference<>(context);
-            this.firewall = AdhellFactory.getInstance().getFirewall();
         }
 
         @Override
         protected List<ReportBlockedUrl> doInBackground(Void... voids) {
-            List<ReportBlockedUrl> reportBlockedUrls = new ArrayList<>();
-            List<DomainFilterReport> reports = firewall.getDomainFilterReport(null);
-            if (reports == null) {
-                return reportBlockedUrls;
-            }
-
-            long yesterday = yesterday();
-            AppDatabase appDatabase = AdhellFactory.getInstance().getAppDatabase();
-            appDatabase.reportBlockedUrlDao().deleteBefore(yesterday);
-
-            ReportBlockedUrl lastBlockedUrl = appDatabase.reportBlockedUrlDao().getLastBlockedDomain();
-            long lastBlockedTimestamp = 0;
-            if (lastBlockedUrl != null) {
-                lastBlockedTimestamp = lastBlockedUrl.blockDate / 1000;
-            }
-
-            for (DomainFilterReport b : reports) {
-                if (b.getTimeStamp() > lastBlockedTimestamp) {
-                    ReportBlockedUrl reportBlockedUrl =
-                            new ReportBlockedUrl(b.getDomainUrl(), b.getPackageName(), b.getTimeStamp() * 1000);
-                    reportBlockedUrls.add(reportBlockedUrl);
-                }
-            }
-            appDatabase.reportBlockedUrlDao().insertAll(reportBlockedUrls);
-
-            return appDatabase.reportBlockedUrlDao().getReportBlockUrlBetween(yesterday(), System.currentTimeMillis());
+            return FirewallUtils.getInstance().getReportBlockedUrl();
         }
 
         @Override
@@ -466,12 +396,6 @@ public class HomeTabFragment extends Fragment {
                     swipeContainer.setRefreshing(false);
                 }
             }
-        }
-
-        private long yesterday() {
-            final Calendar cal = Calendar.getInstance();
-            cal.add(Calendar.DATE, -1);
-            return cal.getTimeInMillis();
         }
     }
 }

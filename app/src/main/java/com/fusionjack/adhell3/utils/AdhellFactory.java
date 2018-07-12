@@ -24,11 +24,7 @@ import com.samsung.android.knox.application.ApplicationPolicy;
 import com.samsung.android.knox.license.KnoxEnterpriseLicenseManager;
 import com.samsung.android.knox.net.firewall.DomainFilterRule;
 import com.samsung.android.knox.net.firewall.Firewall;
-import com.samsung.android.knox.net.firewall.FirewallResponse;
-import com.samsung.android.knox.net.firewall.FirewallRule;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -107,58 +103,12 @@ public final class AdhellFactory {
                 .show();
     }
 
-    public AlertDialog createNoInternetConnectionDialog(Context context) {
-        return new AlertDialog.Builder(context)
+    public void createNoInternetConnectionDialog(Context context) {
+        new AlertDialog.Builder(context)
                 .setIcon(R.drawable.ic_error_black_24dp)
                 .setTitle(context.getString(R.string.no_internet_connection_dialog_title))
                 .setMessage(context.getString(R.string.no_internet_connection))
                 .show();
-    }
-
-    public void addDomainFilterRules(List<DomainFilterRule> domainRules, Handler handler) throws Exception {
-        if (firewall == null) {
-            throw new Exception("Knox Firewall is not initialized");
-        }
-
-        try {
-            FirewallResponse[] response = firewall.addDomainFilterRules(domainRules);
-            handleResponse(response, handler);
-        } catch (SecurityException ex) {
-            // Missing required MDM permission
-            LogUtils.getInstance().writeError("Failed to add domain filter rule to Knox Firewall", ex, handler);
-        }
-    }
-
-    public void addFirewallRules(FirewallRule[] firewallRules, Handler handler) throws Exception {
-        if (firewall == null) {
-            throw new Exception("Knox Firewall is not initialized");
-        }
-
-        try {
-            FirewallResponse[] response = firewall.addRules(firewallRules);
-            handleResponse(response, handler);
-        } catch (SecurityException ex) {
-            // Missing required MDM permission
-            LogUtils.getInstance().writeError("Failed to add firewall rules to Knox Firewall", ex, handler);
-        }
-    }
-
-    private void handleResponse(FirewallResponse[] response, Handler handler) throws Exception {
-        if (response == null) {
-            Exception ex = new Exception("There was no response from Knox Firewall");
-            LogUtils.getInstance().writeError("There was no response from Knox Firewall", ex, handler);
-            throw ex;
-        } else {
-            LogUtils.getInstance().writeInfo("Result: Success", handler);
-            if (FirewallResponse.Result.SUCCESS != response[0].getResult()) {
-                Exception ex = new Exception(response[0].getMessage());
-                StringWriter sw = new StringWriter();
-                PrintWriter pw = new PrintWriter(sw);
-                ex.printStackTrace(pw);
-                LogUtils.getInstance().writeError(sw.toString(), ex, handler);
-                throw ex;
-            }
-        }
     }
 
     public void setAppComponentState(boolean state) {
@@ -251,7 +201,7 @@ public final class AdhellFactory {
                     }
 
                     try {
-                        addDomainFilterRules(rules, handler);
+                        FirewallUtils.getInstance().addDomainFilterRules(rules, handler);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -293,18 +243,4 @@ public final class AdhellFactory {
             }
         }
     }
-
-     public FirewallRule[] createFirewallRules(String packageName, Firewall.NetworkInterface networkInterface) {
-         FirewallRule[] rules = new FirewallRule[2];
-
-         rules[0] = new FirewallRule(FirewallRule.RuleType.DENY, Firewall.AddressType.IPV4);
-         rules[0].setNetworkInterface(networkInterface);
-         rules[0].setApplication(new AppIdentity(packageName, null));
-
-         rules[1] = new FirewallRule(FirewallRule.RuleType.DENY, Firewall.AddressType.IPV6);
-         rules[1].setNetworkInterface(networkInterface);
-         rules[1].setApplication(new AppIdentity(packageName, null));
-
-         return rules;
-     }
 }
