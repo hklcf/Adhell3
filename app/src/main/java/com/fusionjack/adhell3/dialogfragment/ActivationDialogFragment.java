@@ -107,6 +107,11 @@ public class ActivationDialogFragment extends DialogFragment {
                         IntentFilter filter = new IntentFilter();
                         filter.addAction(KnoxEnterpriseLicenseManager.ACTION_LICENSE_STATUS);
                         filter.addAction(EnterpriseLicenseManager.ACTION_LICENSE_STATUS);
+                        if (deviceAdminInteractor.isKnox26()) {
+                            // Intent names in legacy SDK
+                            filter.addAction("edm.intent.action.knox_license.status");
+                            filter.addAction("edm.intent.action.license.status");
+                        }
                         getActivity().registerReceiver(receiver, filter);
 
                         deviceAdminInteractor.activateKnoxKey(sharedPreferences, getContext());
@@ -127,9 +132,13 @@ public class ActivationDialogFragment extends DialogFragment {
             public void onReceive(Context context, Intent intent) {
                 String action = intent.getAction();
 
-                if (KnoxEnterpriseLicenseManager.ACTION_LICENSE_STATUS.equals(action)) {
+                if (KnoxEnterpriseLicenseManager.ACTION_LICENSE_STATUS.equals(action) ||
+                        "edm.intent.action.knox_license.status".equals(action)) {
                     int errorCode = intent.getIntExtra(KnoxEnterpriseLicenseManager.EXTRA_LICENSE_ERROR_CODE, -1);
-                    if (errorCode == KnoxEnterpriseLicenseManager.ERROR_NONE) {
+                    if (errorCode == -1) {
+                        errorCode = intent.getIntExtra("edm.intent.extra.knox_license.errorcode", -1);
+                    }
+                    if (errorCode == 0) { // KnoxEnterpriseLicenseManager.ERROR_NONE
                         boolean useBackwardKey = deviceAdminInteractor.useBackwardCompatibleKey();
                         if (useBackwardKey) {
                             deviceAdminInteractor.activateBackwardKey(sharedPreferences, getContext());
@@ -143,6 +152,9 @@ public class ActivationDialogFragment extends DialogFragment {
                     } else {
                         getActivity().unregisterReceiver(receiver);
                         String status = intent.getStringExtra(KnoxEnterpriseLicenseManager.EXTRA_LICENSE_STATUS);
+                        if (status == null || status.isEmpty()) {
+                            status = intent.getStringExtra("edm.intent.extra.knox_license.status");
+                        }
                         Toast.makeText(context, "Status: " +  status + ". Error code: " + errorCode, Toast.LENGTH_LONG).show();
 
                         // Allow the user to try again
@@ -152,17 +164,24 @@ public class ActivationDialogFragment extends DialogFragment {
                     }
                 }
 
-                if (EnterpriseLicenseManager.ACTION_LICENSE_STATUS.equals(action)) {
+                else if (EnterpriseLicenseManager.ACTION_LICENSE_STATUS.equals(action) ||
+                        "edm.intent.action.license.status".equals(action)) {
                     getActivity().unregisterReceiver(receiver);
 
                     int errorCode = intent.getIntExtra(EnterpriseLicenseManager.EXTRA_LICENSE_ERROR_CODE, -1);
-                    if (errorCode == EnterpriseLicenseManager.ERROR_NONE) {
+                    if (errorCode == -1) {
+                        errorCode = intent.getIntExtra("edm.intent.extra.license.errorcode", -1);
+                    }
+                    if (errorCode == 0) { // EnterpriseLicenseManager.ERROR_NONE
                         allowActivateKnox(false);
                         activateKnoxButton.setText(R.string.license_activated);
                         Log.d(TAG, "License activated");
                         dismiss();
                     } else  {
                         String status = intent.getStringExtra(EnterpriseLicenseManager.EXTRA_LICENSE_STATUS);
+                        if (status == null || status.isEmpty()) {
+                            status = intent.getStringExtra("edm.intent.extra.license.status");
+                        }
                         Toast.makeText(context, "Status: " +  status + ". Error code: " + errorCode, Toast.LENGTH_LONG).show();
 
                         // Allow the user to try again
@@ -170,6 +189,18 @@ public class ActivationDialogFragment extends DialogFragment {
                         activateKnoxButton.setText(R.string.activate_license);
                         Log.w(TAG, "License activation failed");
                     }
+                }
+
+                else {
+                    // Something went wrong
+                    getActivity().unregisterReceiver(receiver);
+
+                    // Allow the user to try again
+                    allowActivateKnox(true);
+                    activateKnoxButton.setText(R.string.activate_license);
+                    Log.w(TAG, "License activation failed");
+
+                    Toast.makeText(context, "No matched action found, action: " + action, Toast.LENGTH_LONG).show();
                 }
             }
         };
