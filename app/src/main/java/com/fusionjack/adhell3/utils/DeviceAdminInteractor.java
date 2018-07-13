@@ -38,6 +38,11 @@ public final class DeviceAdminInteractor {
     private final String KNOX_KEY = "knox_key";
     private final String BACKWARD_KEY = "backward_key";
 
+    private static final String KNOX_FIREWALL_PERMISSION = "com.samsung.android.knox.permission.KNOX_FIREWALL";
+    private static final String KNOX_APP_MGMT_PERMISSION = "com.samsung.android.knox.permission.KNOX_APP_MGMT";
+    private static final String MDM_FIREWALL_PERMISSION = "android.permission.sec.MDM_FIREWALL";
+    private static final String MDM_APP_MGMT_PERMISSION = "android.permission.sec.MDM_APP_MGMT";
+
     @Nullable
     @Inject
     KnoxEnterpriseLicenseManager knoxEnterpriseLicenseManager;
@@ -112,10 +117,12 @@ public final class DeviceAdminInteractor {
      * Check if KNOX enabled
      */
     public boolean isKnoxEnabled(Context context) {
-        return (context.checkCallingOrSelfPermission("com.samsung.android.knox.permission.KNOX_FIREWALL")
-                == PackageManager.PERMISSION_GRANTED)
-                && (context.checkCallingOrSelfPermission("com.samsung.android.knox.permission.KNOX_APP_MGMT")
-                == PackageManager.PERMISSION_GRANTED);
+        if (isKnox26()) {
+            return context.checkCallingOrSelfPermission(MDM_FIREWALL_PERMISSION) == PackageManager.PERMISSION_GRANTED &&
+                    context.checkCallingOrSelfPermission(MDM_APP_MGMT_PERMISSION) == PackageManager.PERMISSION_GRANTED;
+        }
+        return context.checkCallingOrSelfPermission(KNOX_FIREWALL_PERMISSION) == PackageManager.PERMISSION_GRANTED &&
+                context.checkCallingOrSelfPermission(KNOX_APP_MGMT_PERMISSION) == PackageManager.PERMISSION_GRANTED;
     }
 
     public String getKnoxKey(SharedPreferences sharedPreferences) {
@@ -206,5 +213,9 @@ public final class DeviceAdminInteractor {
             default:
                 return true;
         }
+    }
+
+    private boolean isKnox26() {
+        return EnterpriseDeviceManager.getAPILevel() == KNOX_2_6;
     }
 }
