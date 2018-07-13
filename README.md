@@ -100,6 +100,10 @@ Starting with 3.1.1.x, the Adhell3 database won't be created in internal storage
 This was a convenience feature when most of the people need to re-install Adhell3 and each time with different package name.<br/>
 Since you can compile it by yourself, you can just assign the same package name so that your existing Adhell3 will be updated.
 
+## Customization
+* Change the default 15k domain limit<br/>
+Put `domain.limit=anyNumber` in `app.properties`, e.g. `domain.limit=50000`
+
 ## How to build apk
 
 ### With Git

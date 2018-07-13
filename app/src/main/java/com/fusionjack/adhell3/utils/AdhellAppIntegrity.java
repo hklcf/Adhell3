@@ -3,6 +3,7 @@ package com.fusionjack.adhell3.utils;
 import android.content.SharedPreferences;
 import android.util.Log;
 
+import com.fusionjack.adhell3.BuildConfig;
 import com.fusionjack.adhell3.db.AppDatabase;
 import com.fusionjack.adhell3.db.entity.AppInfo;
 import com.fusionjack.adhell3.db.entity.BlockUrl;
@@ -17,7 +18,7 @@ import java.util.List;
 
 public class AdhellAppIntegrity {
     public static final String ADHELL_STANDARD_PACKAGE = "https://raw.githubusercontent.com/mmotti/mmotti-host-file/master/hosts";
-    public static final int BLOCK_URL_LIMIT = 15000;
+    public static final int BLOCK_URL_LIMIT = BuildConfig.DOMAIN_LIMIT;
     public final static String DEFAULT_POLICY_ID = "default-policy";
 
     private static final String TAG = AdhellAppIntegrity.class.getCanonicalName();

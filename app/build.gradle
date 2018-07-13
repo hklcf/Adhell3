@@ -24,14 +24,18 @@ android {
         }
 
         def appPropsFile = file('app.properties')
-        def packageName
+        def packageName = ""
+        def domainLimit = "15000"
 
         if (appPropsFile.exists()) {
             Properties appProps = new Properties()
             appProps.load(new FileInputStream(appPropsFile))
-            packageName = appProps['package.name'].toString()
-        } else {
-            packageName = "";
+            if (appProps['package.name'] != null) {
+                packageName = appProps['package.name']
+            }
+            if (appProps['domain.limit'] != null) {
+                domainLimit = appProps['domain.limit']
+            }
         }
 
         applicationId packageName
@@ -39,6 +43,8 @@ android {
         targetSdkVersion 27
         versionCode 1
         versionName "3.1.1." + buildNumber
+
+        buildConfigField("int", "DOMAIN_LIMIT", domainLimit)
     }
 
     buildTypes {
