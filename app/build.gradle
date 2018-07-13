@@ -23,7 +23,18 @@ android {
             throw new FileNotFoundException("Could not read build.properties!")
         }
 
-        applicationId "com."
+        def appPropsFile = file('app.properties')
+        def packageName
+
+        if (appPropsFile.exists()) {
+            Properties appProps = new Properties()
+            appProps.load(new FileInputStream(appPropsFile))
+            packageName = appProps['package.name'].toString()
+        } else {
+            packageName = "";
+        }
+
+        applicationId packageName
         minSdkVersion 23
         targetSdkVersion 27
         versionCode 1

@@ -58,7 +58,8 @@ Set custom DNS for selected apps. Only user apps are supported.
 ### Source code
 - Using git: Clone the project with `git clone https://gitlab.com/fusionjack/adhell3.git`
 - Without git: Download the source code as a zip file: https://gitlab.com/fusionjack/adhell3/repository/master/archive.zip
-- Set `applicationId` with a valid package name in `app\build.gradle`, e.g.: com.dhf.erz58384
+- Create `app.properties` file inside app folder: `app\app.properties`
+- Put `package.name=your.package.name` in the first line of the file
 
 ### Android Studio
 - Download and install latest Android Studio from https://developer.android.com/studio/index.html
