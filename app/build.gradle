@@ -26,6 +26,8 @@ android {
         def appPropsFile = file('app.properties')
         def packageName = ""
         def domainLimit = "15000"
+        def sklKey = ""
+        def backwardsKey = ""
 
         if (appPropsFile.exists()) {
             Properties appProps = new Properties()
@@ -36,6 +38,12 @@ android {
             if (appProps['domain.limit'] != null) {
                 domainLimit = appProps['domain.limit']
             }
+            if (appProps['skl.key'] != null) {
+                sklKey = appProps['skl.key']
+            }
+            if (appProps['backwards.key'] != null) {
+                backwardsKey = appProps['backwards.key']
+            }
         }
 
         applicationId packageName
@@ -45,6 +53,8 @@ android {
         versionName "3.1.1." + buildNumber
 
         buildConfigField("int", "DOMAIN_LIMIT", domainLimit)
+        buildConfigField("String", "SKL_KEY", '"' + sklKey + '"')
+        buildConfigField("String", "BACKWARDS_KEY", '"' + backwardsKey + '"')
     }
 
     buildTypes {

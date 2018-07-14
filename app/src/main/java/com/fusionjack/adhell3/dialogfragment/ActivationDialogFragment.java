@@ -75,17 +75,13 @@ public class ActivationDialogFragment extends DialogFragment {
 
         EditText knoxKeyEditText = view.findViewById(R.id.knoxKeyEditText);
         String knoxKey = deviceAdminInteractor.getKnoxKey(sharedPreferences);
-        if (knoxKey != null) {
-            knoxKeyEditText.setText(knoxKey);
-        }
+        knoxKeyEditText.setText(knoxKey);
 
         EditText backwardKeyEditText = view.findViewById(R.id.backwardKeyEditText);
         boolean useBackwardKey = deviceAdminInteractor.useBackwardCompatibleKey();
         if (useBackwardKey) {
             String backwardKey = deviceAdminInteractor.getBackwardKey(sharedPreferences);
-            if (backwardKey != null) {
-                backwardKeyEditText.setText(backwardKey);
-            }
+            backwardKeyEditText.setText(backwardKey);
         } else {
             backwardKeyEditText.setVisibility(View.GONE);
         }

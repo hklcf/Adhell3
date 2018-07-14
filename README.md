@@ -101,8 +101,15 @@ This was a convenience feature when most of the people need to re-install Adhell
 Since you can compile it by yourself, you can just assign the same package name so that your existing Adhell3 will be updated.
 
 ## Customization
-* Change the default 15k domain limit<br/>
-Put `domain.limit=anyNumber` in `app.properties`, e.g. `domain.limit=50000`
+### Change the default 15k domain limit
+* Put `domain.limit` in `app.properties`, e.g. `domain.limit=50000`
+
+### Make SKL key and backwards-compatible key available when activating Adhell3
+* Put `skl.key` in in `app.properties`, e.g. `skl.key=KLM06-XXXXX-XXXXX-XXXXX-XXXXX-XXXXX`
+* Put `backwards.key` in in `app.properties`, e.g. `backwards.key=B6B2BXXXXXXXXXXXXXXXX`
+* If you use these properties, beware when you distribute your app as the app contains the keys in plain text
+* This is just for convenience purpose so that you don't need to make your keys somewhere available when you are on the phone, hence this only works on a new installation
+
 
 ## How to build apk
 

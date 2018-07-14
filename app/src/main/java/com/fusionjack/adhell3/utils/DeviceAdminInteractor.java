@@ -12,6 +12,7 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.fusionjack.adhell3.App;
+import com.fusionjack.adhell3.BuildConfig;
 import com.samsung.android.knox.EnterpriseDeviceManager;
 import com.samsung.android.knox.application.ApplicationPolicy;
 import com.samsung.android.knox.license.EnterpriseLicenseManager;
@@ -126,7 +127,7 @@ public final class DeviceAdminInteractor {
     }
 
     public String getKnoxKey(SharedPreferences sharedPreferences) {
-        return sharedPreferences.getString(KNOX_KEY, null);
+        return sharedPreferences.getString(KNOX_KEY, BuildConfig.SKL_KEY);
     }
 
     public void setKnoxKey(SharedPreferences sharedPreferences, String key) {
@@ -136,7 +137,7 @@ public final class DeviceAdminInteractor {
     }
 
     public String getBackwardKey(SharedPreferences sharedPreferences) {
-        return sharedPreferences.getString(BACKWARD_KEY, null);
+        return sharedPreferences.getString(BACKWARD_KEY, BuildConfig.BACKWARDS_KEY);
     }
 
     public void setBackwardKey(SharedPreferences sharedPreferences, String key) {
