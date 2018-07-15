@@ -187,7 +187,7 @@ public final class AdhellFactory {
 
                 LogUtils.getInstance().writeInfo("DNS 1: " + dns1, handler);
                 LogUtils.getInstance().writeInfo("DNS 2: " + dns2, handler);
-                List<AppInfo> dnsPackages = AdhellFactory.getInstance().getAppDatabase().applicationInfoDao().getDnsApps();
+                List<AppInfo> dnsPackages = appDatabase.applicationInfoDao().getDnsApps();
                 if (dnsPackages.size() == 0) {
                     LogUtils.getInstance().writeInfo("No app is selected", handler);
                 } else {
@@ -211,13 +211,11 @@ public final class AdhellFactory {
     }
 
     public void applyAppDisabler() {
-        ApplicationPolicy appPolicy = AdhellFactory.getInstance().getAppPolicy();
         if (appPolicy == null) {
             return;
         }
 
         boolean enabled = AppPreferences.getInstance().isAppDisablerEnabled();
-        AppDatabase appDatabase = AdhellFactory.getInstance().getAppDatabase();
         List<DisabledPackage> disabledPackages = appDatabase.disabledPackageDao().getAll();
         for (DisabledPackage disabledPackage : disabledPackages) {
             if (enabled) {
