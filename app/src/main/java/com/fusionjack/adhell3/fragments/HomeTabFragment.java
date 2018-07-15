@@ -176,9 +176,10 @@ public class HomeTabFragment extends Fragment {
         private WeakReference<Context> contextWeakReference;
         private int mobileSize;
         private int wifiSize;
-        private int whitelistedSize;
-        private int domainSize;
-        private int denyFirewallSize;
+        private int customSize;
+        private int blackListSize;
+        private int whiteListSize;
+        private int whitelistAppSize;
         private int disablerSize;
 
         SetInfoAsyncTask(Context context) {
@@ -192,7 +193,7 @@ public class HomeTabFragment extends Fragment {
                 TextView domainInfoTextView = ((Activity) context).findViewById(R.id.domainInfoTextView);
                 if (domainInfoTextView != null) {
                     String domainInfo = context.getResources().getString(R.string.domain_rules_info);
-                    domainInfoTextView.setText(String.format(domainInfo, 0, 0));
+                    domainInfoTextView.setText(String.format(domainInfo, 0, 0, 0));
                 }
                 TextView firewallInfoTextView = ((Activity) context).findViewById(R.id.firewallInfoTextView);
                 if (firewallInfoTextView != null) {
@@ -211,12 +212,16 @@ public class HomeTabFragment extends Fragment {
         protected Void doInBackground(Void... voids) {
             AppDatabase appDatabase = AdhellFactory.getInstance().getAppDatabase();
             disablerSize = appDatabase.disabledPackageDao().getAll().size();
-            domainSize = FirewallUtils.getInstance().getDomainCountFromKnox();
-            whitelistedSize = FirewallUtils.getInstance().getWhitelistedAppCountFromKnox();
+
+            FirewallUtils.DomainStat domainStat = FirewallUtils.getInstance().getDomainStatFromKnox();
+            blackListSize = domainStat.blackListSize;
+            whiteListSize = domainStat.whiteListSize;
+
+            whitelistAppSize = FirewallUtils.getInstance().getWhitelistAppCountFromKnox();
 
             // Dirty solution: Every deny firewall is created for IPv4 and IPv6.
-            FirewallUtils.FirewallStat stat = FirewallUtils.getInstance().getFirewallStat();
-            denyFirewallSize = stat.allNetworkSize / 2;
+            FirewallUtils.FirewallStat stat = FirewallUtils.getInstance().getFirewallStatFromKnox();
+            customSize = stat.allNetworkSize / 2;
             mobileSize = stat.mobileDataSize / 2;
             wifiSize = stat.wifiDataSize / 2;
 
@@ -230,12 +235,12 @@ public class HomeTabFragment extends Fragment {
                 TextView domainInfoTextView = ((Activity) context).findViewById(R.id.domainInfoTextView);
                 if (domainInfoTextView != null) {
                     String domainInfo = context.getResources().getString(R.string.domain_rules_info);
-                    domainInfoTextView.setText(String.format(domainInfo, whitelistedSize, domainSize));
+                    domainInfoTextView.setText(String.format(domainInfo, blackListSize, whiteListSize, whitelistAppSize));
                 }
                 TextView firewallInfoTextView = ((Activity) context).findViewById(R.id.firewallInfoTextView);
                 if (firewallInfoTextView != null) {
                     String firewallInfo = context.getResources().getString(R.string.firewall_rules_info);
-                    firewallInfoTextView.setText(String.format(firewallInfo, mobileSize, wifiSize, denyFirewallSize));
+                    firewallInfoTextView.setText(String.format(firewallInfo, mobileSize, wifiSize, customSize));
                 }
                 TextView disablerInfoTextView = ((Activity) context).findViewById(R.id.disablerInfoTextView);
                 if (disablerInfoTextView != null) {

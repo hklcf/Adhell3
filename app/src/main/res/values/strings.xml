@@ -3,15 +3,12 @@
     <string name="domain_rules_enabled">Domain rules are enabled.</string>
     <string name="domain_rules_disabled">Domain rules are disabled.</string>
     <string name="domain_rules_info">
-        %1$d apps are whitelisted.
-        \n%2$d domains are blocked.
+        Blacklist: %1$d domains | Whitelist: %2$d domains and %3$d apps
     </string>
     <string name="firewall_rules_enabled">Firewall rules are enabled.</string>
     <string name="firewall_rules_disabled">Firewall rules are disabled.</string>
     <string name="firewall_rules_info">
-        %1$d apps\' mobile data is restricted.
-        \n%2$d apps\' Wi-Fi data is restricted.
-        \n%3$d denial rules are active.
+        Mobile data: %1$d apps | Wi-Fi data: %2$d apps | Custom: %3$d apps
     </string>
     <string name="app_disabler_enabled">App disabler is enabled.</string>
     <string name="app_disabler_disabled">App disabler is disabled.</string>

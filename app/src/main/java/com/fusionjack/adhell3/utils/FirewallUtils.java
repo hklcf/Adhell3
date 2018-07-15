@@ -77,24 +77,26 @@ public final class FirewallUtils {
         return rules;
     }
 
-    public int getDomainCountFromKnox() {
+    public DomainStat getDomainStatFromKnox() {
+        DomainStat stat = new DomainStat();
         if (firewall == null) {
-            return 0;
+            return stat;
         }
 
-        int domainSize = 0;
         List<String> packageNameList = new ArrayList<>();
         packageNameList.add(Firewall.FIREWALL_ALL_PACKAGES);
         List<DomainFilterRule> domainRules = firewall.getDomainFilterRules(packageNameList);
         if (domainRules == null && BlockUrlUtils.isDomainLimitAboveDefault()) {
-            domainSize = AppPreferences.getInstance().getBlockedDomainsCount();
+            stat.blackListSize = AppPreferences.getInstance().getBlockedDomainsCount();
+            stat.whiteListSize = appDatabase.whiteUrlDao().getAll3().size();
         } else if (domainRules != null && domainRules.size() > 0) {
-            domainSize = domainRules.get(0).getDenyDomains().size();
+            stat.blackListSize = domainRules.get(0).getDenyDomains().size();
+            stat.whiteListSize = domainRules.get(0).getAllowDomains().size();
         }
-        return domainSize;
+        return stat;
     }
 
-    public int getWhitelistedAppCountFromKnox() {
+    public int getWhitelistAppCountFromKnox() {
         if (firewall == null) {
             return 0;
         }
@@ -113,7 +115,7 @@ public final class FirewallUtils {
         return whitelistedSize;
     }
 
-    public FirewallStat getFirewallStat() {
+    public FirewallStat getFirewallStatFromKnox() {
         FirewallStat stat = new FirewallStat();
         if (firewall == null) {
             return stat;
@@ -202,5 +204,10 @@ public final class FirewallUtils {
         public int mobileDataSize;
         public int wifiDataSize;
         public int allNetworkSize;
+    }
+
+    public class DomainStat {
+        public int blackListSize;
+        public int whiteListSize;
     }
 }
