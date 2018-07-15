@@ -210,15 +210,15 @@ public final class AdhellFactory {
         }
     }
 
-    public void applyAppDisabler() {
+    public void setAppDisabler(boolean state) {
         if (appPolicy == null) {
             return;
         }
 
-        boolean enabled = AppPreferences.getInstance().isAppDisablerEnabled();
+        AppPreferences.getInstance().setAppDisabler(state);
         List<DisabledPackage> disabledPackages = appDatabase.disabledPackageDao().getAll();
         for (DisabledPackage disabledPackage : disabledPackages) {
-            if (enabled) {
+            if (state) {
                 appPolicy.setDisableApplication(disabledPackage.packageName);
             } else {
                 appPolicy.setEnableApplication(disabledPackage.packageName);

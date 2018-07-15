@@ -271,8 +271,7 @@ public class HomeTabFragment extends Fragment {
         @Override
         protected Void doInBackground(Void... voids) {
             boolean disablerEnabled = AppPreferences.getInstance().isAppDisablerEnabled();
-            AppPreferences.getInstance().setAppDisabler(!disablerEnabled);
-            AdhellFactory.getInstance().applyAppDisabler();
+            AdhellFactory.getInstance().setAppDisabler(!disablerEnabled);
             return null;
         }
 

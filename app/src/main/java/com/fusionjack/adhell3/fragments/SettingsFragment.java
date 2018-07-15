@@ -26,7 +26,6 @@ import com.fusionjack.adhell3.model.AppFlag;
 import com.fusionjack.adhell3.receiver.CustomDeviceAdminReceiver;
 import com.fusionjack.adhell3.tasks.LoadAppAsyncTask;
 import com.fusionjack.adhell3.utils.AdhellFactory;
-import com.fusionjack.adhell3.utils.AppPreferences;
 
 import java.lang.ref.WeakReference;
 
@@ -168,8 +167,7 @@ public class SettingsFragment extends Fragment {
                 ContentBlocker contentBlocker = ContentBlocker56.getInstance();
                 contentBlocker.disableDomainRules();
                 contentBlocker.disableFirewallRules();
-                AppPreferences.getInstance().setAppDisabler(false);
-                AdhellFactory.getInstance().applyAppDisabler();
+                AdhellFactory.getInstance().setAppDisabler(false);
 
                 DatabaseFactory.getInstance().restoreDatabase();
 
