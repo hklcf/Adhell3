@@ -23,6 +23,7 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/domainStatusTextView"
+            android:layout_toStartOf="@id/domainRulesSwitch"
             android:text="@string/domain_rules_info"
             android:textSize="12sp"/>
 
@@ -60,6 +61,7 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/firewallStatusTextView"
+            android:layout_toStartOf="@id/firewallRulesSwitch"
             android:text="@string/firewall_rules_info"
             android:textSize="12sp"/>
 
@@ -97,6 +99,7 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/disablerStatusTextView"
+            android:layout_toStartOf="@id/appDisablerSwitch"
             android:text="@string/app_disabler_info"
             android:textSize="12sp"/>
 
