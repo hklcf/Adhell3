@@ -14,6 +14,7 @@ import com.fusionjack.adhell3.R;
 import com.fusionjack.adhell3.model.IComponentInfo;
 import com.fusionjack.adhell3.model.ServiceInfo;
 import com.fusionjack.adhell3.utils.AdhellFactory;
+import com.fusionjack.adhell3.utils.AppPreferences;
 import com.samsung.android.knox.application.ApplicationPolicy;
 
 import java.util.List;
@@ -44,6 +45,9 @@ public class ServiceInfoAdapter extends ComponentAdapter {
             Switch permissionSwitch = convertView.findViewById(R.id.switchDisable);
             serviceNameTextView.setText(serviceName);
             permissionSwitch.setChecked(getComponentState(packageName, serviceName));
+
+            boolean enabled = AppPreferences.getInstance().isAppComponentToggleEnabled();
+            permissionSwitch.setEnabled(enabled);
         }
 
         return convertView;

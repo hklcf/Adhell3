@@ -14,6 +14,7 @@ import com.fusionjack.adhell3.model.IComponentInfo;
 import com.fusionjack.adhell3.model.PermissionInfo;
 import com.fusionjack.adhell3.utils.AdhellFactory;
 import com.fusionjack.adhell3.utils.AppPermissionUtils;
+import com.fusionjack.adhell3.utils.AppPreferences;
 import com.samsung.android.knox.application.ApplicationPolicy;
 
 import java.util.List;
@@ -55,6 +56,9 @@ public class PermissionInfoAdapter extends ComponentAdapter {
                 checked = true;
             }
             permissionSwitch.setChecked(checked);
+
+            boolean enabled = AppPreferences.getInstance().isAppComponentToggleEnabled();
+            permissionSwitch.setEnabled(enabled);
         }
 
         return convertView;

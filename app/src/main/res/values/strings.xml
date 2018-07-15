@@ -15,6 +15,11 @@
     <string name="app_disabler_info">
         %1$d apps are disabled.
     </string>
+    <string name="app_component_enabled">App component is enabled.</string>
+    <string name="app_component_disabled">App component is disabled.</string>
+    <string name="app_component_toggle_info">
+        %1$d permissions, %2$d services and %3$d receivers are disabled.
+    </string>
     <string name="adhell_not_supported">Adhell is not yet supported on your device.</string>
     <string name="enable_adhell_title">Enable Adhell</string>
     <string name="enable_adhell_info">
@@ -108,7 +113,7 @@
     <string name="total_domains">Total domains:&#160;</string>
     <string name="package_disabler_info">
         Disable an app entirely and hide it on app drawer.
-        \nIf App disabler is enabled, changes take effect immediately.
+        \nIf app disabler toggle is enabled, changes take effect immediately.
     </string>
     <string name="mobile_restricter_info">
         Block or allow an app\'s mobile data usage.
@@ -124,7 +129,7 @@
     </string>
     <string name="app_component_info">
         Disable app components (permissions, services and receivers).
-        \nChanges take effect immediately.
+        \nIf app component toggle is enabled, changes take effect immediately.
     </string>
     <string name="app_permission_info">
         Only protection level of \'dangerous\' can be disabled.

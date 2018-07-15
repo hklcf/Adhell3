@@ -8,6 +8,7 @@ public final class AppPreferences {
 
     private static final String BLOCKED_DOMAINS_COUNT = "blockedDomainsCount";
     private static final String DISABLER_TOGGLE = "disablerToggle";
+    private static final String APP_COMPONENT_TOGGLE = "appComponentToggle";
     private final static String DNS_ALL_APPS_ENABLED = "dnsAllAppsEnabled";
     private static final String DNS1 = "dns1";
     private static final String DNS2 = "dns2";
@@ -30,6 +31,16 @@ public final class AppPreferences {
     public void setAppDisabler(boolean enabled) {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putBoolean(DISABLER_TOGGLE, enabled);
+        editor.apply();
+    }
+
+    public boolean isAppComponentToggleEnabled() {
+        return sharedPreferences.getBoolean(APP_COMPONENT_TOGGLE, true);
+    }
+
+    public void setAppComponentToggle(boolean enabled) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean(APP_COMPONENT_TOGGLE, enabled);
         editor.apply();
     }
 

@@ -14,6 +14,7 @@ import com.fusionjack.adhell3.R;
 import com.fusionjack.adhell3.model.IComponentInfo;
 import com.fusionjack.adhell3.model.ReceiverInfo;
 import com.fusionjack.adhell3.utils.AdhellFactory;
+import com.fusionjack.adhell3.utils.AppPreferences;
 import com.samsung.android.knox.application.ApplicationPolicy;
 
 import java.util.List;
@@ -47,6 +48,9 @@ public class ReceiverInfoAdapter extends ComponentAdapter {
             receiverNameTextView.setText(receiverName);
             receiverPermissionTextView.setText(permission);
             permissionSwitch.setChecked(getComponentState(packageName, receiverName));
+
+            boolean enabled = AppPreferences.getInstance().isAppComponentToggleEnabled();
+            permissionSwitch.setEnabled(enabled);
         }
 
         return convertView;

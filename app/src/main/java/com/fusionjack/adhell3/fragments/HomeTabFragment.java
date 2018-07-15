@@ -30,6 +30,7 @@ import com.fusionjack.adhell3.adapter.ReportBlockedUrlAdapter;
 import com.fusionjack.adhell3.blocker.ContentBlocker;
 import com.fusionjack.adhell3.blocker.ContentBlocker56;
 import com.fusionjack.adhell3.db.AppDatabase;
+import com.fusionjack.adhell3.db.entity.AppPermission;
 import com.fusionjack.adhell3.db.entity.ReportBlockedUrl;
 import com.fusionjack.adhell3.db.entity.WhiteUrl;
 import com.fusionjack.adhell3.dialogfragment.FirewallDialogFragment;
@@ -54,6 +55,8 @@ public class HomeTabFragment extends Fragment {
     private Switch firewallSwitch;
     private TextView disablerStatusTextView;
     private Switch disablerSwitch;
+    private TextView appComponentStatusTextView;
+    private Switch appComponentSwitch;
     private TextView infoTextView;
     private SwipeRefreshLayout swipeContainer;
     private ContentBlocker contentBlocker;
@@ -89,6 +92,8 @@ public class HomeTabFragment extends Fragment {
         firewallStatusTextView = view.findViewById(R.id.firewallStatusTextView);
         disablerSwitch = view.findViewById(R.id.appDisablerSwitch);
         disablerStatusTextView = view.findViewById(R.id.disablerStatusTextView);
+        appComponentSwitch = view.findViewById(R.id.appComponentSwitch);
+        appComponentStatusTextView = view.findViewById(R.id.appComponentStatusTextView);
         swipeContainer = view.findViewById(R.id.swipeContainer);
         infoTextView = view.findViewById(R.id.infoTextView);
 
@@ -107,6 +112,10 @@ public class HomeTabFragment extends Fragment {
         disablerSwitch.setOnClickListener(v -> {
             Log.d(TAG, "App disabler switch button has been clicked");
             new AppDisablerAsyncTask(this, getActivity()).execute();
+        });
+        appComponentSwitch.setOnClickListener(v -> {
+            Log.d(TAG, "App component switch button has been clicked");
+            new AppComponentAsyncTask(this, getActivity()).execute();
         });
 
         AsyncTask.execute(() -> {
@@ -169,6 +178,15 @@ public class HomeTabFragment extends Fragment {
             disablerSwitch.setChecked(false);
         }
 
+        boolean appComponentEnabled = AppPreferences.getInstance().isAppComponentToggleEnabled();
+        if (appComponentEnabled) {
+            appComponentStatusTextView.setText(R.string.app_component_enabled);
+            appComponentSwitch.setChecked(true);
+        } else {
+            appComponentStatusTextView.setText(R.string.app_component_disabled);
+            appComponentSwitch.setChecked(false);
+        }
+
         new SetInfoAsyncTask(getContext()).execute();
     }
 
@@ -181,6 +199,9 @@ public class HomeTabFragment extends Fragment {
         private int whiteListSize;
         private int whitelistAppSize;
         private int disablerSize;
+        private int permissionSize;
+        private int serviceSize;
+        private int receiverSize;
 
         SetInfoAsyncTask(Context context) {
             this.contextWeakReference = new WeakReference<>(context);
@@ -205,6 +226,11 @@ public class HomeTabFragment extends Fragment {
                     String disablerInfo = context.getResources().getString(R.string.app_disabler_info);
                     disablerInfoTextView.setText(String.format(disablerInfo, 0));
                 }
+                TextView appComponentInfoTextView = ((Activity) context).findViewById(R.id.appComponentInfoTextView);
+                if (appComponentInfoTextView != null) {
+                    String appComponentInfo = context.getResources().getString(R.string.app_component_toggle_info);
+                    appComponentInfoTextView.setText(String.format(appComponentInfo, 0, 0, 0));
+                }
             }
         }
 
@@ -212,6 +238,21 @@ public class HomeTabFragment extends Fragment {
         protected Void doInBackground(Void... voids) {
             AppDatabase appDatabase = AdhellFactory.getInstance().getAppDatabase();
             disablerSize = appDatabase.disabledPackageDao().getAll().size();
+
+            List<AppPermission> appPermissions = appDatabase.appPermissionDao().getAll();
+            for (AppPermission appPermission : appPermissions) {
+                switch (appPermission.permissionStatus) {
+                    case AppPermission.STATUS_PERMISSION:
+                        permissionSize++;
+                        break;
+                    case AppPermission.STATUS_SERVICE:
+                        serviceSize++;
+                        break;
+                    case AppPermission.STATUS_RECEIVER:
+                        receiverSize++;
+                        break;
+                }
+            }
 
             FirewallUtils.DomainStat domainStat = FirewallUtils.getInstance().getDomainStatFromKnox();
             blackListSize = domainStat.blackListSize;
@@ -248,6 +289,18 @@ public class HomeTabFragment extends Fragment {
                     boolean enabled = AppPreferences.getInstance().isAppDisablerEnabled();
                     disablerInfoTextView.setText(String.format(disablerInfo, enabled ? disablerSize : 0));
                 }
+                TextView appComponentInfoTextView = ((Activity) context).findViewById(R.id.appComponentInfoTextView);
+                if (appComponentInfoTextView != null) {
+                    String appComponentInfo = context.getResources().getString(R.string.app_component_toggle_info);
+                    boolean enabled = AppPreferences.getInstance().isAppComponentToggleEnabled();
+                    String info;
+                    if (enabled) {
+                        info = String.format(appComponentInfo, permissionSize, serviceSize, receiverSize);
+                    } else {
+                        info = String.format(appComponentInfo, 0, 0, 0);
+                    }
+                    appComponentInfoTextView.setText(info);
+                }
             }
         }
     }
@@ -270,8 +323,40 @@ public class HomeTabFragment extends Fragment {
 
         @Override
         protected Void doInBackground(Void... voids) {
-            boolean disablerEnabled = AppPreferences.getInstance().isAppDisablerEnabled();
-            AdhellFactory.getInstance().setAppDisabler(!disablerEnabled);
+            boolean enabled = AppPreferences.getInstance().isAppDisablerEnabled();
+            AdhellFactory.getInstance().setAppDisablerToggle(!enabled); // toggle the switch
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            if (dialog.isShowing()) {
+                dialog.dismiss();
+            }
+            parentFragment.updateUserInterface();
+        }
+    }
+
+    private static class AppComponentAsyncTask extends AsyncTask<Void, Void, Void> {
+        private HomeTabFragment parentFragment;
+        private ProgressDialog dialog;
+
+        AppComponentAsyncTask(HomeTabFragment parentFragment, Activity activity) {
+            this.parentFragment = parentFragment;
+            this.dialog = new ProgressDialog(activity);
+        }
+
+        @Override
+        protected void onPreExecute() {
+            boolean enabled = AppPreferences.getInstance().isAppComponentToggleEnabled();
+            dialog.setMessage(enabled ? "Enabling app component..." : "Disabling app component...");
+            dialog.show();
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            boolean toggleEnabled = AppPreferences.getInstance().isAppComponentToggleEnabled();
+            AdhellFactory.getInstance().setAppComponentToggle(!toggleEnabled); // toggle the switch
             return null;
         }
 

@@ -22,9 +22,7 @@ import com.fusionjack.adhell3.R;
 import com.fusionjack.adhell3.blocker.ContentBlocker;
 import com.fusionjack.adhell3.blocker.ContentBlocker56;
 import com.fusionjack.adhell3.db.DatabaseFactory;
-import com.fusionjack.adhell3.model.AppFlag;
 import com.fusionjack.adhell3.receiver.CustomDeviceAdminReceiver;
-import com.fusionjack.adhell3.tasks.LoadAppAsyncTask;
 import com.fusionjack.adhell3.utils.AdhellFactory;
 
 import java.lang.ref.WeakReference;
@@ -167,19 +165,13 @@ public class SettingsFragment extends Fragment {
                 ContentBlocker contentBlocker = ContentBlocker56.getInstance();
                 contentBlocker.disableDomainRules();
                 contentBlocker.disableFirewallRules();
-                AdhellFactory.getInstance().setAppDisabler(false);
+                AdhellFactory.getInstance().setAppDisablerToggle(false);
+                AdhellFactory.getInstance().setAppComponentToggle(false);
 
                 DatabaseFactory.getInstance().restoreDatabase();
 
                 publishProgress("Updating all providers...");
                 AdhellFactory.getInstance().updateAllProviders();
-
-                publishProgress("Disabling app components...");
-                AdhellFactory.getInstance().setAppComponentState(false);
-
-                publishProgress("Setting DNS addresses...");
-                AdhellFactory.getInstance().applyDns(null);
-                new LoadAppAsyncTask("", AppFlag.createDnsFlag(), activityWeakReference.get()).execute();
 
                 return null;
             } catch (Exception e) {

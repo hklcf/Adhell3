@@ -111,6 +111,13 @@ public final class AdhellFactory {
                 .show();
     }
 
+    public void setAppComponentToggle(boolean enabled) {
+        // If the toggle is enabled, then we need to disable the app component
+        AppPreferences.getInstance().setAppComponentToggle(enabled);
+        boolean state = !enabled;
+        setAppComponentState(state);
+    }
+
     public void setAppComponentState(boolean state) {
         if (appPolicy == null) {
             return;
@@ -136,10 +143,6 @@ public final class AdhellFactory {
                     appPolicy.setApplicationComponentState(componentName, state);
                     break;
             }
-        }
-
-        if (state) {
-            appDatabase.appPermissionDao().deleteAll();
         }
     }
 
@@ -210,7 +213,7 @@ public final class AdhellFactory {
         }
     }
 
-    public void setAppDisabler(boolean state) {
+    public void setAppDisablerToggle(boolean state) {
         if (appPolicy == null) {
             return;
         }

@@ -81,9 +81,10 @@ public class AppComponentFragment extends Fragment {
         new AlertDialog.Builder(context)
                 .setView(dialogView)
                 .setPositiveButton(android.R.string.yes, (dialog, whichButton) ->
-                        AsyncTask.execute(() ->
-                                AdhellFactory.getInstance().setAppComponentState(true)
-                        )
+                        AsyncTask.execute(() -> {
+                            AdhellFactory.getInstance().setAppComponentState(true);
+                            AdhellFactory.getInstance().getAppDatabase().appPermissionDao().deleteAll();
+                        })
                 )
                 .setNegativeButton(android.R.string.no, null).show();
     }
