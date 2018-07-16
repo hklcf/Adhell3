@@ -218,7 +218,7 @@ public final class AdhellFactory {
             return;
         }
 
-        AppPreferences.getInstance().setAppDisabler(state);
+        AppPreferences.getInstance().setAppDisablerToggle(state);
         List<DisabledPackage> disabledPackages = appDatabase.disabledPackageDao().getAll();
         for (DisabledPackage disabledPackage : disabledPackages) {
             if (state) {

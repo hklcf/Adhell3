@@ -88,10 +88,12 @@ public class AppTabPageFragment extends Fragment {
 
         if (view != null) {
             ListView listView = view.findViewById(appFlag.getLoadLayout());
-            listView.setOnItemClickListener((AdapterView<?> adView, View view2, int position, long id) -> {
-                AppInfoAdapter adapter = (AppInfoAdapter) adView.getAdapter();
-                new SetAppAsyncTask(adapter.getItem(position), appFlag, context).execute();
-            });
+            if (page != PACKAGE_DISABLER_PAGE || AppPreferences.getInstance().isAppDisablerToggleEnabled()) {
+                listView.setOnItemClickListener((AdapterView<?> adView, View view2, int position, long id) -> {
+                    AppInfoAdapter adapter = (AppInfoAdapter) adView.getAdapter();
+                    new SetAppAsyncTask(adapter.getItem(position), appFlag, context).execute();
+                });
+            }
 
             SwipeRefreshLayout swipeContainer = view.findViewById(appFlag.getRefreshLayout());
             swipeContainer.setOnRefreshListener(() ->
@@ -174,7 +176,7 @@ public class AppTabPageFragment extends Fragment {
                             List<AppInfo> disabledAppList = appDatabase.applicationInfoDao().getDisabledApps();
                             for (AppInfo app : disabledAppList) {
                                 app.disabled = false;
-                                if (appPolicy != null && AppPreferences.getInstance().isAppDisablerEnabled()) {
+                                if (appPolicy != null) {
                                     appPolicy.setEnableApplication(app.packageName);
                                 }
                                 appDatabase.applicationInfoDao().update(app);

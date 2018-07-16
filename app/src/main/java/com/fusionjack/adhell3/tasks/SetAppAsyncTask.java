@@ -16,7 +16,6 @@ import com.fusionjack.adhell3.db.entity.RestrictedPackage;
 import com.fusionjack.adhell3.model.AppFlag;
 import com.fusionjack.adhell3.utils.AdhellAppIntegrity;
 import com.fusionjack.adhell3.utils.AdhellFactory;
-import com.fusionjack.adhell3.utils.AppPreferences;
 import com.samsung.android.knox.application.ApplicationPolicy;
 
 import java.lang.ref.WeakReference;
@@ -53,12 +52,10 @@ public class SetAppAsyncTask extends AsyncTask<Void, Void, Void> {
                     appDatabase.disabledPackageDao().deleteByPackageName(packageName);
                 }
 
-                if (AppPreferences.getInstance().isAppDisablerEnabled()) {
-                    if (appInfo.disabled) {
-                        appPolicy.setDisableApplication(packageName);
-                    } else {
-                        appPolicy.setEnableApplication(packageName);
-                    }
+                if (appInfo.disabled) {
+                    appPolicy.setDisableApplication(packageName);
+                } else {
+                    appPolicy.setEnableApplication(packageName);
                 }
                 break;
 

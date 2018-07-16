@@ -169,7 +169,7 @@ public class HomeTabFragment extends Fragment {
             swipeContainer.setVisibility(View.INVISIBLE);
         }
 
-        boolean disablerEnabled = AppPreferences.getInstance().isAppDisablerEnabled();
+        boolean disablerEnabled = AppPreferences.getInstance().isAppDisablerToggleEnabled();
         if (disablerEnabled) {
             disablerStatusTextView.setText(R.string.app_disabler_enabled);
             disablerSwitch.setChecked(true);
@@ -286,7 +286,7 @@ public class HomeTabFragment extends Fragment {
                 TextView disablerInfoTextView = ((Activity) context).findViewById(R.id.disablerInfoTextView);
                 if (disablerInfoTextView != null) {
                     String disablerInfo = context.getResources().getString(R.string.app_disabler_info);
-                    boolean enabled = AppPreferences.getInstance().isAppDisablerEnabled();
+                    boolean enabled = AppPreferences.getInstance().isAppDisablerToggleEnabled();
                     disablerInfoTextView.setText(String.format(disablerInfo, enabled ? disablerSize : 0));
                 }
                 TextView appComponentInfoTextView = ((Activity) context).findViewById(R.id.appComponentInfoTextView);
@@ -316,14 +316,14 @@ public class HomeTabFragment extends Fragment {
 
         @Override
         protected void onPreExecute() {
-            boolean enabled = AppPreferences.getInstance().isAppDisablerEnabled();
+            boolean enabled = AppPreferences.getInstance().isAppDisablerToggleEnabled();
             dialog.setMessage(enabled ? "Enabling apps..." : "Disabling apps...");
             dialog.show();
         }
 
         @Override
         protected Void doInBackground(Void... voids) {
-            boolean enabled = AppPreferences.getInstance().isAppDisablerEnabled();
+            boolean enabled = AppPreferences.getInstance().isAppDisablerToggleEnabled();
             AdhellFactory.getInstance().setAppDisablerToggle(!enabled); // toggle the switch
             return null;
         }

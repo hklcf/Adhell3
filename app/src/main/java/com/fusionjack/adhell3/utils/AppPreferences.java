@@ -24,11 +24,11 @@ public final class AppPreferences {
         return instance;
     }
 
-    public boolean isAppDisablerEnabled() {
+    public boolean isAppDisablerToggleEnabled() {
         return sharedPreferences.getBoolean(DISABLER_TOGGLE, true);
     }
 
-    public void setAppDisabler(boolean enabled) {
+    public void setAppDisablerToggle(boolean enabled) {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putBoolean(DISABLER_TOGGLE, enabled);
         editor.apply();
