@@ -31,6 +31,7 @@ import com.fusionjack.adhell3.model.ServiceInfo;
 import com.fusionjack.adhell3.utils.AdhellAppIntegrity;
 import com.fusionjack.adhell3.utils.AdhellFactory;
 import com.fusionjack.adhell3.utils.AppPermissionUtils;
+import com.fusionjack.adhell3.utils.AppPreferences;
 import com.samsung.android.knox.application.ApplicationPolicy;
 
 import java.lang.ref.WeakReference;
@@ -93,11 +94,12 @@ public class ComponentTabPageFragment extends Fragment {
         setHasOptionsMenu(true);
 
         View view = null;
+        boolean toggleEnabled = AppPreferences.getInstance().isAppComponentToggleEnabled();
         switch (page) {
             case PERMISSIONS_PAGE:
                 view = inflater.inflate(R.layout.fragment_app_permission, container, false);
                 ListView listView = view.findViewById(R.id.permissionInfoListView);
-                if (listView != null) {
+                if (listView != null && toggleEnabled) {
                     listView.setOnItemClickListener((AdapterView<?> adView, View view2, int position, long id) -> {
                         PermissionInfoAdapter adapter = (PermissionInfoAdapter) adView.getAdapter();
                         new SetComponentAsyncTask(PERMISSIONS_PAGE, packageName, adapter.getItem(position), context).execute();
@@ -109,7 +111,7 @@ public class ComponentTabPageFragment extends Fragment {
             case SERVICES_PAGE:
                 view = inflater.inflate(R.layout.fragment_app_service, container, false);
                 listView = view.findViewById(R.id.serviceInfoListView);
-                if (listView != null) {
+                if (listView != null && toggleEnabled) {
                     listView.setOnItemClickListener((AdapterView<?> adView, View view2, int position, long id) -> {
                         ServiceInfoAdapter adapter = (ServiceInfoAdapter) adView.getAdapter();
                         new SetComponentAsyncTask(SERVICES_PAGE, packageName, adapter.getItem(position), context).execute();
@@ -121,7 +123,7 @@ public class ComponentTabPageFragment extends Fragment {
             case RECEIVERS_PAGE:
                 view = inflater.inflate(R.layout.fragment_app_receiver, container, false);
                 listView = view.findViewById(R.id.receiverInfoListView);
-                if (listView != null) {
+                if (listView != null && toggleEnabled) {
                     listView.setOnItemClickListener((AdapterView<?> adView, View view2, int position, long id) -> {
                         ReceiverInfoAdapter adapter = (ReceiverInfoAdapter) adView.getAdapter();
                         new SetComponentAsyncTask(RECEIVERS_PAGE, packageName, adapter.getItem(position), context).execute();
