@@ -31,7 +31,7 @@ public class BlockUrl {
     public long urlProviderId;
 
     public BlockUrl(String url, long urlProviderId) {
-        this.url = BlockUrlPatternsMatch.getValidKnoxUrl(url);
+        this.url = url;
         this.urlProviderId = urlProviderId;
     }
 }
