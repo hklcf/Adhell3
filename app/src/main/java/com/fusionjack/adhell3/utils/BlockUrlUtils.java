@@ -19,6 +19,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
 
 public class BlockUrlUtils {
 
@@ -54,15 +55,53 @@ public class BlockUrlUtils {
         if (!hostFileStr.isEmpty()) {
             // Fetch valid domains
             String[] validated_hosts = BlockUrlPatternsMatch.getValidHostFileDomains(hostFileStr).split("\n");
-
             // Add each domain to blockUrls
             for (String validatedDomain : validated_hosts) {
-                BlockUrl blockUrl = new BlockUrl(validatedDomain, blockUrlProvider.id);
-                blockUrls.add(blockUrl);
+                blockUrls.add(new BlockUrl(validatedDomain, blockUrlProvider.id));
+            }
+        }
+        return blockUrls;
+    }
+
+    public static void processAdhellFilters(List<BlockUrl> filterSyntaxs, AppDatabase appDatabase) {
+        // Create empty change arrays
+        List<BlockUrl> blockUrls = new ArrayList<>();
+        List<String> filterRemovals = new ArrayList<>();
+        // For each filter
+        for (BlockUrl filter : filterSyntaxs) {
+            // Match filter syntax (so we can extract necessary info)
+            final Matcher filterMatcher = BlockUrlPatternsMatch.getMatchFilterSyntax(filter.url);
+            // If there were matches (is a valid filter domain)
+            if (filterMatcher.matches()) {
+                final String delimiter = filterMatcher.group(1);
+                final String domain = filterMatcher.group(2);
+                // Switch for filter option
+                switch (delimiter) {
+                    case "||":
+                        // Check that our domain wouldn't have to be modified for knox suitability
+                        if (domain.equals(BlockUrlPatternsMatch.getValidKnoxUrl(domain))) {
+                            filterRemovals.add("*" + domain); // *something.com
+                            // Additions
+                            blockUrls.add(new BlockUrl(domain, filter.urlProviderId)); // something.com
+                            blockUrls.add(new BlockUrl(("*." + domain), filter.urlProviderId)); // *.something.com
+                        }
+                        // Add the filter itself to the removal criteria
+                        filterRemovals.add(filter.url); // @dhell||something.com^
+                }
             }
         }
 
-        return blockUrls;
+        // Conditionally add blockurls
+        if (!blockUrls.isEmpty()) {
+            appDatabase.blockUrlDao().insertAll(blockUrls);
+        }
+
+        // Conditionally remove blockurls
+        if (!filterRemovals.isEmpty()) {
+            for (String removal : filterRemovals) {
+                appDatabase.blockUrlDao().deleteBlockUrl(removal);
+            }
+        }
     }
 
     private static String getDomain(String inputLine) {
@@ -71,11 +110,11 @@ public class BlockUrlUtils {
                 .replace("127.0.0.1", "")
                 .replace("0.0.0.0", "")
                 // Remove comments
-                .replaceAll("\\s*(?:#.*)$","")
+                .replaceAll("(?:^|[^\\S\\n]+)#.*$","")
                 // Remove whitespace
                 .replaceAll("\\s+","")
                 // Remove WWW
-                .replaceAll("^www(?:[0-9]{1,3})?(?:\\.)", "");
+                .replaceAll("^(?:\\|\\|)?www(?:[0-9]{1,3})?\\.", "");
     }
 
     public static List<String> getUserBlockedUrls(AppDatabase appDatabase, boolean enableLog, Handler handler) {
