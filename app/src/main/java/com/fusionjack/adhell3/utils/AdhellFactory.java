@@ -230,50 +230,18 @@ public final class AdhellFactory {
     }
 
     public void updateAllProviders() {
-        // Fetch URL providers
         List<BlockUrlProvider> providers = appDatabase.blockUrlProviderDao().getAll2();
-        // Remove all blockurls
         appDatabase.blockUrlDao().deleteAll();
-
-        /* Initial blockurl fetch */
-
-        // For each blockurlprovider
         for (BlockUrlProvider provider : providers) {
             try {
-                // Fetch the block urls
                 List<BlockUrl> blockUrls = BlockUrlUtils.loadBlockUrls(provider);
-                // Add to blockurls DB
+                provider.count = blockUrls.size();
+                provider.lastUpdated = new Date();
+                appDatabase.blockUrlProviderDao().updateBlockUrlProviders(provider);
                 appDatabase.blockUrlDao().insertAll(blockUrls);
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        }
-
-        /* Process Filters and update provider stats */
-
-        // Fetch Adhell filters
-        List<BlockUrl> adhellFilters = appDatabase.blockUrlDao().getAdhellFilters();
-        // If there are filters, try to process them
-        if (!adhellFilters.isEmpty()) {
-            try {
-                BlockUrlUtils.processAdhellFilters(adhellFilters, appDatabase);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-
-        try {
-            // For each blockurlprovider
-            for (BlockUrlProvider provider : providers) {
-                // Set unique count
-                provider.count = appDatabase.blockUrlProviderDao().getProviderUniqueUrlsCount(provider.id);
-                // Set update time
-                provider.lastUpdated = new Date();
-                // Apply updates to DB
-                appDatabase.blockUrlProviderDao().updateBlockUrlProviders(provider);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 }

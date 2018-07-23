@@ -12,17 +12,9 @@ public final class BlockUrlPatternsMatch {
     private static final Pattern domain_r = Pattern.compile(DOMAIN_PATTERN);
 
     // Define pattern for filter files: ||something.com^ or ||something.com^$third-party
-    private static final String FILTER_PATTERN = "(?im)(?=.{4,253}\\^)((?<=^\\|\\|)(((?!-)[a-z0-9-]{1,63}(?<!-)\\.)+[a-z]{2,63})(?=\\^([$]third-party)?$))";
+    private static final String FILTER_PATTERN = "(?im)(?=.{4,253}\\^)((?<=^[|]{2})(((?!-)[a-z0-9-]{1,63}(?<!-)\\.)+[a-z]{2,63})(?=\\^([$]third-party)?$))";
     private static final Pattern filter_r = Pattern.compile(FILTER_PATTERN);
-
-    // Define patter for Adhell specific filters
-    private static final String AH_FILTER_PATTERN = "(?im)(?=.{4,253}\\^)^(?:@dhell(\\|\\|))((?:(?!-)[a-z0-9-]{1,63}(?<!-)\\.)+[a-z]{2,63})(\\^([$]third-party)?$)";
-    private static final Pattern ah_filter_r = Pattern.compile(AH_FILTER_PATTERN);
-
-    // Knox URL - Must contain a letter in prefix / domain
-    private static final String KNOX_VALID_PATTERN = "(?i)(^(?=.*[a-z]).*$)";
-    private static final Pattern knox_valid_r = Pattern.compile(KNOX_VALID_PATTERN);
-
+    
     private BlockUrlPatternsMatch() {
     }
 
@@ -39,44 +31,49 @@ public final class BlockUrlPatternsMatch {
         final Matcher filterPatternMatch = filter_r.matcher(hostFileStr);
         final Matcher domainPatternMatch = domain_r.matcher(hostFileStr);
         final Matcher wildcardPatternMatch = wildcard_r.matcher(hostFileStr);
-        final Matcher ah_filterPatternMatch = ah_filter_r.matcher(hostFileStr);
 
         // Create a new string builder to hold our valid domains
         StringBuilder validDomainsStrBuilder = new StringBuilder();
 
-        // Filter patterns
-        while (filterPatternMatch.find()) {
-            String filterListDomain = conditionallyPrefix(filterPatternMatch.group());
-            validDomainsStrBuilder.append(filterListDomain);
-            validDomainsStrBuilder.append("\n");
+        // If the input file is in filter file format
+        if (filterPatternMatch.find()) {
+            // Reset the find()
+            filterPatternMatch.reset();
+            // While there are matches, add each to the StringBuilder
+            while (filterPatternMatch.find()) {
+                String filterListDomain = filterPatternMatch.group();
+                validDomainsStrBuilder.append(filterListDomain);
+                validDomainsStrBuilder.append("\n");
+            }
         }
+        // Otherwise, process as a standard host file
+        else {
+            // If we find valid hosts
+            if (domainPatternMatch.find()) {
+                // Reset the find()
+                domainPatternMatch.reset();
+                // While there are matches, add each to the StringBuilder
+                while (domainPatternMatch.find()) {
+                    String domain = domainPatternMatch.group();
+                    validDomainsStrBuilder.append(domain);
+                    validDomainsStrBuilder.append("\n");
+                }
+            }
 
-        // Adhell filter patterns
-        while (ah_filterPatternMatch.find()) {
-            String ah_filterListDomain = ah_filterPatternMatch.group();
-            validDomainsStrBuilder.append(ah_filterListDomain);
-            validDomainsStrBuilder.append("\n");
-        }
-
-        // Standard domains
-        while (domainPatternMatch.find()) {
-            String domain = conditionallyPrefix(domainPatternMatch.group());
-            validDomainsStrBuilder.append(domain);
-            validDomainsStrBuilder.append("\n");
-        }
-
-        // Wildcards
-        while (wildcardPatternMatch.find()) {
-            String wildcard = wildcardPatternMatch.group();
-            validDomainsStrBuilder.append(wildcard);
-            validDomainsStrBuilder.append("\n");
+            // If we find valid wildcards
+            if (wildcardPatternMatch.find()) {
+                // Reset the find()
+                wildcardPatternMatch.reset();
+                // While there are matches, add each to the StringBuilder
+                while (wildcardPatternMatch.find()) {
+                    String wildcard = wildcardPatternMatch.group();
+                    validDomainsStrBuilder.append(wildcard);
+                    validDomainsStrBuilder.append("\n");
+                }
+            }
         }
 
         return validDomainsStrBuilder.toString();
-    }
-
-    public static Matcher getMatchFilterSyntax(String filter){
-        return ah_filter_r.matcher(filter);
     }
 
     public static boolean isUrlValid(String url) {
@@ -90,26 +87,8 @@ public final class BlockUrlPatternsMatch {
         return BlockUrlPatternsMatch.validHostFileDomains(hostFileStr);
     }
 
-    private static String conditionallyPrefix(String url){
+    public static String getValidKnoxUrl(String url) {
         return (url.contains("*") ? "" : "*") + url;
     }
 
-    public static String getValidKnoxUrl(String url) {
-        // Knox seems invalidate a domain if the prefix does not contain any letters.
-        // We will programmatically prefix domains such as 123.test.com, but not t123.test.com
-
-        // If the url is a wildcard, return it as is.
-        if (url.contains("*")) {
-            return url;
-        }
-
-        // Grab the prefix
-        String prefix = url.split("\\Q.\\E")[0];
-        // Regex: must contain a letter (excl wildcards)
-        final Matcher prefix_valid = knox_valid_r.matcher(prefix);
-
-        // If we don't have any letters in the prefix
-        // Add a wildcard prefix as a safety net
-        return (prefix_valid.matches() ? "" : "*") + url;
-    }
 }

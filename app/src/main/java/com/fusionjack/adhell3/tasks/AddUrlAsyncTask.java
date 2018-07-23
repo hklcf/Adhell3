@@ -12,7 +12,6 @@ import com.fusionjack.adhell3.db.AppDatabase;
 import com.fusionjack.adhell3.db.entity.UserBlockUrl;
 import com.fusionjack.adhell3.db.entity.WhiteUrl;
 import com.fusionjack.adhell3.utils.AdhellFactory;
-import com.fusionjack.adhell3.utils.BlockUrlPatternsMatch;
 
 import java.lang.ref.WeakReference;
 import java.util.Date;
@@ -26,7 +25,7 @@ public class AddUrlAsyncTask extends AsyncTask<Void, Void, Void> {
     private WeakReference<Context> contextWeakReference;
 
     public AddUrlAsyncTask(String url, int page, Context context) {
-        this.url = BlockUrlPatternsMatch.getValidKnoxUrl(url);
+        this.url = url;
         this.page = page;
         this.contextWeakReference = new WeakReference<>(context);
     }

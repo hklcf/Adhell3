@@ -18,14 +18,8 @@ public interface BlockUrlDao {
     @Query("SELECT url FROM BlockUrl WHERE urlProviderId = :urlProviderId")
     List<String> getUrlsByProviderId(long urlProviderId);
 
-    @Query("SELECT * FROM BlockUrl WHERE url LIKE '@dhell%' GROUP BY url")
-    List<BlockUrl> getAdhellFilters();
-
     @Query("DELETE FROM BlockUrl")
     void deleteAll();
-
-    @Query("DELETE FROM BlockUrl WHERE url = :url")
-    void deleteBlockUrl(String url);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertAll(List<BlockUrl> blockUrls);
