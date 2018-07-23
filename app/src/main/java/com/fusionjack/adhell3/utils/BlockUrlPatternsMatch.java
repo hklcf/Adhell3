@@ -1,5 +1,7 @@
 package com.fusionjack.adhell3.utils;
 
+import com.fusionjack.adhell3.BuildConfig;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -14,7 +16,10 @@ public final class BlockUrlPatternsMatch {
     // Define pattern for filter files: ||something.com^ or ||something.com^$third-party
     private static final String FILTER_PATTERN = "(?im)(?=.{4,253}\\^)((?<=^[|]{2})(((?!-)[a-z0-9-]{1,63}(?<!-)\\.)+[a-z]{2,63})(?=\\^([$]third-party)?$))";
     private static final Pattern filter_r = Pattern.compile(FILTER_PATTERN);
-    
+
+    private static String domainPrefix = BuildConfig.DOMAIN_PREFIX.trim();
+    private static final String WILDCARD_PREFIX = "*";
+
     private BlockUrlPatternsMatch() {
     }
 
@@ -42,8 +47,17 @@ public final class BlockUrlPatternsMatch {
             // While there are matches, add each to the StringBuilder
             while (filterPatternMatch.find()) {
                 String filterListDomain = filterPatternMatch.group();
-                validDomainsStrBuilder.append(filterListDomain);
-                validDomainsStrBuilder.append("\n");
+                if (domainPrefix.isEmpty()) {
+                    validDomainsStrBuilder.append(filterListDomain);
+                    validDomainsStrBuilder.append("\n");
+                } else {
+                    if (!domainPrefix.equals(WILDCARD_PREFIX)) {
+                        validDomainsStrBuilder.append(filterListDomain);
+                        validDomainsStrBuilder.append("\n");
+                    }
+                    validDomainsStrBuilder.append(conditionallyPrefix(filterListDomain));
+                    validDomainsStrBuilder.append("\n");
+                }
             }
         }
         // Otherwise, process as a standard host file
@@ -55,8 +69,17 @@ public final class BlockUrlPatternsMatch {
                 // While there are matches, add each to the StringBuilder
                 while (domainPatternMatch.find()) {
                     String domain = domainPatternMatch.group();
-                    validDomainsStrBuilder.append(domain);
-                    validDomainsStrBuilder.append("\n");
+                    if (domainPrefix.isEmpty()) {
+                        validDomainsStrBuilder.append(domain);
+                        validDomainsStrBuilder.append("\n");
+                    } else {
+                        if (!domainPrefix.equals(WILDCARD_PREFIX)) {
+                            validDomainsStrBuilder.append(domain);
+                            validDomainsStrBuilder.append("\n");
+                        }
+                        validDomainsStrBuilder.append(conditionallyPrefix(domain));
+                        validDomainsStrBuilder.append("\n");
+                    }
                 }
             }
 
@@ -87,8 +110,8 @@ public final class BlockUrlPatternsMatch {
         return BlockUrlPatternsMatch.validHostFileDomains(hostFileStr);
     }
 
-    public static String getValidKnoxUrl(String url) {
-        return (url.contains("*") ? "" : "*") + url;
+    private static String conditionallyPrefix(String url) {
+        return (url.startsWith(domainPrefix) ? "" : domainPrefix) + url;
     }
 
 }

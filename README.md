@@ -110,6 +110,15 @@ Since you can compile it by yourself, you can just assign the same package name 
 * If you use these properties, beware when you distribute your app as the app contains the keys in plain text
 * This is just for convenience purpose so that you don't need to make your keys somewhere available when you are on the phone, hence this only works on a new installation
 
+### Domain prefix
+* Prefix all domains, e.g. with `* ` or `*.` or nothing
+* If you don't define the prefix, all domains will be prefixed with `*` like current behavior
+* If the prefix `*.`, beware that the domain count will be doubled
+* Put `domain.prefix` in `app.properties`
+* `domain.prefix=*` -> prefix all domains with `*`
+* `domain.prefix=*.` -> prefix all domains with `*.` while keeping the original domain as it is
+* `domain.prefix=` -> don't prefix anything, keep all domains as they are
+* nothing -> prefix all domains with `*` as default
 
 ## How to build apk
 
