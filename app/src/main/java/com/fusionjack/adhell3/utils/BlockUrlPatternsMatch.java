@@ -17,6 +17,10 @@ public final class BlockUrlPatternsMatch {
     private static final String FILTER_PATTERN = "(?im)(?=.{4,253}\\^)((?<=^[|]{2})(((?!-)[a-z0-9-]{1,63}(?<!-)\\.)+[a-z]{2,63})(?=\\^([$]third-party)?$))";
     private static final Pattern filter_r = Pattern.compile(FILTER_PATTERN);
 
+    // Knox URL - Must contain a letter in prefix / domain
+    private static final String KNOX_VALID_PATTERN = "(?i)(^(?=.*[a-z]).*$)";
+    private static final Pattern knox_valid_r = Pattern.compile(KNOX_VALID_PATTERN);
+
     private static String domainPrefix = BuildConfig.DOMAIN_PREFIX.trim();
     private static final String WILDCARD_PREFIX = "*";
 
@@ -48,11 +52,11 @@ public final class BlockUrlPatternsMatch {
             while (filterPatternMatch.find()) {
                 String filterListDomain = filterPatternMatch.group();
                 if (domainPrefix.isEmpty()) {
-                    validDomainsStrBuilder.append(filterListDomain);
+                    validDomainsStrBuilder.append(getValidKnoxUrl(filterListDomain));
                     validDomainsStrBuilder.append("\n");
                 } else {
                     if (!domainPrefix.equals(WILDCARD_PREFIX)) {
-                        validDomainsStrBuilder.append(filterListDomain);
+                        validDomainsStrBuilder.append(getValidKnoxUrl(filterListDomain));
                         validDomainsStrBuilder.append("\n");
                     }
                     validDomainsStrBuilder.append(conditionallyPrefix(filterListDomain));
@@ -70,11 +74,11 @@ public final class BlockUrlPatternsMatch {
                 while (domainPatternMatch.find()) {
                     String domain = domainPatternMatch.group();
                     if (domainPrefix.isEmpty()) {
-                        validDomainsStrBuilder.append(domain);
+                        validDomainsStrBuilder.append(getValidKnoxUrl(domain));
                         validDomainsStrBuilder.append("\n");
                     } else {
                         if (!domainPrefix.equals(WILDCARD_PREFIX)) {
-                            validDomainsStrBuilder.append(domain);
+                            validDomainsStrBuilder.append(getValidKnoxUrl(domain));
                             validDomainsStrBuilder.append("\n");
                         }
                         validDomainsStrBuilder.append(conditionallyPrefix(domain));
@@ -112,6 +116,25 @@ public final class BlockUrlPatternsMatch {
 
     private static String conditionallyPrefix(String url) {
         return (url.startsWith(domainPrefix) ? "" : domainPrefix) + url;
+    }
+
+    public static String getValidKnoxUrl(String url) {
+        // Knox seems invalidate a domain if the prefix does not contain any letters.
+        // We will programmatically prefix domains such as 123.test.com, but not t123.test.com
+
+        // If the url is a wildcard, return it as is.
+        if (url.contains(WILDCARD_PREFIX)) {
+            return url;
+        }
+
+        // Grab the prefix
+        String prefix = url.split("\\Q.\\E")[0];
+        // Regex: must contain a letter (excl wildcards)
+        final Matcher prefix_valid = knox_valid_r.matcher(prefix);
+
+        // If we don't have any letters in the prefix
+        // Add a wildcard prefix as a safety net
+        return (prefix_valid.matches() ? "" : WILDCARD_PREFIX) + url;
     }
 
 }
