@@ -42,13 +42,23 @@ public class BlockUrlUtils {
 
         // Add all lines to the StringBuilder
         while ((inputLine = bufferedReader.readLine()) != null) {
-            hostFile.append(getDomain(inputLine.trim().toLowerCase()));
+            hostFile.append(inputLine.trim().toLowerCase());
             hostFile.append("\n");
         }
         bufferedReader.close();
 
         // Convert host file to string
-        String hostFileStr = hostFile.toString();
+        String hostFileStr = hostFile.toString()
+                // Replace lines that do not start with a word or ||
+                .replaceAll("(?im)^(?![\\w]|\\|\\|).*$","")
+                // Remove comments
+                .replaceAll("(?im)(?:^|[^\\S\\n]+)#.*$","")
+                // Remove 'deadzone' - We only want the domain
+                .replaceAll("(?im)^(?:127\\.0\\.0\\.1|0\\.0\\.0\\.0)\\s+","")
+                // Trim remaining whitespace
+                .trim()
+                // Remove WWW
+                .replaceAll("(?im)^www(?:[0-9]{1,3})?(?:\\.)", "");
 
         // If we received any host file data
         if (!hostFileStr.isEmpty()) {
@@ -63,19 +73,6 @@ public class BlockUrlUtils {
         }
 
         return blockUrls;
-    }
-
-    private static String getDomain(String inputLine) {
-        return inputLine
-                // Remove 'deadzone' - We only want the domain
-                .replace("127.0.0.1", "")
-                .replace("0.0.0.0", "")
-                // Remove comments
-                .replaceAll("(?:^|[^\\S\\n]+)#.*$","")
-                // Remove whitespace
-                .replaceAll("\\s+","")
-                // Remove WWW
-                .replaceAll("^www(?:[0-9]{1,3})?(?:\\.)", "");
     }
 
     public static List<String> getUserBlockedUrls(AppDatabase appDatabase, boolean enableLog, Handler handler) {

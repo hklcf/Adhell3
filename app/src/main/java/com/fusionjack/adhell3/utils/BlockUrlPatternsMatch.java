@@ -46,29 +46,27 @@ public final class BlockUrlPatternsMatch {
         // Create a new string builder to hold our valid domains
         StringBuilder validDomainsStrBuilder = new StringBuilder();
 
-        // Create a list to populate with domain options
-        List<String> domainsToAdd = new ArrayList<>();
-
-        // Filter patterns
-        while (filterPatternMatch.find()) {
-            String filterListDomain = filterPatternMatch.group();
-            domainsToAdd.addAll(processPrefixingOptions(filterListDomain));
-        }
-        // Standard domains
-        while(domainPatternMatch.find()) {
-            String standardDomain = domainPatternMatch.group();
-            domainsToAdd.addAll(processPrefixingOptions(standardDomain));
-        }
-        // Wildcards
-        while(wildcardPatternMatch.find()) {
-            String wildcard = wildcardPatternMatch.group();
-            domainsToAdd.add(wildcard);
-        }
-
-        // Add results to StringBuilder
-        for(String domain : domainsToAdd) {
-            validDomainsStrBuilder.append(domain);
-            validDomainsStrBuilder.append("\n");
+        // If we are looking at a filter list
+        if (filterPatternMatch.find()) {
+            // Reset our filter rmatch (start from first result
+            filterPatternMatch.reset();
+            // Filter patterns
+            while (filterPatternMatch.find()) {
+                String filterListDomain = filterPatternMatch.group();
+                processPrefixingOptions(filterListDomain, validDomainsStrBuilder);
+            }
+        } else {
+            // Standard domains
+            while (domainPatternMatch.find()) {
+                String standardDomain = domainPatternMatch.group();
+                processPrefixingOptions(standardDomain, validDomainsStrBuilder);
+            }
+            // Wildcards
+            while (wildcardPatternMatch.find()) {
+                String wildcard = wildcardPatternMatch.group();
+                validDomainsStrBuilder.append(wildcard);
+                validDomainsStrBuilder.append("\n");
+            }
         }
 
         return validDomainsStrBuilder.toString();
@@ -85,25 +83,27 @@ public final class BlockUrlPatternsMatch {
         return BlockUrlPatternsMatch.validHostFileDomains(hostFileStr);
     }
 
-    private static List<String> processPrefixingOptions (String url) {
-        List<String> urlsToAdd = new ArrayList<>();
-
+    private static void processPrefixingOptions (String url,StringBuilder validDomainsStrBuilder) {
         switch(domainPrefix) {
             case "*" :
-                urlsToAdd.add(conditionallyPrefix(url));
+                validDomainsStrBuilder.append(conditionallyPrefix(url));
+                validDomainsStrBuilder.append("\n");
                 break;
             case "*." :
-                urlsToAdd.add(getValidKnoxUrl(url));
-                urlsToAdd.add(conditionallyPrefix(url));
+                validDomainsStrBuilder.append(getValidKnoxUrl(url));
+                validDomainsStrBuilder.append("\n");
+                validDomainsStrBuilder.append(conditionallyPrefix(url));
+                validDomainsStrBuilder.append("\n");
                 break;
             case "" :
-                urlsToAdd.add(getValidKnoxUrl(url));
+                validDomainsStrBuilder.append(getValidKnoxUrl(url));
+                validDomainsStrBuilder.append("\n");
                 break;
             default :
-                urlsToAdd.add(getValidKnoxUrl(url));
+                validDomainsStrBuilder.append(getValidKnoxUrl(url));
+                validDomainsStrBuilder.append("\n");
                 break;
         }
-        return urlsToAdd;
     }
 
     private static String conditionallyPrefix(String url) {
