@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
 
 public final class BlockUrlPatternsMatch {
 
-    private static final String WILDCARD_PATTERN = "(?im)(?=^[*]|.*[*]$)^(?:\\*[.-]?)?(?:(?!-)[\\w-]+(?:(?<!-)\\.)?)+(?:[a-z]+)(?:[.-]?\\*)?$";
+    private static final String WILDCARD_PATTERN = "(?im)(?=^[*]|.*[*]$)^(?:\\*[.-]?)?(?:(?!-)[a-z0-9-]+(?:(?<!-)\\.)?)+(?:[a-z0-9]+)(?:[.-]?\\*)?$";
     private static final Pattern wildcard_r = Pattern.compile(WILDCARD_PATTERN);
 
     private static final String DOMAIN_PATTERN = "(?im)(?=^.{4,253}$)(^((?!-)[a-z0-9-]{1,63}(?<!-)\\.)+[a-z]{2,63}$)";
@@ -46,30 +46,28 @@ public final class BlockUrlPatternsMatch {
         // Create a new string builder to hold our valid domains
         StringBuilder validDomainsStrBuilder = new StringBuilder();
 
+        // Create a list to populate with domain options
+        List<String> domainsToAdd = new ArrayList<>();
+
         // Filter patterns
         while (filterPatternMatch.find()) {
             String filterListDomain = filterPatternMatch.group();
-            List<String> domainsToAdd = new ArrayList<>(processPrefixingOptions(filterListDomain));
-
-            for (String domain : domainsToAdd) {
-                validDomainsStrBuilder.append(domain);
-                validDomainsStrBuilder.append("\n");
-            }
+            domainsToAdd.addAll(processPrefixingOptions(filterListDomain));
         }
         // Standard domains
         while(domainPatternMatch.find()) {
             String standardDomain = domainPatternMatch.group();
-            List<String> domainsToAdd = new ArrayList<>(processPrefixingOptions(standardDomain));
-
-            for (String domain : domainsToAdd) {
-                validDomainsStrBuilder.append(domain);
-                validDomainsStrBuilder.append("\n");
-            }
+            domainsToAdd.addAll(processPrefixingOptions(standardDomain));
         }
         // Wildcards
         while(wildcardPatternMatch.find()) {
             String wildcard = wildcardPatternMatch.group();
-            validDomainsStrBuilder.append(wildcard);
+            domainsToAdd.add(wildcard);
+        }
+
+        // Add results to StringBuilder
+        for(String domain : domainsToAdd) {
+            validDomainsStrBuilder.append(domain);
             validDomainsStrBuilder.append("\n");
         }
 
