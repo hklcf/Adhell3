@@ -92,7 +92,7 @@
         Do you really want to enable/disable all apps?
     </string>
     <string name="dialog_add_to_whitelist_question">Add the selected domain to your whitelist?</string>
-    <string name="home_bottombar_title" translatable="false">Home</string>
+    <string name="home_bottombar_title">Home</string>
     <string name="package_disabler_fragment_title">Disable Apps</string>
     <string name="apps_management_bottombar_title">Apps</string>
     <string name="domains_bottombar_title">Domains</string>
