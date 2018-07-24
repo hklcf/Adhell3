@@ -95,7 +95,7 @@ public final class AdhellFactory {
     }
 
     public void createNotSupportedDialog(Context context) {
-        String knoxIsSupported = "Knox Enterprise License Manager is " + (knoxEnterpriseLicenseManager == null ? "not available" : "available");
+        String knoxIsSupported = "Knox Enterprise License 版本是 " + (knoxEnterpriseLicenseManager == null ? "不支援" : "支援");
         String knoxApiLevel = "Knox API Level: " + EnterpriseDeviceManager.getAPILevel();
         new AlertDialog.Builder(context)
                 .setTitle(context.getString(R.string.not_supported_dialog_title))
@@ -186,15 +186,15 @@ public final class AdhellFactory {
             String dns1 = AppPreferences.getInstance().getDns1();
             String dns2 = AppPreferences.getInstance().getDns2();
             if (Patterns.IP_ADDRESS.matcher(dns1).matches() && Patterns.IP_ADDRESS.matcher(dns2).matches()) {
-                LogUtils.getInstance().writeInfo("\nProcessing DNS...", handler);
+                LogUtils.getInstance().writeInfo("\處理 DNS...", handler);
 
                 LogUtils.getInstance().writeInfo("DNS 1: " + dns1, handler);
                 LogUtils.getInstance().writeInfo("DNS 2: " + dns2, handler);
                 List<AppInfo> dnsPackages = appDatabase.applicationInfoDao().getDnsApps();
                 if (dnsPackages.size() == 0) {
-                    LogUtils.getInstance().writeInfo("No app is selected", handler);
+                    LogUtils.getInstance().writeInfo("未選擇程式", handler);
                 } else {
-                    LogUtils.getInstance().writeInfo("Size: " + dnsPackages.size(), handler);
+                    LogUtils.getInstance().writeInfo("數量：" + dnsPackages.size(), handler);
                     List<DomainFilterRule> rules = new ArrayList<>();
                     for (AppInfo app : dnsPackages) {
                         DomainFilterRule rule = new DomainFilterRule(new AppIdentity(app.packageName, null));

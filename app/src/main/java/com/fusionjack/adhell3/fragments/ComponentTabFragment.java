@@ -24,7 +24,7 @@ public class ComponentTabFragment extends Fragment {
             appName = bundle.getString("appName");
         }
 
-        getActivity().setTitle(appName.isEmpty() ? "App Component" : appName);
+        getActivity().setTitle(appName.isEmpty() ? "程式元件" : appName);
         AppCompatActivity parentActivity = (AppCompatActivity) getActivity();
         if (parentActivity.getSupportActionBar() != null) {
             parentActivity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);

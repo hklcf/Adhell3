@@ -37,7 +37,7 @@ public final class FirewallUtils {
 
     public void addDomainFilterRules(List<DomainFilterRule> domainRules, Handler handler) throws Exception {
         if (firewall == null) {
-            throw new Exception("Knox Firewall is not initialized");
+            throw new Exception("Knox防火牆尚未初始化");
         }
 
         try {
@@ -45,13 +45,13 @@ public final class FirewallUtils {
             handleResponse(response, handler);
         } catch (SecurityException ex) {
             // Missing required MDM permission
-            LogUtils.getInstance().writeError("Failed to add domain filter rule to Knox Firewall", ex, handler);
+            LogUtils.getInstance().writeError("無法將網域攔截規則加入到 Knox防火牆", ex, handler);
         }
     }
 
     public void addFirewallRules(FirewallRule[] firewallRules, Handler handler) throws Exception {
         if (firewall == null) {
-            throw new Exception("Knox Firewall is not initialized");
+            throw new Exception("Knox防火牆尚未初始化");
         }
 
         try {
@@ -59,7 +59,7 @@ public final class FirewallUtils {
             handleResponse(response, handler);
         } catch (SecurityException ex) {
             // Missing required MDM permission
-            LogUtils.getInstance().writeError("Failed to add firewall rules to Knox Firewall", ex, handler);
+            LogUtils.getInstance().writeError("無法將防火牆規則加入到 Knox防火牆", ex, handler);
         }
     }
 
@@ -182,14 +182,14 @@ public final class FirewallUtils {
 
     private void handleResponse(FirewallResponse[] response, Handler handler) throws Exception {
         if (response == null) {
-            Exception ex = new Exception("There was no response from Knox Firewall");
-            LogUtils.getInstance().writeError("There was no response from Knox Firewall", ex, handler);
+            Exception ex = new Exception("Knox防火牆無回應");
+            LogUtils.getInstance().writeError("Knox防火牆無回應", ex, handler);
             throw ex;
         } else {
             if (FirewallResponse.Result.SUCCESS == response[0].getResult()) {
-                LogUtils.getInstance().writeInfo("Result: Success", handler);
+                LogUtils.getInstance().writeInfo("結果：成功", handler);
             } else {
-                LogUtils.getInstance().writeInfo("Result: Failed", handler);
+                LogUtils.getInstance().writeInfo("結果：失敗", handler);
                 Exception ex = new Exception(response[0].getMessage());
                 StringWriter sw = new StringWriter();
                 PrintWriter pw = new PrintWriter(sw);

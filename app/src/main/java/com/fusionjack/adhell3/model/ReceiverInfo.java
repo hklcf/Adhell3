@@ -21,6 +21,6 @@ public class ReceiverInfo implements IComponentInfo {
     }
 
     public String getPermission() {
-        return permission == null ? "No permission" : permission;
+        return permission == null ? "無權限" : permission;
     }
 }

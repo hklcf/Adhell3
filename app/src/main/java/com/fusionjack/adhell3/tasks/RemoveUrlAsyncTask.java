@@ -64,9 +64,9 @@ public class RemoveUrlAsyncTask extends AsyncTask<Void, Void, Void> {
             }
 
             if (url.indexOf('|') == -1) {
-                Toast.makeText(context, "Url has been removed", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "網址已移除", Toast.LENGTH_SHORT).show();
             } else {
-                Toast.makeText(context, "Rule has been removed", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "規則已移除", Toast.LENGTH_SHORT).show();
             }
         }
     }

@@ -88,14 +88,14 @@ public class WhitelistFragment extends Fragment {
                         String domainToAdd = domainEditText.getText().toString().trim().toLowerCase();
                         if (domainToAdd.indexOf('|') == -1) {
                             if (!BlockUrlPatternsMatch.isUrlValid(domainToAdd)) {
-                                Toast.makeText(this.getContext(), "Url not valid. Please check", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(this.getContext(), "網址無效，請檢查", Toast.LENGTH_SHORT).show();
                                 return;
                             }
                         } else {
                             // packageName|url
                             StringTokenizer tokens = new StringTokenizer(domainToAdd, "|");
                             if (tokens.countTokens() != 2) {
-                                Toast.makeText(this.getContext(), "Rule not valid. Please check", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(this.getContext(), "規則無效，請檢查", Toast.LENGTH_SHORT).show();
                                 return;
                             }
                         }

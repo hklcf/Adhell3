@@ -131,7 +131,7 @@ public class BlockUrlUtils {
             }
         }
         if (enableLog) {
-            LogUtils.getInstance().writeInfo("Size: " + userBlockUrlCount, handler);
+            LogUtils.getInstance().writeInfo("數量：" + userBlockUrlCount, handler);
         }
         return list;
     }
