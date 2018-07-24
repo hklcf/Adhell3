@@ -71,7 +71,7 @@ public class BlockUrlUtils {
                 .replace("127.0.0.1", "")
                 .replace("0.0.0.0", "")
                 // Remove comments
-                .replaceAll("\\s*(?:#.*)$","")
+                .replaceAll("(?:^|[^\\S\\n]+)#.*$","")
                 // Remove whitespace
                 .replaceAll("\\s+","")
                 // Remove WWW
