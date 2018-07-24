@@ -317,7 +317,7 @@ public class HomeTabFragment extends Fragment {
         @Override
         protected void onPreExecute() {
             boolean enabled = AppPreferences.getInstance().isAppDisablerToggleEnabled();
-            dialog.setMessage(enabled ? "Enabling apps..." : "Disabling apps...");
+            dialog.setMessage(enabled ? "啟用程式..." : "停用程式...");
             dialog.show();
         }
 
@@ -349,7 +349,7 @@ public class HomeTabFragment extends Fragment {
         @Override
         protected void onPreExecute() {
             boolean enabled = AppPreferences.getInstance().isAppComponentToggleEnabled();
-            dialog.setMessage(enabled ? "Enabling app component..." : "Disabling app component...");
+            dialog.setMessage(enabled ? "啟用程式元件..." : "停用程式元件...");
             dialog.show();
         }
 
@@ -399,10 +399,10 @@ public class HomeTabFragment extends Fragment {
         protected void onPreExecute() {
             if (isDomain) {
                 fragment = FirewallDialogFragment.newInstance(
-                        isDomainRuleEmpty ? "Enabling Domain Rules" : "Disabling Domain Rules");
+                        isDomainRuleEmpty ? "開啟網域規則" : "關閉網域規則");
             } else {
                 fragment = FirewallDialogFragment.newInstance(
-                        isFirewallRuleEmpty ? "Enabling Firewall Rules" : "Disabling Firewall Rules");
+                        isFirewallRuleEmpty ? "開啟防火牆規則" : "關閉防火牆規則");
             }
             fragment.setCancelable(false);
             fragment.show(fragmentManager, "dialog_firewall");

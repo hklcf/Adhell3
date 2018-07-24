@@ -105,7 +105,7 @@ public class ProviderListFragment extends Fragment {
                         if (URLUtil.isValidUrl(provider)) {
                             new AddProviderAsyncTask(provider, context).execute();
                         } else {
-                            Toast.makeText(getContext(), "Url is invalid", Toast.LENGTH_LONG).show();
+                            Toast.makeText(getContext(), "網址無效", Toast.LENGTH_LONG).show();
                         }
                     })
                     .setNegativeButton(android.R.string.no, null).show();

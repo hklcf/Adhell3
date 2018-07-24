@@ -62,19 +62,19 @@ public class ContentBlocker56 implements ContentBlocker {
         }
 
         LogUtils.getInstance().reset();
-        LogUtils.getInstance().writeInfo("Enabling firewall rules...", handler);
+        LogUtils.getInstance().writeInfo("開啟防火牆規則...", handler);
 
         try {
             processCustomRules();
             processMobileRestrictedApps();
             processWifiRestrictedApps();
 
-            LogUtils.getInstance().writeInfo("\nFirewall rules are enabled.", handler);
+            LogUtils.getInstance().writeInfo("\n防火牆規則已開啟", handler);
 
             if (!firewall.isFirewallEnabled()) {
-                LogUtils.getInstance().writeInfo("\nEnabling Knox firewall...", handler);
+                LogUtils.getInstance().writeInfo("\n開啟 Knox 防火牆...", handler);
                 firewall.enableFirewall(true);
-                LogUtils.getInstance().writeInfo("Knox firewall is enabled.", handler);
+                LogUtils.getInstance().writeInfo("Knox 防火牆已開啟", handler);
             }
         } catch (Exception e) {
             disableFirewallRules();
@@ -89,19 +89,19 @@ public class ContentBlocker56 implements ContentBlocker {
         }
 
         LogUtils.getInstance().reset();
-        LogUtils.getInstance().writeInfo("Disabling firewall rules...", handler);
+        LogUtils.getInstance().writeInfo("關閉防火牆規則...", handler);
 
         // Clear firewall rules
-        LogUtils.getInstance().writeInfo("\nClearing firewall rules...", handler);
+        LogUtils.getInstance().writeInfo("\n清理防火牆規則...", handler);
         FirewallResponse[] response = firewall.clearRules(Firewall.FIREWALL_ALL_RULES);
-        LogUtils.getInstance().writeInfo(response == null ? "No response" : response[0].getMessage(), handler);
+        LogUtils.getInstance().writeInfo(response == null ? "無回應" : response[0].getMessage(), handler);
 
-        LogUtils.getInstance().writeInfo("\nFirewall rules are disabled.", handler);
+        LogUtils.getInstance().writeInfo("\n防火牆規則已關閉", handler);
 
         if (firewall.isFirewallEnabled() && isDomainRuleEmpty()) {
-            LogUtils.getInstance().writeInfo("\nDisabling Knox firewall...", handler);
+            LogUtils.getInstance().writeInfo("\n關閉 Knox 防火牆...", handler);
             firewall.enableFirewall(false);
-            LogUtils.getInstance().writeInfo("\nKnox firewall is disabled.", handler);
+            LogUtils.getInstance().writeInfo("\nKnox 防火牆已關閉", handler);
         }
     }
 
@@ -112,7 +112,7 @@ public class ContentBlocker56 implements ContentBlocker {
         }
 
         LogUtils.getInstance().reset();
-        LogUtils.getInstance().writeInfo("Enabling domain rules...", handler);
+        LogUtils.getInstance().writeInfo("開啟網域規則...", handler);
 
         try {
             processWhitelistedApps();
@@ -121,17 +121,17 @@ public class ContentBlocker56 implements ContentBlocker {
             processBlockedDomains();
             AdhellFactory.getInstance().applyDns(handler);
 
-            LogUtils.getInstance().writeInfo("\nDomain rules are enabled.", handler);
+            LogUtils.getInstance().writeInfo("\n網域規則已開啟", handler);
 
             if (!firewall.isFirewallEnabled()) {
-                LogUtils.getInstance().writeInfo("\nEnabling Knox firewall...", handler);
+                LogUtils.getInstance().writeInfo("\n開啟 Knox 防火牆...", handler);
                 firewall.enableFirewall(true);
-                LogUtils.getInstance().writeInfo("Knox firewall is enabled.", handler);
+                LogUtils.getInstance().writeInfo("Knox 防火牆已開啟", handler);
             }
             if (!firewall.isDomainFilterReportEnabled()) {
-                LogUtils.getInstance().writeInfo("\nEnabling firewall report...", handler);
+                LogUtils.getInstance().writeInfo("\n開啟防火牆記錄...", handler);
                 firewall.enableDomainFilterReport(true);
-                LogUtils.getInstance().writeInfo("Firewall report is enabled.", handler);
+                LogUtils.getInstance().writeInfo("防火牆記錄已開啟", handler);
             }
         } catch (Exception e) {
             disableDomainRules();
@@ -146,19 +146,19 @@ public class ContentBlocker56 implements ContentBlocker {
         }
 
         LogUtils.getInstance().reset();
-        LogUtils.getInstance().writeInfo("Disabling domain rules...", handler);
+        LogUtils.getInstance().writeInfo("關閉網域規則...", handler);
 
         // Clear domain filter rules
-        LogUtils.getInstance().writeInfo("\nClearing domain rules...", handler);
+        LogUtils.getInstance().writeInfo("\n清理網域規則...", handler);
         FirewallResponse[] response = firewall.removeDomainFilterRules(DomainFilterRule.CLEAR_ALL);
-        LogUtils.getInstance().writeInfo(response == null ? "No response" : response[0].getMessage(), handler);
+        LogUtils.getInstance().writeInfo(response == null ? "無回應" : response[0].getMessage(), handler);
 
-        LogUtils.getInstance().writeInfo("\nDomain rules are disabled.", handler);
+        LogUtils.getInstance().writeInfo("\n網域規則已關閉", handler);
 
         if (firewall.isFirewallEnabled() && isFirewallRuleEmpty()) {
-            LogUtils.getInstance().writeInfo("\nDisabling Knox firewall...", handler);
+            LogUtils.getInstance().writeInfo("\n關閉 Knox 防火牆...", handler);
             firewall.enableFirewall(false);
-            LogUtils.getInstance().writeInfo("Knox firewall is disabled.", handler);
+            LogUtils.getInstance().writeInfo("Knox 防火牆已關閉", handler);
         }
         if (firewall.isDomainFilterReportEnabled()) {
             firewall.enableDomainFilterReport(false);
@@ -168,7 +168,7 @@ public class ContentBlocker56 implements ContentBlocker {
     }
 
     private void processCustomRules() throws Exception {
-        LogUtils.getInstance().writeInfo("\nProcessing custom rules...", handler);
+        LogUtils.getInstance().writeInfo("\n處理自訂規則...", handler);
 
         FirewallRule[] enabledRules = firewall.getRules(Firewall.FIREWALL_DENY_RULE, FirewallRule.Status.ENABLED);
         int count = 0;
@@ -191,7 +191,7 @@ public class ContentBlocker56 implements ContentBlocker {
                         }
                     }
 
-                    LogUtils.getInstance().writeInfo("\nRule: " + packageName + "|" + ip + "|" + port, handler);
+                    LogUtils.getInstance().writeInfo("\n規則：" + packageName + "|" + ip + "|" + port, handler);
                     if (add) {
                         FirewallRule[] firewallRules = new FirewallRule[2];
                         firewallRules[0] = new FirewallRule(FirewallRule.RuleType.DENY, Firewall.AddressType.IPV4);
@@ -206,7 +206,7 @@ public class ContentBlocker56 implements ContentBlocker {
 
                         firewallUtils.addFirewallRules(firewallRules, handler);
                     } else {
-                        LogUtils.getInstance().writeInfo("The firewall rule is already been enabled", handler);
+                        LogUtils.getInstance().writeInfo("防火牆規則已開啟", handler);
                     }
 
                     ++count;
@@ -214,15 +214,15 @@ public class ContentBlocker56 implements ContentBlocker {
             }
         }
 
-        LogUtils.getInstance().writeInfo("Custom rule size: " + count, handler);
+        LogUtils.getInstance().writeInfo("自訂規則數量：" + count, handler);
     }
 
     private void processMobileRestrictedApps() throws Exception {
-        LogUtils.getInstance().writeInfo("\nProcessing mobile restricted apps...", handler);
+        LogUtils.getInstance().writeInfo("\n處理禁止使用 行動數據 的程式...", handler);
 
         List<AppInfo> restrictedApps = appDatabase.applicationInfoDao().getMobileRestrictedApps();
         int size = restrictedApps.size();
-        LogUtils.getInstance().writeInfo("Size: " + size, handler);
+        LogUtils.getInstance().writeInfo("數量：" + size, handler);
         if (size == 0) {
             return;
         }
@@ -241,23 +241,23 @@ public class ContentBlocker56 implements ContentBlocker {
                 }
             }
 
-            LogUtils.getInstance().writeInfo("Package name: " + packageName, handler);
+            LogUtils.getInstance().writeInfo("安裝包名：" + packageName, handler);
             if (add) {
                 FirewallRule[] mobileRules = firewallUtils.createFirewallRules(packageName,
                         Firewall.NetworkInterface.MOBILE_DATA_ONLY);
                 firewallUtils.addFirewallRules(mobileRules, handler);
             } else {
-                LogUtils.getInstance().writeInfo("The firewall rule is already been enabled", handler);
+                LogUtils.getInstance().writeInfo("防火牆規則已開啟", handler);
             }
         }
     }
 
     private void processWifiRestrictedApps() throws Exception {
-        LogUtils.getInstance().writeInfo("\nProcessing wifi restricted apps...", handler);
+        LogUtils.getInstance().writeInfo("\n處理禁止使用 wifi 的程式...", handler);
 
         List<AppInfo> restrictedApps = appDatabase.applicationInfoDao().getWifiRestrictedApps();
         int size = restrictedApps.size();
-        LogUtils.getInstance().writeInfo("Size: " + size, handler);
+        LogUtils.getInstance().writeInfo("數量：" + size, handler);
         if (size == 0) {
             return;
         }
@@ -276,23 +276,23 @@ public class ContentBlocker56 implements ContentBlocker {
                 }
             }
 
-            LogUtils.getInstance().writeInfo("Package name: " + packageName, handler);
+            LogUtils.getInstance().writeInfo("安裝包名：" + packageName, handler);
             if (add) {
                 FirewallRule[] wifiRules = firewallUtils.createFirewallRules(packageName,
                         Firewall.NetworkInterface.WIFI_DATA_ONLY);
                 firewallUtils.addFirewallRules(wifiRules, handler);
             } else {
-                LogUtils.getInstance().writeInfo("The firewall rule is already been enabled", handler);
+                LogUtils.getInstance().writeInfo("防火牆規則已開啟", handler);
             }
         }
     }
 
     private void processWhitelistedApps() throws Exception {
-        LogUtils.getInstance().writeInfo("\nProcessing white-listed apps...", handler);
+        LogUtils.getInstance().writeInfo("\n處理白名單程式...", handler);
 
         // Create domain filter rule for white listed apps
         List<AppInfo> whitelistedApps = appDatabase.applicationInfoDao().getWhitelistedApps();
-        LogUtils.getInstance().writeInfo("Size: " + whitelistedApps.size(), handler);
+        LogUtils.getInstance().writeInfo("數量：" + whitelistedApps.size(), handler);
         if (whitelistedApps.size() == 0) {
             return;
         }
@@ -301,20 +301,20 @@ public class ContentBlocker56 implements ContentBlocker {
         List<String> superAllow = new ArrayList<>();
         superAllow.add("*");
         for (AppInfo app : whitelistedApps) {
-            LogUtils.getInstance().writeInfo("Package name: " + app.packageName, handler);
+            LogUtils.getInstance().writeInfo("安裝包名：" + app.packageName, handler);
             rules.add(new DomainFilterRule(new AppIdentity(app.packageName, null), new ArrayList<>(), superAllow));
         }
         firewallUtils.addDomainFilterRules(rules, handler);
     }
 
     private void processWhitelistedDomains() throws Exception {
-        LogUtils.getInstance().writeInfo("\nProcessing whitelist...", handler);
+        LogUtils.getInstance().writeInfo("\n處理白名單...", handler);
 
         // Process user-defined white list
         // 1. URL for all packages: url
         // 2. URL for individual package: packageName|url
         List<String> whiteUrls = appDatabase.whiteUrlDao().getAll3();
-        LogUtils.getInstance().writeInfo("Size: " + whiteUrls.size(), handler);
+        LogUtils.getInstance().writeInfo("數量：" + whiteUrls.size(), handler);
         if (whiteUrls.size() == 0) {
             return;
         }
@@ -328,7 +328,7 @@ public class ContentBlocker56 implements ContentBlocker {
                 if (tokens.countTokens() == 2) {
                     final String packageName = tokens.nextToken();
                     final String url = tokens.nextToken();
-                    LogUtils.getInstance().writeInfo("PackageName: " + packageName + ", Domain: " + url, handler);
+                    LogUtils.getInstance().writeInfo("安裝包名：" + packageName + "，網域：" + url, handler);
 
                     final AppIdentity appIdentity = new AppIdentity(packageName, null);
                     List<String> allowList = new ArrayList<>();
@@ -343,7 +343,7 @@ public class ContentBlocker56 implements ContentBlocker {
         for (String whiteUrl : whiteUrls) {
             if (whiteUrl.indexOf('|') == -1) {
                 allowList.add(whiteUrl);
-                LogUtils.getInstance().writeInfo("Domain: " + whiteUrl, handler);
+                LogUtils.getInstance().writeInfo("網域：" + whiteUrl, handler);
             }
         }
         if (allowList.size() > 0) {
@@ -355,7 +355,7 @@ public class ContentBlocker56 implements ContentBlocker {
     }
 
     private void processUserBlockedDomains() throws Exception {
-        LogUtils.getInstance().writeInfo("\nProcessing blacklist...", handler);
+        LogUtils.getInstance().writeInfo("\n處理黑名單...", handler);
 
         List<String> denyList = BlockUrlUtils.getUserBlockedUrls(appDatabase, true, handler);
         if (denyList.size() > 0) {
@@ -367,10 +367,10 @@ public class ContentBlocker56 implements ContentBlocker {
     }
 
     private void processBlockedDomains() throws Exception {
-        LogUtils.getInstance().writeInfo("\nProcessing blocked domains...", handler);
+        LogUtils.getInstance().writeInfo("\n處理攔截網域...", handler);
 
         List<String> denyList = BlockUrlUtils.getAllBlockedUrls(appDatabase);
-        LogUtils.getInstance().writeInfo("Total unique domains to block: " + denyList.size(), handler);
+        LogUtils.getInstance().writeInfo("攔截獨立的網址總數：" + denyList.size(), handler);
         AppPreferences.getInstance().setBlockedDomainsCount(denyList.size());
 
         final AppIdentity appIdentity = new AppIdentity("*", null);
@@ -381,7 +381,7 @@ public class ContentBlocker56 implements ContentBlocker {
         int start = 0;
         List<List<String>> chunks = Lists.partition(denyList, 5000);
         for (List<String> chunk : chunks) {
-            LogUtils.getInstance().writeInfo("\nProcessing " + start + " to " + (start + chunk.size()) + " domains...", handler);
+            LogUtils.getInstance().writeInfo("\n處理第 " + start + " 到 " + (start + chunk.size()) + " 條網域...", handler);
             start += chunk.size();
 
             List<DomainFilterRule> rules = new ArrayList<>();

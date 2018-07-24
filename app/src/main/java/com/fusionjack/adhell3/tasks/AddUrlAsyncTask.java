@@ -71,9 +71,9 @@ public class AddUrlAsyncTask extends AsyncTask<Void, Void, Void> {
             }
 
             if (url.indexOf('|') == -1) {
-                Toast.makeText(context, "Url has been added", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "網址已新增", Toast.LENGTH_SHORT).show();
             } else {
-                Toast.makeText(context, "Rule has been added", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "規則已新增", Toast.LENGTH_SHORT).show();
             }
         }
     }

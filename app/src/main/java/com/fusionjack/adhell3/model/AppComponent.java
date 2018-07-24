@@ -42,7 +42,7 @@ public class AppComponent {
                 if (AppPermissionUtils.isDangerousLevel(info.protectionLevel)) {
                     CharSequence description = info.loadDescription(packageManager);
                     permissionList.add(new PermissionInfo(permissionName,
-                            description == null ? "No description" : description.toString(),
+                            description == null ? "無描述" : description.toString(),
                             info.protectionLevel, packageName));
                 }
             } catch (PackageManager.NameNotFoundException ignored) {

@@ -85,7 +85,7 @@ public class AppCache {
         @Override
         protected void onPreExecute() {
             if (dialog != null) {
-                dialog.setMessage("Caching apps, please wait...");
+                dialog.setMessage("正在讀取應用程式...");
                 dialog.show();
             }
         }

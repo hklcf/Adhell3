@@ -139,7 +139,7 @@ public class ActivationDialogFragment extends DialogFragment {
                     } else {
                         getActivity().unregisterReceiver(receiver);
                         String status = intent.getStringExtra(KnoxEnterpriseLicenseManager.EXTRA_LICENSE_STATUS);
-                        Toast.makeText(context, "Status: " +  status + ". Error code: " + errorCode, Toast.LENGTH_LONG).show();
+                        Toast.makeText(context, "狀態：" +  status + "，錯誤碼：" + errorCode, Toast.LENGTH_LONG).show();
 
                         // Allow the user to try again
                         allowActivateKnox(true);
@@ -159,7 +159,7 @@ public class ActivationDialogFragment extends DialogFragment {
                         dismiss();
                     } else  {
                         String status = intent.getStringExtra(EnterpriseLicenseManager.EXTRA_LICENSE_STATUS);
-                        Toast.makeText(context, "Status: " +  status + ". Error code: " + errorCode, Toast.LENGTH_LONG).show();
+                        Toast.makeText(context, "狀態：" +  status + "，錯誤碼：" + errorCode, Toast.LENGTH_LONG).show();
 
                         // Allow the user to try again
                         allowActivateKnox(true);
