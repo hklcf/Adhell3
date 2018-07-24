@@ -2,19 +2,21 @@ package com.fusionjack.adhell3.utils;
 
 import com.fusionjack.adhell3.BuildConfig;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public final class BlockUrlPatternsMatch {
 
-    private static final String WILDCARD_PATTERN = "(?im)^(([*])([A-Z0-9-_.]+))$|^(([A-Z0-9-_.]+)([*]))$|^(([*])([A-Z0-9-_.]+)([*])$)";
+    private static final String WILDCARD_PATTERN = "(?im)(?=^[*]|.*[*]$)^(?:\\*[.-]?)?(?:(?!-)[\\w-]+(?:(?<!-)\\.)?)+(?:[a-z]+)(?:[.-]?\\*)?$";
     private static final Pattern wildcard_r = Pattern.compile(WILDCARD_PATTERN);
 
     private static final String DOMAIN_PATTERN = "(?im)(?=^.{4,253}$)(^((?!-)[a-z0-9-]{1,63}(?<!-)\\.)+[a-z]{2,63}$)";
     private static final Pattern domain_r = Pattern.compile(DOMAIN_PATTERN);
 
     // Define pattern for filter files: ||something.com^ or ||something.com^$third-party
-    private static final String FILTER_PATTERN = "(?im)(?=.{4,253}\\^)((?<=^[|]{2})(((?!-)[a-z0-9-]{1,63}(?<!-)\\.)+[a-z]{2,63})(?=\\^([$]third-party)?$))";
+    private static final String FILTER_PATTERN = "(?im)(?=.{4,253}\\^)((?<=^\\|\\|)(((?!-)[a-z0-9-]{1,63}(?<!-)\\.)+[a-z]{2,63})(?=\\^([$]third-party)?$))";
     private static final Pattern filter_r = Pattern.compile(FILTER_PATTERN);
 
     // Knox URL - Must contain a letter in prefix / domain
@@ -44,60 +46,31 @@ public final class BlockUrlPatternsMatch {
         // Create a new string builder to hold our valid domains
         StringBuilder validDomainsStrBuilder = new StringBuilder();
 
-        // If the input file is in filter file format
-        if (filterPatternMatch.find()) {
-            // Reset the find()
-            filterPatternMatch.reset();
-            // While there are matches, add each to the StringBuilder
-            while (filterPatternMatch.find()) {
-                String filterListDomain = filterPatternMatch.group();
-                if (domainPrefix.isEmpty()) {
-                    validDomainsStrBuilder.append(getValidKnoxUrl(filterListDomain));
-                    validDomainsStrBuilder.append("\n");
-                } else {
-                    if (!domainPrefix.equals(WILDCARD_PREFIX)) {
-                        validDomainsStrBuilder.append(getValidKnoxUrl(filterListDomain));
-                        validDomainsStrBuilder.append("\n");
-                    }
-                    validDomainsStrBuilder.append(conditionallyPrefix(filterListDomain));
-                    validDomainsStrBuilder.append("\n");
-                }
+        // Filter patterns
+        while (filterPatternMatch.find()) {
+            String filterListDomain = filterPatternMatch.group();
+            List<String> domainsToAdd = new ArrayList<>(processPrefixingOptions(filterListDomain));
+
+            for (String domain : domainsToAdd) {
+                validDomainsStrBuilder.append(domain);
+                validDomainsStrBuilder.append("\n");
             }
         }
-        // Otherwise, process as a standard host file
-        else {
-            // If we find valid hosts
-            if (domainPatternMatch.find()) {
-                // Reset the find()
-                domainPatternMatch.reset();
-                // While there are matches, add each to the StringBuilder
-                while (domainPatternMatch.find()) {
-                    String domain = domainPatternMatch.group();
-                    if (domainPrefix.isEmpty()) {
-                        validDomainsStrBuilder.append(getValidKnoxUrl(domain));
-                        validDomainsStrBuilder.append("\n");
-                    } else {
-                        if (!domainPrefix.equals(WILDCARD_PREFIX)) {
-                            validDomainsStrBuilder.append(getValidKnoxUrl(domain));
-                            validDomainsStrBuilder.append("\n");
-                        }
-                        validDomainsStrBuilder.append(conditionallyPrefix(domain));
-                        validDomainsStrBuilder.append("\n");
-                    }
-                }
-            }
+        // Standard domains
+        while(domainPatternMatch.find()) {
+            String standardDomain = domainPatternMatch.group();
+            List<String> domainsToAdd = new ArrayList<>(processPrefixingOptions(standardDomain));
 
-            // If we find valid wildcards
-            if (wildcardPatternMatch.find()) {
-                // Reset the find()
-                wildcardPatternMatch.reset();
-                // While there are matches, add each to the StringBuilder
-                while (wildcardPatternMatch.find()) {
-                    String wildcard = wildcardPatternMatch.group();
-                    validDomainsStrBuilder.append(wildcard);
-                    validDomainsStrBuilder.append("\n");
-                }
+            for (String domain : domainsToAdd) {
+                validDomainsStrBuilder.append(domain);
+                validDomainsStrBuilder.append("\n");
             }
+        }
+        // Wildcards
+        while(wildcardPatternMatch.find()) {
+            String wildcard = wildcardPatternMatch.group();
+            validDomainsStrBuilder.append(wildcard);
+            validDomainsStrBuilder.append("\n");
         }
 
         return validDomainsStrBuilder.toString();
@@ -112,6 +85,27 @@ public final class BlockUrlPatternsMatch {
 
     public static String getValidHostFileDomains(String hostFileStr) {
         return BlockUrlPatternsMatch.validHostFileDomains(hostFileStr);
+    }
+
+    private static List<String> processPrefixingOptions (String url) {
+        List<String> urlsToAdd = new ArrayList<>();
+
+        switch(domainPrefix) {
+            case "*" :
+                urlsToAdd.add(conditionallyPrefix(url));
+                break;
+            case "*." :
+                urlsToAdd.add(getValidKnoxUrl(url));
+                urlsToAdd.add(conditionallyPrefix(url));
+                break;
+            case "" :
+                urlsToAdd.add(getValidKnoxUrl(url));
+                break;
+            default :
+                urlsToAdd.add(getValidKnoxUrl(url));
+                break;
+        }
+        return urlsToAdd;
     }
 
     private static String conditionallyPrefix(String url) {
