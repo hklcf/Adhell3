@@ -9,18 +9,18 @@ import java.util.regex.Pattern;
 
 public final class BlockUrlPatternsMatch {
 
-    private static final String WILDCARD_PATTERN = "(?im)(?=^[*]|.*[*]$)^(?:\\*[.-]?)?(?:(?!-)[a-z0-9-]+(?:(?<!-)\\.)?)+(?:[a-z0-9]+)(?:[.-]?\\*)?$";
+    private static final String WILDCARD_PATTERN = "(?im)(?=^\\*|.*\\*$)^(?:\\*[.-]?)?(?:(?!-)[a-z0-9-]+(?:(?<!-)\\.)?)+(?:[a-z0-9]+)(?:[.-]?\\*)?$";
     private static final Pattern wildcard_r = Pattern.compile(WILDCARD_PATTERN);
 
-    private static final String DOMAIN_PATTERN = "(?im)(?=^.{4,253}$)(^((?!-)[a-z0-9-]{1,63}(?<!-)\\.)+[a-z]{2,63}$)";
+    private static final String DOMAIN_PATTERN = "(?im)(?=^.{4,253}$)^(?:(?!-)[a-z0-9-]{1,63}(?<!-)\\.)+[a-z]{2,63}$";
     private static final Pattern domain_r = Pattern.compile(DOMAIN_PATTERN);
 
     // Define pattern for filter files: ||something.com^ or ||something.com^$third-party
-    private static final String FILTER_PATTERN = "(?im)(?=.{4,253}\\^)((?<=^\\|\\|)(((?!-)[a-z0-9-]{1,63}(?<!-)\\.)+[a-z]{2,63})(?=\\^([$]third-party)?$))";
+    private static final String FILTER_PATTERN = "(?im)(?:(?<=^\\|\\|)(?:(?:(?!-)[a-z0-9-]{1,63}(?<!-)\\.)+[a-z]{2,63})(?=\\^(?:[$](?:third-party))?$))";
     private static final Pattern filter_r = Pattern.compile(FILTER_PATTERN);
 
     // Knox URL - Must contain a letter in prefix / domain
-    private static final String KNOX_VALID_PATTERN = "(?i)(^(?=.*[a-z]).*$)";
+    private static final String KNOX_VALID_PATTERN = "(?i)^(?=.*[a-z]).*$";
     private static final Pattern knox_valid_r = Pattern.compile(KNOX_VALID_PATTERN);
 
     private static String domainPrefix = BuildConfig.DOMAIN_PREFIX.trim();
