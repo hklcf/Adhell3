@@ -1,9 +1,6 @@
 package com.fusionjack.adhell3.utils;
 
 import com.fusionjack.adhell3.BuildConfig;
-
-import java.util.ArrayList;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
