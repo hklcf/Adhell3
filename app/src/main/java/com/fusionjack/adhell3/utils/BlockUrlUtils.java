@@ -42,40 +42,33 @@ public class BlockUrlUtils {
 
         // Add all lines to the StringBuilder
         while ((inputLine = bufferedReader.readLine()) != null) {
-            hostFile.append(getDomain(inputLine.trim().toLowerCase()));
+            hostFile.append(inputLine.trim().toLowerCase());
             hostFile.append("\n");
         }
         bufferedReader.close();
 
         // Convert host file to string
-        String hostFileStr = hostFile.toString();
+        String hostFileStr = hostFile.toString()
+                // Replace lines that do not start with a word or ||
+                .replaceAll("(?im)^(?!\\*|[a-z0-9]|\\|\\|).*$","")
+                // Remove comments
+                .replaceAll("(?im)(?:^|[^\\S\\n]+)#.*$","")
+                // Remove 'deadzone' - We only want the domain
+                .replaceAll("(?im)^(?:0|127)\\.0\\.0\\.[0-1]\\s+","")
+                // Remove empty lines
+                .replaceAll("(?im)^\\s*", "")
+                // Remove WWW
+                .replaceAll("(?im)^www(?:[0-9]{1,3})?(?:\\.)", "")
+                // Trim any remaining whitespace
+                .trim();
 
         // If we received any host file data
         if (!hostFileStr.isEmpty()) {
             // Fetch valid domains
-            String[] validated_hosts = BlockUrlPatternsMatch.getValidHostFileDomains(hostFileStr).split("\n");
-
-            // Add each domain to blockUrls
-            for (String validatedDomain : validated_hosts) {
-                BlockUrl blockUrl = new BlockUrl(validatedDomain, blockUrlProvider.id);
-                blockUrls.add(blockUrl);
-            }
+            blockUrls =  BlockUrlPatternsMatch.getValidHostFileDomains(hostFileStr, blockUrls, blockUrlProvider.id);
         }
 
         return blockUrls;
-    }
-
-    private static String getDomain(String inputLine) {
-        return inputLine
-                // Remove 'deadzone' - We only want the domain
-                .replace("127.0.0.1", "")
-                .replace("0.0.0.0", "")
-                // Remove comments
-                .replaceAll("\\s*(?:#.*)$","")
-                // Remove whitespace
-                .replaceAll("\\s+","")
-                // Remove WWW
-                .replaceAll("^www(?:[0-9]{1,3})?(?:\\.)", "");
     }
 
     public static List<String> getUserBlockedUrls(AppDatabase appDatabase, boolean enableLog, Handler handler) {

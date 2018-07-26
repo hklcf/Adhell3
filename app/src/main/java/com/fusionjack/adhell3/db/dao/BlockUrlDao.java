@@ -18,6 +18,9 @@ public interface BlockUrlDao {
     @Query("SELECT url FROM BlockUrl WHERE urlProviderId = :urlProviderId")
     List<String> getUrlsByProviderId(long urlProviderId);
 
+    @Query("DELETE FROM BlockUrl WHERE urlProviderId IN (Select _id from BlockUrlProviders WHERE selected = 1)")
+    void deleteBlockUrlsBySelectedProvider();
+
     @Query("DELETE FROM BlockUrl")
     void deleteAll();
 
