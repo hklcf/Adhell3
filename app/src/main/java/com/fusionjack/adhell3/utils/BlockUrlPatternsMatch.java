@@ -1,6 +1,9 @@
 package com.fusionjack.adhell3.utils;
 
 import com.fusionjack.adhell3.BuildConfig;
+import com.fusionjack.adhell3.db.entity.BlockUrl;
+
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -34,39 +37,36 @@ public final class BlockUrlPatternsMatch {
         return domain_r.matcher(domain).matches();
     }
 
-    private static String validHostFileDomains(String hostFileStr) {
+    private static List<BlockUrl> validHostFileDomains(String hostFileStr, List<BlockUrl> blockUrls, long providerId) {
 
         final Matcher filterPatternMatch = filter_r.matcher(hostFileStr);
         final Matcher domainPatternMatch = domain_r.matcher(hostFileStr);
         final Matcher wildcardPatternMatch = wildcard_r.matcher(hostFileStr);
 
-        // Create a new string builder to hold our valid domains
-        StringBuilder validDomainsStrBuilder = new StringBuilder();
-
         // If we are looking at a filter list
-        if (filterPatternMatch.find()) {
-            // Reset our filter rmatch (start from first result
+        if(filterPatternMatch.find()) {
+            // Reset our filter match (start from first result
             filterPatternMatch.reset();
             // Filter patterns
             while (filterPatternMatch.find()) {
                 String filterListDomain = filterPatternMatch.group();
-                processPrefixingOptions(filterListDomain, validDomainsStrBuilder);
+                processPrefixingOptions(filterListDomain, blockUrls, providerId);
             }
-        } else {
+        }
+        else {
             // Standard domains
             while (domainPatternMatch.find()) {
                 String standardDomain = domainPatternMatch.group();
-                processPrefixingOptions(standardDomain, validDomainsStrBuilder);
+                processPrefixingOptions(standardDomain, blockUrls, providerId);
             }
             // Wildcards
             while (wildcardPatternMatch.find()) {
                 String wildcard = wildcardPatternMatch.group();
-                validDomainsStrBuilder.append(wildcard);
-                validDomainsStrBuilder.append("\n");
+                blockUrls.add(new BlockUrl(wildcard, providerId));
             }
         }
 
-        return validDomainsStrBuilder.toString();
+        return blockUrls;
     }
 
     public static boolean isUrlValid(String url) {
@@ -76,29 +76,24 @@ public final class BlockUrlPatternsMatch {
         return BlockUrlPatternsMatch.domainValid(url);
     }
 
-    public static String getValidHostFileDomains(String hostFileStr) {
-        return BlockUrlPatternsMatch.validHostFileDomains(hostFileStr);
+    public static List<BlockUrl> getValidHostFileDomains(String hostFileStr, List<BlockUrl> blockUrls, long providerId) {
+        return BlockUrlPatternsMatch.validHostFileDomains(hostFileStr, blockUrls, providerId);
     }
 
-    private static void processPrefixingOptions (String url,StringBuilder validDomainsStrBuilder) {
+    private static void processPrefixingOptions (String url, List<BlockUrl> blockUrls, long providerId) {
         switch(domainPrefix) {
             case "*" :
-                validDomainsStrBuilder.append(conditionallyPrefix(url));
-                validDomainsStrBuilder.append("\n");
+                blockUrls.add(new BlockUrl(conditionallyPrefix(url), providerId));
                 break;
             case "*." :
-                validDomainsStrBuilder.append(getValidKnoxUrl(url));
-                validDomainsStrBuilder.append("\n");
-                validDomainsStrBuilder.append(conditionallyPrefix(url));
-                validDomainsStrBuilder.append("\n");
+                blockUrls.add(new BlockUrl(getValidKnoxUrl(url), providerId));
+                blockUrls.add(new BlockUrl(conditionallyPrefix(url), providerId));
                 break;
             case "" :
-                validDomainsStrBuilder.append(getValidKnoxUrl(url));
-                validDomainsStrBuilder.append("\n");
+                blockUrls.add(new BlockUrl(getValidKnoxUrl(url), providerId));
                 break;
             default :
-                validDomainsStrBuilder.append(getValidKnoxUrl(url));
-                validDomainsStrBuilder.append("\n");
+                blockUrls.add(new BlockUrl(getValidKnoxUrl(url), providerId));
                 break;
         }
     }

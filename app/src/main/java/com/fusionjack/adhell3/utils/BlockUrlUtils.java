@@ -50,26 +50,22 @@ public class BlockUrlUtils {
         // Convert host file to string
         String hostFileStr = hostFile.toString()
                 // Replace lines that do not start with a word or ||
-                .replaceAll("(?im)^(?![\\w]|\\|\\|).*$","")
+                .replaceAll("(?im)^(?!\\*|[a-z0-9]|\\|\\|).*$","")
                 // Remove comments
                 .replaceAll("(?im)(?:^|[^\\S\\n]+)#.*$","")
                 // Remove 'deadzone' - We only want the domain
-                .replaceAll("(?im)^(?:127\\.0\\.0\\.1|0\\.0\\.0\\.0)\\s+","")
-                // Trim remaining whitespace
-                .trim()
+                .replaceAll("(?im)^(?:0|127)\\.0\\.0\\.[0-1]\\s+","")
+                // Remove empty lines
+                .replaceAll("(?im)^\\s*", "")
                 // Remove WWW
-                .replaceAll("(?im)^www(?:[0-9]{1,3})?(?:\\.)", "");
+                .replaceAll("(?im)^www(?:[0-9]{1,3})?(?:\\.)", "")
+                // Trim any remaining whitespace
+                .trim();
 
         // If we received any host file data
         if (!hostFileStr.isEmpty()) {
             // Fetch valid domains
-            String[] validated_hosts = BlockUrlPatternsMatch.getValidHostFileDomains(hostFileStr).split("\n");
-
-            // Add each domain to blockUrls
-            for (String validatedDomain : validated_hosts) {
-                BlockUrl blockUrl = new BlockUrl(validatedDomain, blockUrlProvider.id);
-                blockUrls.add(blockUrl);
-            }
+            blockUrls =  BlockUrlPatternsMatch.getValidHostFileDomains(hostFileStr, blockUrls, blockUrlProvider.id);
         }
 
         return blockUrls;
