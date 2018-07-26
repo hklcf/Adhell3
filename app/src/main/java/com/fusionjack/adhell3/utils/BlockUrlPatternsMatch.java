@@ -93,7 +93,6 @@ public final class BlockUrlPatternsMatch {
                 blockUrls.add(new BlockUrl(getValidKnoxUrl(url), providerId));
                 break;
             default :
-                blockUrls.add(new BlockUrl(getValidKnoxUrl(url), providerId));
                 break;
         }
     }
