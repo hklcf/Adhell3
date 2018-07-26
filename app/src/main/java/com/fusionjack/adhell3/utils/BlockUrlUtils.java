@@ -2,6 +2,7 @@ package com.fusionjack.adhell3.utils;
 
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.webkit.URLUtil;
 
 import com.fusionjack.adhell3.db.AppDatabase;
@@ -18,12 +19,33 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.regex.Pattern;
 
 public class BlockUrlUtils {
 
+    private static final String TAG = BlockUrlUtils.class.getCanonicalName();
+
+    // Pattern to detect lines that do not start with a word or ||
+    private static final Pattern linePattern = Pattern.compile("(?im)^(?!\\*|[a-z0-9]|\\|\\|).*$");
+
+    // Pattern to detect comments
+    private static final Pattern commentPattern = Pattern.compile("(?im)(?:^|[^\\S\\n]+)#.*$");
+
+    // Pattern to detect 'deadzone' - We only want the domain
+    private static final Pattern deadZonePattern = Pattern.compile("(?im)^(?:0|127)\\.0\\.0\\.[0-1]\\s+");
+
+    // Pattern to detect empty lines
+    private static final Pattern emptyLinePattern = Pattern.compile("(?im)^\\s*");
+
+    // Pattern to detect WWW
+    private static final Pattern wwwPattern = Pattern.compile("(?im)^www(?:[0-9]{1,3})?(?:\\.)");
+
     @NonNull
     public static List<BlockUrl> loadBlockUrls(BlockUrlProvider blockUrlProvider) throws IOException, URISyntaxException {
+        Date start = new Date();
+
         BufferedReader bufferedReader;
         if (URLUtil.isFileUrl(blockUrlProvider.url)) {
             File file = new File(new URI(blockUrlProvider.url));
@@ -34,41 +56,38 @@ public class BlockUrlUtils {
             bufferedReader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
         }
 
-        List<BlockUrl> blockUrls = new ArrayList<>();
-
         // Create a new StringBuilder object to hold our host file
         StringBuilder hostFile = new StringBuilder();
         String inputLine;
 
         // Add all lines to the StringBuilder
         while ((inputLine = bufferedReader.readLine()) != null) {
-            hostFile.append(inputLine.trim().toLowerCase());
+            hostFile.append(inputLine.trim());
             hostFile.append("\n");
         }
         bufferedReader.close();
 
         // Convert host file to string
-        String hostFileStr = hostFile.toString()
-                // Replace lines that do not start with a word or ||
-                .replaceAll("(?im)^(?!\\*|[a-z0-9]|\\|\\|).*$","")
-                // Remove comments
-                .replaceAll("(?im)(?:^|[^\\S\\n]+)#.*$","")
-                // Remove 'deadzone' - We only want the domain
-                .replaceAll("(?im)^(?:0|127)\\.0\\.0\\.[0-1]\\s+","")
-                // Remove empty lines
-                .replaceAll("(?im)^\\s*", "")
-                // Remove WWW
-                .replaceAll("(?im)^www(?:[0-9]{1,3})?(?:\\.)", "")
-                // Trim any remaining whitespace
-                .trim();
+        String hostFileStr = hostFile.toString();
+
+        // Clean up the host string
+        hostFileStr = linePattern.matcher(hostFileStr).replaceAll("");
+        hostFileStr = commentPattern.matcher(hostFileStr).replaceAll("");
+        hostFileStr = deadZonePattern.matcher(hostFileStr).replaceAll("");
+        hostFileStr = emptyLinePattern.matcher(hostFileStr).replaceAll("");
+        hostFileStr = wwwPattern.matcher(hostFileStr).replaceAll("");
+        hostFileStr = hostFileStr.toLowerCase();
+
+        Date end = new Date();
+        Log.i(TAG, "Domain fetching duration: " + (end.getTime() - start.getTime()) + " ms");
 
         // If we received any host file data
         if (!hostFileStr.isEmpty()) {
             // Fetch valid domains
-            blockUrls =  BlockUrlPatternsMatch.getValidHostFileDomains(hostFileStr, blockUrls, blockUrlProvider.id);
+            return BlockUrlPatternsMatch.validHostFileDomains(hostFileStr, blockUrlProvider.id);
         }
 
-        return blockUrls;
+        return new ArrayList<>();
     }
 
     public static List<String> getUserBlockedUrls(AppDatabase appDatabase, boolean enableLog, Handler handler) {

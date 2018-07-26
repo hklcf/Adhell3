@@ -1,13 +1,18 @@
 package com.fusionjack.adhell3.utils;
 
+import android.util.Log;
+
 import com.fusionjack.adhell3.BuildConfig;
 import com.fusionjack.adhell3.db.entity.BlockUrl;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public final class BlockUrlPatternsMatch {
+    private static final String TAG = BlockUrlPatternsMatch.class.getCanonicalName();
 
     private static final String WILDCARD_PATTERN = "(?im)(?=^\\*|.*\\*$)^(?:\\*[.-]?)?(?:(?!-)[a-z0-9-]+(?:(?<!-)\\.)?)+(?:[a-z0-9]+)(?:[.-]?\\*)?$";
     private static final Pattern wildcard_r = Pattern.compile(WILDCARD_PATTERN);
@@ -37,23 +42,25 @@ public final class BlockUrlPatternsMatch {
         return domain_r.matcher(domain).matches();
     }
 
-    private static List<BlockUrl> validHostFileDomains(String hostFileStr, List<BlockUrl> blockUrls, long providerId) {
+    public static List<BlockUrl> validHostFileDomains(String hostFileStr, long providerId) {
+        Date start = new Date();
+
+        List<BlockUrl> blockUrls = new ArrayList<>();
 
         final Matcher filterPatternMatch = filter_r.matcher(hostFileStr);
         final Matcher domainPatternMatch = domain_r.matcher(hostFileStr);
         final Matcher wildcardPatternMatch = wildcard_r.matcher(hostFileStr);
 
         // If we are looking at a filter list
-        if(filterPatternMatch.find()) {
-            // Reset our filter match (start from first result
+        if (filterPatternMatch.find()) {
+            // Reset our filter match (start from first result)
             filterPatternMatch.reset();
             // Filter patterns
             while (filterPatternMatch.find()) {
                 String filterListDomain = filterPatternMatch.group();
                 processPrefixingOptions(filterListDomain, blockUrls, providerId);
             }
-        }
-        else {
+        } else {
             // Standard domains
             while (domainPatternMatch.find()) {
                 String standardDomain = domainPatternMatch.group();
@@ -66,6 +73,9 @@ public final class BlockUrlPatternsMatch {
             }
         }
 
+        Date end = new Date();
+        Log.i(TAG, "Domain validation duration: " + (end.getTime() - start.getTime()) + " ms");
+
         return blockUrls;
     }
 
@@ -76,23 +86,19 @@ public final class BlockUrlPatternsMatch {
         return BlockUrlPatternsMatch.domainValid(url);
     }
 
-    public static List<BlockUrl> getValidHostFileDomains(String hostFileStr, List<BlockUrl> blockUrls, long providerId) {
-        return BlockUrlPatternsMatch.validHostFileDomains(hostFileStr, blockUrls, providerId);
-    }
-
-    private static void processPrefixingOptions (String url, List<BlockUrl> blockUrls, long providerId) {
-        switch(domainPrefix) {
-            case "*" :
+    private static void processPrefixingOptions(String url, List<BlockUrl> blockUrls, long providerId) {
+        switch (domainPrefix) {
+            case "*":
                 blockUrls.add(new BlockUrl(conditionallyPrefix(url), providerId));
                 break;
-            case "*." :
+            case "*.":
                 blockUrls.add(new BlockUrl(getValidKnoxUrl(url), providerId));
                 blockUrls.add(new BlockUrl(conditionallyPrefix(url), providerId));
                 break;
-            case "" :
+            case "":
                 blockUrls.add(new BlockUrl(getValidKnoxUrl(url), providerId));
                 break;
-            default :
+            default:
                 break;
         }
     }
