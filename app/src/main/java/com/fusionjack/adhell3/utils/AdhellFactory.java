@@ -231,9 +231,9 @@ public final class AdhellFactory {
 
     public void updateAllProviders() {
         List<BlockUrlProvider> providers = appDatabase.blockUrlProviderDao().getBlockUrlProviderBySelectedFlag(1);
+        appDatabase.blockUrlDao().deleteBlockUrlsBySelectedProvider();
         for (BlockUrlProvider provider : providers) {
             try {
-                appDatabase.blockUrlDao().deleteBlockUrlsByProvider(provider.id);
                 List<BlockUrl> blockUrls = BlockUrlUtils.loadBlockUrls(provider);
                 provider.count = blockUrls.size();
                 provider.lastUpdated = new Date();
