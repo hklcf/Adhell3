@@ -15,9 +15,9 @@ public class DomainPagerAdapter extends FragmentPagerAdapter {
     public DomainPagerAdapter(FragmentManager fm, Context context) {
         super(fm);
         tabTitles = new String[] {
+                context.getString(R.string.provider_url_fragment_title),
                 context.getString(R.string.blacklist_url_fragment_title),
                 context.getString(R.string.whitelist_url_fragment_title),
-                context.getString(R.string.provider_url_fragment_title),
                 context.getString(R.string.list_url_fragment_title)
         };
     }
