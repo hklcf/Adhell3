@@ -82,13 +82,15 @@ public class BlockUrlUtils {
         hostFileStr = wwwPattern.matcher(hostFileStr).replaceAll("");
         hostFileStr = hostFileStr.toLowerCase();
 
-        Date end = new Date();
-        Log.i(TAG, "Domain fetching duration: " + (end.getTime() - start.getTime()) + " ms");
-
         // If we received any host file data
         if (!hostFileStr.isEmpty()) {
             // Fetch valid domains
-            return BlockUrlPatternsMatch.validHostFileDomains(hostFileStr, blockUrlProvider.id);
+            List<BlockUrl> blockUrls = BlockUrlPatternsMatch.validHostFileDomains(hostFileStr, blockUrlProvider.id);
+
+            Date end = new Date();
+            Log.i(TAG, "Domain processing duration: " + (end.getTime() - start.getTime()) + " ms");
+
+            return blockUrls;
         }
 
         return new ArrayList<>();

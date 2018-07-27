@@ -1,18 +1,14 @@
 package com.fusionjack.adhell3.utils;
 
-import android.util.Log;
-
 import com.fusionjack.adhell3.BuildConfig;
 import com.fusionjack.adhell3.db.entity.BlockUrl;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public final class BlockUrlPatternsMatch {
-    private static final String TAG = BlockUrlPatternsMatch.class.getCanonicalName();
 
     private static final String WILDCARD_PATTERN = "(?im)^(?=\\*|.+\\*$)(?:\\*[.-]?)?[a-z0-9](?:[a-z0-9-]*[a-z0-9])?(?:\\.[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)*(?:[.-]?\\*)?$";
     private static final Pattern wildcard_r = Pattern.compile(WILDCARD_PATTERN);
@@ -39,8 +35,6 @@ public final class BlockUrlPatternsMatch {
     }
 
     public static List<BlockUrl> validHostFileDomains(String hostFileStr, long providerId) {
-        Date start = new Date();
-
         List<BlockUrl> blockUrls = new ArrayList<>();
 
         final Matcher domainPatternMatch = domain_r.matcher(hostFileStr);
@@ -51,14 +45,12 @@ public final class BlockUrlPatternsMatch {
             String standardDomain = domainPatternMatch.group();
             processPrefixingOptions(standardDomain, blockUrls, providerId);
         }
+
         // Wildcards
         while (wildcardPatternMatch.find()) {
             String wildcard = wildcardPatternMatch.group();
             blockUrls.add(new BlockUrl(wildcard, providerId));
         }
-
-        Date end = new Date();
-        Log.i(TAG, "Domain validation duration: " + (end.getTime() - start.getTime()) + " ms");
 
         return blockUrls;
     }
