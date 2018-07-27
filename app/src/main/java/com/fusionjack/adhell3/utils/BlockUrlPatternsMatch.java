@@ -14,15 +14,11 @@ import java.util.regex.Pattern;
 public final class BlockUrlPatternsMatch {
     private static final String TAG = BlockUrlPatternsMatch.class.getCanonicalName();
 
-    private static final String WILDCARD_PATTERN = "(?im)(?=^\\*|.*\\*$)^(?:\\*[.-]?)?(?:(?!-)[a-z0-9-]+(?:(?<!-)\\.)?)+(?:[a-z0-9]+)(?:[.-]?\\*)?$";
+    private static final String WILDCARD_PATTERN = "(?im)^(?=\\*|.+\\*$)(?:\\*[.-]?)?[a-z0-9](?:[a-z0-9-]*[a-z0-9])?(?:\\.[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)*(?:[.-]?\\*)?$";
     private static final Pattern wildcard_r = Pattern.compile(WILDCARD_PATTERN);
 
-    private static final String DOMAIN_PATTERN = "(?im)(?=^.{4,253}$)^(?:(?!-)[a-z0-9-]{1,63}(?<!-)\\.)+[a-z]{2,63}$";
+    private static final String DOMAIN_PATTERN = "(?im)^(?=.{4,253}$)(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z]{2,}$";
     private static final Pattern domain_r = Pattern.compile(DOMAIN_PATTERN);
-
-    // Define pattern for filter files: ||something.com^ or ||something.com^$third-party
-    private static final String FILTER_PATTERN = "(?im)(?:(?<=^\\|\\|)(?:(?:(?!-)[a-z0-9-]{1,63}(?<!-)\\.)+[a-z]{2,63})(?=\\^(?:[$](?:third-party))?$))";
-    private static final Pattern filter_r = Pattern.compile(FILTER_PATTERN);
 
     // Knox URL - Must contain a letter in prefix / domain
     private static final String KNOX_VALID_PATTERN = "(?i)^(?=.*[a-z]).*$";
@@ -47,30 +43,18 @@ public final class BlockUrlPatternsMatch {
 
         List<BlockUrl> blockUrls = new ArrayList<>();
 
-        final Matcher filterPatternMatch = filter_r.matcher(hostFileStr);
         final Matcher domainPatternMatch = domain_r.matcher(hostFileStr);
         final Matcher wildcardPatternMatch = wildcard_r.matcher(hostFileStr);
 
-        // If we are looking at a filter list
-        if (filterPatternMatch.find()) {
-            // Reset our filter match (start from first result)
-            filterPatternMatch.reset();
-            // Filter patterns
-            while (filterPatternMatch.find()) {
-                String filterListDomain = filterPatternMatch.group();
-                processPrefixingOptions(filterListDomain, blockUrls, providerId);
-            }
-        } else {
-            // Standard domains
-            while (domainPatternMatch.find()) {
-                String standardDomain = domainPatternMatch.group();
-                processPrefixingOptions(standardDomain, blockUrls, providerId);
-            }
-            // Wildcards
-            while (wildcardPatternMatch.find()) {
-                String wildcard = wildcardPatternMatch.group();
-                blockUrls.add(new BlockUrl(wildcard, providerId));
-            }
+        // Standard domains
+        while (domainPatternMatch.find()) {
+            String standardDomain = domainPatternMatch.group();
+            processPrefixingOptions(standardDomain, blockUrls, providerId);
+        }
+        // Wildcards
+        while (wildcardPatternMatch.find()) {
+            String wildcard = wildcardPatternMatch.group();
+            blockUrls.add(new BlockUrl(wildcard, providerId));
         }
 
         Date end = new Date();

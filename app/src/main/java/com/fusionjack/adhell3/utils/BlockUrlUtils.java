@@ -27,14 +27,17 @@ public class BlockUrlUtils {
 
     private static final String TAG = BlockUrlUtils.class.getCanonicalName();
 
-    // Pattern to detect lines that do not start with a word or ||
-    private static final Pattern linePattern = Pattern.compile("(?im)^(?!\\*|[a-z0-9]|\\|\\|).*$");
+   // Patter for extracting filter domains
+    private static final Pattern filterExtract = Pattern.compile("(?im)^\\|{2}(.+)\\^(?:\\$third-party)?$");
 
-    // Pattern to detect comments
-    private static final Pattern commentPattern = Pattern.compile("(?im)(?:^|[^\\S\\n]+)#.*$");
+    // Pattern to detect lines that do not start with a word or wildcard
+    private static final Pattern linePattern = Pattern.compile("(?im)^(?![a-z0-9*]).*$");
 
     // Pattern to detect 'deadzone' - We only want the domain
     private static final Pattern deadZonePattern = Pattern.compile("(?im)^(?:0|127)\\.0\\.0\\.[0-1]\\s+");
+
+    // Pattern to detect comments
+    private static final Pattern commentPattern = Pattern.compile("(?im)(?:^|[^\\S\\n]+)#.*$");
 
     // Pattern to detect empty lines
     private static final Pattern emptyLinePattern = Pattern.compile("(?im)^\\s*");
@@ -71,9 +74,10 @@ public class BlockUrlUtils {
         String hostFileStr = hostFile.toString();
 
         // Clean up the host string
+        hostFileStr = filterExtract.matcher(hostFileStr).replaceAll("$1");
         hostFileStr = linePattern.matcher(hostFileStr).replaceAll("");
-        hostFileStr = commentPattern.matcher(hostFileStr).replaceAll("");
         hostFileStr = deadZonePattern.matcher(hostFileStr).replaceAll("");
+        hostFileStr = commentPattern.matcher(hostFileStr).replaceAll("");
         hostFileStr = emptyLinePattern.matcher(hostFileStr).replaceAll("");
         hostFileStr = wwwPattern.matcher(hostFileStr).replaceAll("");
         hostFileStr = hostFileStr.toLowerCase();
