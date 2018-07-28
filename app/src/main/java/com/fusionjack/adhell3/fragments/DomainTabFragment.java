@@ -12,6 +12,8 @@ import android.view.ViewGroup;
 import com.fusionjack.adhell3.R;
 import com.fusionjack.adhell3.adapter.DomainPagerAdapter;
 
+import static com.fusionjack.adhell3.fragments.DomainTabPageFragment.PROVIDER_LIST_PAGE;
+
 public class DomainTabFragment extends Fragment {
 
     private int[] imageResId = {
@@ -43,6 +45,12 @@ public class DomainTabFragment extends Fragment {
             if (tab != null) {
                 tab.setIcon(imageResId[i]);
             }
+        }
+
+        // Select provider list tab as default
+        TabLayout.Tab tab = tabLayout.getTabAt(PROVIDER_LIST_PAGE);
+        if (tab != null) {
+            tab.select();
         }
 
         return view;
