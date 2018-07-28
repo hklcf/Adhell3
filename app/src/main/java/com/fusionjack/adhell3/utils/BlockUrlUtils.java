@@ -8,12 +8,14 @@ import android.webkit.URLUtil;
 import com.fusionjack.adhell3.db.AppDatabase;
 import com.fusionjack.adhell3.db.entity.BlockUrl;
 import com.fusionjack.adhell3.db.entity.BlockUrlProvider;
+import com.google.common.base.Charsets;
+import com.google.common.io.CharStreams;
+import com.google.common.io.Files;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.Reader;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -49,41 +51,30 @@ public class BlockUrlUtils {
     public static List<BlockUrl> loadBlockUrls(BlockUrlProvider blockUrlProvider) throws IOException, URISyntaxException {
         Date start = new Date();
 
-        BufferedReader bufferedReader;
+        // Read the host source and convert it to string
+        String hostFileStr = "";
         if (URLUtil.isFileUrl(blockUrlProvider.url)) {
             File file = new File(new URI(blockUrlProvider.url));
-            bufferedReader = new BufferedReader(new FileReader(file));
+            hostFileStr = Files.asCharSource(file, Charsets.UTF_8).read();
         } else {
             URL urlProviderUrl = new URL(blockUrlProvider.url);
             URLConnection connection = urlProviderUrl.openConnection();
-            bufferedReader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            try (final Reader reader = new InputStreamReader(connection.getInputStream(), Charsets.UTF_8)) {
+                hostFileStr = CharStreams.toString(reader);
+            }
         }
-
-        // Create a new StringBuilder object to hold our host file
-        StringBuilder hostFile = new StringBuilder();
-        String inputLine;
-
-        // Add all lines to the StringBuilder
-        while ((inputLine = bufferedReader.readLine()) != null) {
-            hostFile.append(inputLine.trim());
-            hostFile.append("\n");
-        }
-        bufferedReader.close();
-
-        // Convert host file to string
-        String hostFileStr = hostFile.toString();
-
-        // Clean up the host string
-        hostFileStr = filterExtract.matcher(hostFileStr).replaceAll("$1");
-        hostFileStr = linePattern.matcher(hostFileStr).replaceAll("");
-        hostFileStr = deadZonePattern.matcher(hostFileStr).replaceAll("");
-        hostFileStr = commentPattern.matcher(hostFileStr).replaceAll("");
-        hostFileStr = emptyLinePattern.matcher(hostFileStr).replaceAll("");
-        hostFileStr = wwwPattern.matcher(hostFileStr).replaceAll("");
-        hostFileStr = hostFileStr.toLowerCase();
 
         // If we received any host file data
         if (!hostFileStr.isEmpty()) {
+            // Clean up the host string
+            hostFileStr = filterExtract.matcher(hostFileStr).replaceAll("$1");
+            hostFileStr = linePattern.matcher(hostFileStr).replaceAll("");
+            hostFileStr = deadZonePattern.matcher(hostFileStr).replaceAll("");
+            hostFileStr = commentPattern.matcher(hostFileStr).replaceAll("");
+            hostFileStr = emptyLinePattern.matcher(hostFileStr).replaceAll("");
+            hostFileStr = wwwPattern.matcher(hostFileStr).replaceAll("");
+            hostFileStr = hostFileStr.toLowerCase();
+
             // Fetch valid domains
             List<BlockUrl> blockUrls = BlockUrlPatternsMatch.validHostFileDomains(hostFileStr, blockUrlProvider.id);
 
