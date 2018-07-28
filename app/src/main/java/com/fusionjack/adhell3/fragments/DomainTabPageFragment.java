@@ -6,9 +6,9 @@ import android.support.v4.app.Fragment;
 public class DomainTabPageFragment extends Fragment {
     private static final String ARG_PAGE = "page";
 
-    public static final int PROVIDER_LIST_PAGE = 0;
-    public static final int BLACKLIST_PAGE = 1;
-    public static final int WHITELIST_PAGE = 2;
+    public static final int BLACKLIST_PAGE = 0;
+    public static final int WHITELIST_PAGE = 1;
+    public static final int PROVIDER_LIST_PAGE = 2;
     public static final int PROVIDER_CONTENT_PAGE = 3;
 
     public static Fragment newInstance(int page) {
