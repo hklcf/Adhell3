@@ -29,6 +29,8 @@ android {
         def domainPrefix = "*"
         def sklKey = ""
         def backwardsKey = ""
+        def disableApps = "false"
+        def appComponent = "false"
 
         if (appPropsFile.exists()) {
             Properties appProps = new Properties()
@@ -48,6 +50,12 @@ android {
             if (appProps['domain.prefix'] != null) {
                 domainPrefix = appProps['domain.prefix']
             }
+            if (appProps['enable.disableApps'] != null) {
+                disableApps = appProps['enable.disableApps']
+            }
+            if (appProps['enable.appComponent'] != null) {
+                appComponent = appProps['enable.appComponent']
+            }
         }
 
         applicationId packageName
@@ -60,6 +68,8 @@ android {
         buildConfigField("String", "DOMAIN_PREFIX", '"' + domainPrefix + '"')
         buildConfigField("String", "SKL_KEY", '"' + sklKey + '"')
         buildConfigField("String", "BACKWARDS_KEY", '"' + backwardsKey + '"')
+        buildConfigField("boolean", "DISABLE_APPS", disableApps)
+        buildConfigField("boolean", "APP_COMPONENT", appComponent)
     }
 
     buildTypes {

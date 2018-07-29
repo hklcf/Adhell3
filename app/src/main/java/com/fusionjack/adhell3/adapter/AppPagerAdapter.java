@@ -5,6 +5,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
+import com.fusionjack.adhell3.BuildConfig;
 import com.fusionjack.adhell3.R;
 import com.fusionjack.adhell3.fragments.AppTabPageFragment;
 
@@ -23,7 +24,7 @@ public class AppPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        return AppTabPageFragment.newInstance(position);
+        return AppTabPageFragment.newInstance(BuildConfig.DISABLE_APPS ? position : position + 1);
     }
 
     @Override
@@ -33,11 +34,11 @@ public class AppPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public int getCount() {
-        return PAGE_COUNT;
+        return BuildConfig.DISABLE_APPS ? PAGE_COUNT : PAGE_COUNT - 1;
     }
 
     @Override
     public CharSequence getPageTitle(int position) {
-        return tabTitles[position];
+        return tabTitles[BuildConfig.DISABLE_APPS ? position : position + 1];
     }
 }

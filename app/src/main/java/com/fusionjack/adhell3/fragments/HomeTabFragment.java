@@ -101,6 +101,14 @@ public class HomeTabFragment extends Fragment {
 
         infoTextView.setVisibility(View.INVISIBLE);
         swipeContainer.setVisibility(View.INVISIBLE);
+
+        if (!BuildConfig.DISABLE_APPS) {
+            view.findViewById(R.id.appDisablerLayout).setVisibility(View.GONE);
+        }
+        if (!BuildConfig.APP_COMPONENT) {
+            view.findViewById(R.id.appComponentLayout).setVisibility(View.GONE);
+        }
+
         domainSwitch.setOnClickListener(v -> {
             Log.d(TAG, "Domain switch button has been clicked");
             new SetFirewallAsyncTask(true, this, fragmentManager).execute();

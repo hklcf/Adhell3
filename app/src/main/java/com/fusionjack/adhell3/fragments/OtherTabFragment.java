@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.fusionjack.adhell3.BuildConfig;
 import com.fusionjack.adhell3.R;
 import com.fusionjack.adhell3.adapter.OtherPagerAdapter;
 
@@ -37,7 +38,10 @@ public class OtherTabFragment extends Fragment {
         ViewPager viewPager = view.findViewById(R.id.others_viewpager);
         viewPager.setAdapter(new OtherPagerAdapter(getChildFragmentManager(), getContext()));
         tabLayout.setupWithViewPager(viewPager);
-        for (int i = 0; i < imageResId.length; i++) {
+
+        int imageIndex = BuildConfig.APP_COMPONENT ? 0 : 1;
+        int tabCount = viewPager.getAdapter().getCount();
+        for (int i = 0; i < tabCount; i++, imageIndex++) {
             TabLayout.Tab tab = tabLayout.getTabAt(i);
             if (tab != null) {
                 tab.setIcon(imageResId[i]);

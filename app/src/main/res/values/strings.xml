@@ -112,7 +112,7 @@
     <string name="enabled_all_apps">Enabling all apps…</string>
     <string name="total_domains">Total domains:&#160;</string>
     <string name="package_disabler_info">
-        Disable an app entirely and hide it on app drawer.
+        Disabling system apps may cause the device to malfunction.
         \nIf app disabler toggle is enabled, changes take effect immediately.
     </string>
     <string name="mobile_restricter_info">

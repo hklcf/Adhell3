@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.fusionjack.adhell3.BuildConfig;
 import com.fusionjack.adhell3.R;
 import com.fusionjack.adhell3.adapter.AppPagerAdapter;
 
@@ -39,8 +40,11 @@ public class AppTabFragment extends Fragment {
         viewPager.setAdapter(new AppPagerAdapter(getChildFragmentManager(), getContext()));
         viewPager.setOffscreenPageLimit(4);
         tabLayout.setupWithViewPager(viewPager);
-        for (int i = 0; i < imageResId.length; i++) {
-            tabLayout.getTabAt(i).setIcon(imageResId[i]);
+
+        int imageIndex = BuildConfig.DISABLE_APPS ? 0 : 1;
+        int tabCount = viewPager.getAdapter().getCount();
+        for (int i = 0; i < tabCount; i++, imageIndex++) {
+            tabLayout.getTabAt(i).setIcon(imageResId[imageIndex]);
         }
         return view;
     }

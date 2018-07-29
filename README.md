@@ -41,9 +41,6 @@ The list contains of unique domains.
 - Backup and restore database<br/>
 Backup the content of the database on internal storage so that later it can be used to restore the database if the database is somehow damage.
 
-- App components<br/>
-Ability to disable app's permissions, services and receivers. Only user apps are supported.
-
 - DNS per application basis<br/>
 Set custom DNS for selected apps. Only user apps are supported.
 
@@ -105,8 +102,8 @@ Since you can compile it by yourself, you can just assign the same package name 
 * Put `domain.limit` in `app.properties`, e.g. `domain.limit=50000`
 
 ### Make SKL key and backwards-compatible key available when activating Adhell3
-* Put `skl.key` in in `app.properties`, e.g. `skl.key=KLM06-XXXXX-XXXXX-XXXXX-XXXXX-XXXXX`
-* Put `backwards.key` in in `app.properties`, e.g. `backwards.key=B6B2BXXXXXXXXXXXXXXXX`
+* Put `skl.key` in `app.properties`, e.g. `skl.key=KLM06-XXXXX-XXXXX-XXXXX-XXXXX-XXXXX`
+* Put `backwards.key` in `app.properties`, e.g. `backwards.key=B6B2BXXXXXXXXXXXXXXXX`
 * If you use these properties, beware when you distribute your app as the app contains the keys in plain text
 * This is just for convenience purpose so that you don't need to make your keys somewhere available when you are on the phone, hence this only works on a new installation
 
@@ -119,6 +116,13 @@ Since you can compile it by yourself, you can just assign the same package name 
 * `domain.prefix=*.` -> prefix all domains with `*.` while keeping the original domain as it is
 * `domain.prefix=` -> don't prefix anything, keep all domains as they are
 * nothing -> prefix all domains with `*` as default
+
+### Hidden features
+* Beware that enabling some hidden features may cause the device to malfunction if they are not used with precaution, especially when disabling system apps. Enable them at your own risk. 
+* Add `enable.disableApps=true` in `app.properties` -> to enable 'Disable Apps' feature: <br/>
+An ability to disable user or system applications entirely
+* Add `enable.appComponent=true` in `app.properties` -> to enable 'App Component' feature: <br/>
+An ability to disable app's permissions, services and receivers. Only user apps are supported.
 
 ## How to build apk
 
