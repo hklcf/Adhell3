@@ -30,7 +30,7 @@ public class BlockUrlUtils {
     private static final String TAG = BlockUrlUtils.class.getCanonicalName();
 
    // Patter for extracting filter domains
-    private static final Pattern filterExtract = Pattern.compile("(?im)^\\|{2}(.+)\\^(?:\\$third-party)?$");
+    private static final Pattern filterExtract = Pattern.compile("(?im)^\\|{2}(.+)\\^(?:\\$(?:[a-z]+,)?third-party)?$");
 
     // Pattern to detect lines that do not start with a word or wildcard
     private static final Pattern linePattern = Pattern.compile("(?im)^(?![a-z0-9*]).*$");
