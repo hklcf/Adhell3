@@ -2,9 +2,10 @@ package com.fusionjack.adhell3.utils;
 
 import com.fusionjack.adhell3.BuildConfig;
 import com.fusionjack.adhell3.db.entity.BlockUrl;
-
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -16,11 +17,13 @@ public final class BlockUrlPatternsMatch {
     private static final String DOMAIN_PATTERN = "(?im)^(?=.{4,253}$)(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z]{2,}$";
     private static final Pattern domain_r = Pattern.compile(DOMAIN_PATTERN);
 
+    private static final String FILTER_PATTERN = "(?im)^\\|{2}((?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z]{2,})\\^(?:\\$(?:[a-z]+,)?third-party)?$";
+    private static final Pattern filter_r = Pattern.compile(FILTER_PATTERN);
+
     // Knox URL - Must contain a letter in prefix / domain
     private static final String KNOX_VALID_PATTERN = "(?i)^(?=.*[a-z]).*$";
     private static final Pattern knox_valid_r = Pattern.compile(KNOX_VALID_PATTERN);
 
-    private static String domainPrefix = BuildConfig.DOMAIN_PREFIX.trim();
     private static final String WILDCARD_PREFIX = "*";
 
     private BlockUrlPatternsMatch() {
@@ -35,52 +38,52 @@ public final class BlockUrlPatternsMatch {
     }
 
     public static List<BlockUrl> validHostFileDomains(String hostFileStr, long providerId) {
+        // Set for unique domains
+        Set<String> uniqueBlockUrls = new HashSet<>();
+        // BlockUrl list to return
         List<BlockUrl> blockUrls = new ArrayList<>();
 
+        final Matcher filterPatternMatch = filter_r.matcher(hostFileStr);
         final Matcher domainPatternMatch = domain_r.matcher(hostFileStr);
         final Matcher wildcardPatternMatch = wildcard_r.matcher(hostFileStr);
 
-        // Standard domains
+        // Filter domains - something.com and *.something.com
+        while (filterPatternMatch.find()) {
+            String filterDomain = getValidKnoxUrl(filterPatternMatch.group(1));
+            // Add something.com
+            uniqueBlockUrls.add(filterDomain);
+            // Conditionally add *.something.com
+            if (!filterDomain.startsWith(WILDCARD_PREFIX)) {
+                uniqueBlockUrls.add("*." + filterDomain);
+            }
+        }
+
+        // Standard domains (conditionally prefix)
         while (domainPatternMatch.find()) {
-            String standardDomain = domainPatternMatch.group();
-            processPrefixingOptions(standardDomain, blockUrls, providerId);
+            String standardDomain = getValidKnoxUrl(domainPatternMatch.group());
+            String prefix = BuildConfig.DOMAIN_PREFIX ? (standardDomain.startsWith(WILDCARD_PREFIX) ? "" : WILDCARD_PREFIX) : "";
+            uniqueBlockUrls.add(prefix + standardDomain);
         }
 
         // Wildcards
         while (wildcardPatternMatch.find()) {
             String wildcard = wildcardPatternMatch.group();
-            blockUrls.add(new BlockUrl(wildcard, providerId));
+            uniqueBlockUrls.add(wildcard);
+        }
+
+        // Add unique urls to block urls
+        for (String url : uniqueBlockUrls) {
+            blockUrls.add(new BlockUrl(url, providerId));
         }
 
         return blockUrls;
     }
 
     public static boolean isUrlValid(String url) {
-        if (url.contains("*")) {
+        if (url.contains(WILDCARD_PREFIX)) {
             return BlockUrlPatternsMatch.wildcardValid(url);
         }
         return BlockUrlPatternsMatch.domainValid(url);
-    }
-
-    private static void processPrefixingOptions(String url, List<BlockUrl> blockUrls, long providerId) {
-        switch (domainPrefix) {
-            case "*":
-                blockUrls.add(new BlockUrl(conditionallyPrefix(url), providerId));
-                break;
-            case "*.":
-                blockUrls.add(new BlockUrl(getValidKnoxUrl(url), providerId));
-                blockUrls.add(new BlockUrl(conditionallyPrefix(url), providerId));
-                break;
-            case "":
-                blockUrls.add(new BlockUrl(getValidKnoxUrl(url), providerId));
-                break;
-            default:
-                break;
-        }
-    }
-
-    private static String conditionallyPrefix(String url) {
-        return (url.startsWith(domainPrefix) ? "" : domainPrefix) + url;
     }
 
     public static String getValidKnoxUrl(String url) {
@@ -93,7 +96,7 @@ public final class BlockUrlPatternsMatch {
         }
 
         // Grab the prefix
-        String prefix = url.split("\\Q.\\E")[0];
+        String prefix = url.split("\\.")[0];
         // Regex: must contain a letter (excl wildcards)
         final Matcher prefix_valid = knox_valid_r.matcher(prefix);
 
