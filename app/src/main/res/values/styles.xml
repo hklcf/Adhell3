@@ -9,6 +9,7 @@
         <item name="windowActionBar">true</item>
         <item name="android:listViewStyle">@style/ListViewStyle</item>
         <item name="android:buttonStyle">@style/buttonStyle</item>
+        <item name="preferenceTheme">@style/PreferenceThemeOverlay.v14.Material</item>
     </style>
 
     <style name="bottomBarTextView" parent="@android:style/TextAppearance.Widget.TextView">

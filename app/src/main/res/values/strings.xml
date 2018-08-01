@@ -46,6 +46,7 @@
         \nToggle Domain rules to apply changes.
     </string>
     <string name="delete_app">Disable and Delete Adhell</string>
+    <string name="delete_app_summary">Disable all features and uninstall Adhell</string>
     <string name="delete_app_dialog_title">Delete Adhell</string>
     <string name="delete_app_dialog_text">Do you really want to uninstall Adhell and enable all disabled apps?</string>
     <string name="dns_1_address">DNS 1 Address</string>
@@ -148,7 +149,9 @@
         \nTherefore, if the disabled receivers don\'t appear below, you need to reinstall the app.
     </string>
     <string name="backup_database">Backup Database</string>
+    <string name="backup_database_summary">Backup all settings into a backup file in internal storage.</string>
     <string name="restore_database">Restore Database</string>
+    <string name="restore_database_summary">Restore all settings from a backup file. A \'storage\' permission needs to be granted.</string>
     <string name="whitelist_fragment_title">App Whitelist</string>
     <string name="blacklist_url_fragment_title">Blacklist</string>
     <string name="whitelist_url_fragment_title">Whitelist</string>
