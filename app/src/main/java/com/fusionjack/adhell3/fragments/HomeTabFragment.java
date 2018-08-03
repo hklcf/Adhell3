@@ -36,7 +36,6 @@ import com.fusionjack.adhell3.db.entity.WhiteUrl;
 import com.fusionjack.adhell3.dialogfragment.FirewallDialogFragment;
 import com.fusionjack.adhell3.utils.AdhellAppIntegrity;
 import com.fusionjack.adhell3.utils.AdhellFactory;
-import com.fusionjack.adhell3.utils.AppCache;
 import com.fusionjack.adhell3.utils.AppPreferences;
 import com.fusionjack.adhell3.utils.FirewallUtils;
 
@@ -170,7 +169,6 @@ public class HomeTabFragment extends Fragment {
             swipeContainer.setOnRefreshListener(() ->
                     new RefreshAsyncTask(getContext()).execute()
             );
-            AppCache.getInstance(getContext(), null);
             new RefreshAsyncTask(getContext()).execute();
         } else {
             infoTextView.setVisibility(View.INVISIBLE);
@@ -460,7 +458,15 @@ public class HomeTabFragment extends Fragment {
             if (context != null) {
                 ListView listView = ((Activity) context).findViewById(R.id.blockedDomainsListView);
                 if (listView != null) {
-                    ReportBlockedUrlAdapter adapter = new ReportBlockedUrlAdapter(context, reportBlockedUrls);
+                    Handler handler = new Handler(Looper.getMainLooper()) {
+                        @Override
+                        public void handleMessage(Message msg) {
+                            ReportBlockedUrlAdapter adapter = (ReportBlockedUrlAdapter) listView.getAdapter();
+                            adapter.notifyDataSetChanged();
+                        }
+                    };
+
+                    ReportBlockedUrlAdapter adapter = new ReportBlockedUrlAdapter(context, reportBlockedUrls, handler);
                     listView.setAdapter(adapter);
                     listView.setOnItemClickListener((AdapterView<?> adView, View view2, int position, long id) -> {
                         View dialogView = LayoutInflater.from(context).inflate(R.layout.dialog_question, listView, false);

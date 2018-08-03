@@ -3,8 +3,6 @@ package com.fusionjack.adhell3.adapter;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
-import android.os.Looper;
-import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -28,16 +26,11 @@ public class ReportBlockedUrlAdapter extends ArrayAdapter<ReportBlockedUrl> {
 
     private static final SimpleDateFormat dateFormatter = new SimpleDateFormat("HH:mm:ss");
 
-    public ReportBlockedUrlAdapter(@NonNull Context context, @NonNull List<ReportBlockedUrl> objects) {
+    public ReportBlockedUrlAdapter(@NonNull Context context, @NonNull List<ReportBlockedUrl> objects, Handler handler) {
         super(context, 0, objects);
-        Handler handler = new Handler(Looper.getMainLooper()) {
-            @Override
-            public void handleMessage(Message msg) {
-                notifyDataSetChanged();
-            }
-        };
-        appIcons = AppCache.getInstance(context, handler).getIcons();
-        appNames = AppCache.getInstance(context, handler).getNames();
+        AppCache appCache = AppCache.getInstance(context, handler);
+        appIcons = appCache.getIcons();
+        appNames = appCache.getNames();
     }
 
     @NonNull
