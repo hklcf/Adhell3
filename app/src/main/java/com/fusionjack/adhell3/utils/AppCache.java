@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Handler;
+import android.support.v7.app.AlertDialog;
 
 import com.fusionjack.adhell3.App;
 import com.fusionjack.adhell3.db.AppDatabase;
@@ -17,12 +18,12 @@ import com.fusionjack.adhell3.db.entity.FirewallWhitelistedPackage;
 import com.fusionjack.adhell3.db.entity.RestrictedPackage;
 import com.google.common.collect.Lists;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.FutureTask;
@@ -66,16 +67,19 @@ public class AppCache {
         return appsNames;
     }
 
-    private static class AppCacheAsyncTask extends AsyncTask<Void, Void, Void> {
+    private static class AppCacheAsyncTask extends AsyncTask<Void, Void, Throwable> {
         private ProgressDialog dialog;
         private Map<String, Drawable> appsIcons;
         private Map<String, String> appsNames;
         private Handler handler;
+        private WeakReference<Context> contextWeakReference;
 
         AppCacheAsyncTask(Context context, Handler handler, Map<String, Drawable> appsIcons, Map<String, String> appsNames) {
             this.appsIcons = appsIcons;
             this.appsNames = appsNames;
             this.handler = handler;
+            this.contextWeakReference = new WeakReference<>(context);
+
             if (context != null) {
                 dialog = new ProgressDialog(context);
                 dialog.setCancelable(false);
@@ -91,39 +95,49 @@ public class AppCache {
         }
 
         @Override
-        protected Void doInBackground(Void... args) {
+        protected Throwable doInBackground(Void... args) {
             AppDatabase appDatabase = AdhellFactory.getInstance().getAppDatabase();
-            List<AppInfo> modifiedApps = appDatabase.applicationInfoDao().getModifiedApps();
-            appDatabase.applicationInfoDao().deleteAll();
+            List<AppInfo> modifiedApps = null;
 
-            PackageManager packageManager = AdhellFactory.getInstance().getPackageManager();
-            List<ApplicationInfo> apps = packageManager.getInstalledApplications(PackageManager.GET_META_DATA);
-            int appCount = apps.size();
-            int cpuCount = Runtime.getRuntime().availableProcessors() / 2;
-            ExecutorService executorService = Executors.newFixedThreadPool(cpuCount);
-            List<FutureTask<AppInfoResult>> tasks = new ArrayList<>();
+            try {
+                PackageManager packageManager = AdhellFactory.getInstance().getPackageManager();
+                List<ApplicationInfo> apps = packageManager.getInstalledApplications(PackageManager.GET_META_DATA);
+                int appCount = apps.size();
+                int cpuCount = Runtime.getRuntime().availableProcessors() / 2;
+                ExecutorService executorService = Executors.newFixedThreadPool(cpuCount);
+                List<FutureTask<AppInfoResult>> tasks = new ArrayList<>();
 
-            int distributedAppCount = (int) Math.ceil(appCount / (double) cpuCount);
-            List<List<ApplicationInfo>> chunks = Lists.partition(apps, distributedAppCount);
-            for (List<ApplicationInfo> chunk : chunks) {
-                long id = distributedAppCount * tasks.size();
-                AppExecutor appExecutor = new AppExecutor(chunk, id);
-                FutureTask<AppInfoResult> task = new FutureTask<>(appExecutor);
-                tasks.add(task);
-                executorService.execute(task);
-            }
+                modifiedApps = appDatabase.applicationInfoDao().getModifiedApps();
+                appDatabase.applicationInfoDao().deleteAll();
 
-            for (FutureTask<AppInfoResult> task : tasks) {
-                try {
+                int distributedAppCount = (int) Math.ceil(appCount / (double) cpuCount);
+                List<List<ApplicationInfo>> chunks = Lists.partition(apps, distributedAppCount);
+                for (List<ApplicationInfo> chunk : chunks) {
+                    long id = distributedAppCount * tasks.size();
+                    AppExecutor appExecutor = new AppExecutor(chunk, id);
+                    FutureTask<AppInfoResult> task = new FutureTask<>(appExecutor);
+                    tasks.add(task);
+                    executorService.execute(task);
+                }
+
+                for (FutureTask<AppInfoResult> task : tasks) {
                     AppInfoResult result = task.get();
                     appsIcons.putAll(result.getAppsIcons());
                     appsNames.putAll(result.getAppsNames());
-                } catch (InterruptedException | ExecutionException e) {
-                    e.printStackTrace();
                 }
+
+                executorService.shutdown();
+            } catch (Throwable th) {
+                // Something went wrong, put the modified apps back to db
+                // The app list needs to be refreshed manually to trigger the caching again
+                th.printStackTrace();
+                if (modifiedApps != null) {
+                    appDatabase.applicationInfoDao().insertAll(modifiedApps);
+                }
+                return th;
             }
 
-            if (modifiedApps.size() > 0 && appDatabase.applicationInfoDao().getAppSize() > 0) {
+            if (modifiedApps != null && modifiedApps.size() > 0 && appDatabase.applicationInfoDao().getAppSize() > 0) {
                 appDatabase.firewallWhitelistedPackageDao().deleteAll();
                 appDatabase.disabledPackageDao().deleteAll();
                 appDatabase.restrictedPackageDao().deleteAll();
@@ -174,17 +188,24 @@ public class AppCache {
                 }
             }
 
-            executorService.shutdown();
             return null;
         }
 
         @Override
-        protected void onPostExecute(Void aVoid) {
+        protected void onPostExecute(Throwable th) {
             if (dialog != null && dialog.isShowing()) {
                 dialog.dismiss();
             }
             if (handler != null) {
                 handler.obtainMessage().sendToTarget();
+            }
+
+            Context context = contextWeakReference.get();
+            if (th != null && context != null) {
+                new AlertDialog.Builder(context)
+                        .setTitle("Error")
+                        .setMessage("Something went wrong when caching apps, please refresh the app list. Error: \n\n" + th.getMessage())
+                        .show();
             }
         }
     }
