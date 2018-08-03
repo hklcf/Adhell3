@@ -400,8 +400,8 @@ public class ContentBlocker56 implements ContentBlocker {
         if (isEnabled()) {
             if (BlockUrlUtils.isDomainLimitAboveDefault()) {
                 // If the domain count more than 15k, calling firewall.getDomainFilterRules() might crash the firewall
-                // Let's assume that the domain rules are enabled in this case
-                return false;
+                int domainCount = AppPreferences.getInstance().getBlockedDomainsCount();
+                return domainCount == 0;
             }
 
             List<String> packageNameList = new ArrayList<>();
