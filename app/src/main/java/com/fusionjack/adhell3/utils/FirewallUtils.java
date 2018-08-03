@@ -83,16 +83,20 @@ public final class FirewallUtils {
             return stat;
         }
 
-        List<String> packageNameList = new ArrayList<>();
-        packageNameList.add(Firewall.FIREWALL_ALL_PACKAGES);
-        List<DomainFilterRule> domainRules = firewall.getDomainFilterRules(packageNameList);
-        if (domainRules == null && BlockUrlUtils.isDomainLimitAboveDefault()) {
+        if (BlockUrlUtils.isDomainLimitAboveDefault()) {
+            // If the domain count more than 15k, calling firewall.getDomainFilterRules() might crash the firewall
             stat.blackListSize = AppPreferences.getInstance().getBlockedDomainsCount();
             stat.whiteListSize = appDatabase.whiteUrlDao().getAll3().size();
-        } else if (domainRules != null && domainRules.size() > 0) {
-            stat.blackListSize = domainRules.get(0).getDenyDomains().size();
-            stat.whiteListSize = domainRules.get(0).getAllowDomains().size();
+        } else {
+            List<String> packageNameList = new ArrayList<>();
+            packageNameList.add(Firewall.FIREWALL_ALL_PACKAGES);
+            List<DomainFilterRule> domainRules = firewall.getDomainFilterRules(packageNameList);
+            if (domainRules != null && domainRules.size() > 0) {
+                stat.blackListSize = domainRules.get(0).getDenyDomains().size();
+                stat.whiteListSize = domainRules.get(0).getAllowDomains().size();
+            }
         }
+
         return stat;
     }
 

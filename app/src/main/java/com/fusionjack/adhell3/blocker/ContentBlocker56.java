@@ -398,15 +398,16 @@ public class ContentBlocker56 implements ContentBlocker {
     @Override
     public boolean isDomainRuleEmpty() {
         if (isEnabled()) {
-            List<String> packageNameList = new ArrayList<>();
-            packageNameList.add(Firewall.FIREWALL_ALL_PACKAGES);
-            List<DomainFilterRule> rules = firewall.getDomainFilterRules(packageNameList);
-            if (BlockUrlUtils.isDomainLimitAboveDefault() && rules == null) {
-                // The rules will be null when the total domains more than 15000
+            if (BlockUrlUtils.isDomainLimitAboveDefault()) {
+                // If the domain count more than 15k, calling firewall.getDomainFilterRules() might crash the firewall
                 // Let's assume that the domain rules are enabled in this case
                 return false;
             }
-            return rules.size() == 0;
+
+            List<String> packageNameList = new ArrayList<>();
+            packageNameList.add(Firewall.FIREWALL_ALL_PACKAGES);
+            List<DomainFilterRule> rules = firewall.getDomainFilterRules(packageNameList);
+            return rules != null && rules.size() == 0;
         }
         return true;
     }
