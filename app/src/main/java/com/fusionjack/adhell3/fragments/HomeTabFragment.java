@@ -3,6 +3,7 @@ package com.fusionjack.adhell3.fragments;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -15,6 +16,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -110,11 +112,11 @@ public class HomeTabFragment extends Fragment {
 
         domainSwitch.setOnClickListener(v -> {
             Log.d(TAG, "Domain switch button has been clicked");
-            new SetFirewallAsyncTask(true, this, fragmentManager).execute();
+            new SetFirewallAsyncTask(true, this, fragmentManager, getContext()).execute();
         });
         firewallSwitch.setOnClickListener(v -> {
             Log.d(TAG, "Firewall switch button has been clicked");
-            new SetFirewallAsyncTask(false, this, fragmentManager).execute();
+            new SetFirewallAsyncTask(false, this, fragmentManager, getContext()).execute();
         });
         disablerSwitch.setOnClickListener(v -> {
             Log.d(TAG, "App disabler switch button has been clicked");
@@ -378,14 +380,16 @@ public class HomeTabFragment extends Fragment {
         private boolean isDomain;
         private boolean isDomainRuleEmpty;
         private boolean isFirewallRuleEmpty;
+        private WeakReference<Context> contextReference;
 
-        SetFirewallAsyncTask(boolean isDomain, HomeTabFragment parentFragment, FragmentManager fragmentManager) {
+        SetFirewallAsyncTask(boolean isDomain, HomeTabFragment parentFragment, FragmentManager fragmentManager, Context context) {
             this.isDomain = isDomain;
             this.parentFragment = parentFragment;
             this.fragmentManager = fragmentManager;
             this.contentBlocker = ContentBlocker56.getInstance();
             this.isDomainRuleEmpty = contentBlocker.isDomainRuleEmpty();
             this.isFirewallRuleEmpty = contentBlocker.isFirewallRuleEmpty();
+            this.contextReference = new WeakReference<>(context);
 
             this.handler = new Handler(Looper.getMainLooper()) {
                 @Override
@@ -413,7 +417,9 @@ public class HomeTabFragment extends Fragment {
             contentBlocker.setHandler(handler);
             if (isDomain) {
                 if (isDomainRuleEmpty) {
-                    contentBlocker.enableDomainRules();
+                    SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(contextReference.get());
+                    boolean updateProviders = preferences.getBoolean("update_provider_preference", false);
+                    contentBlocker.enableDomainRules(updateProviders);
                 } else {
                     contentBlocker.disableDomainRules();
                 }

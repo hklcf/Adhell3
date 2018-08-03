@@ -177,4 +177,6 @@
         Set primary and secondary DNS.
         \nLeave it empty to restore to default.
     </string>
+    <string name="update_provider_title">Update host providers</string>
+    <string name="update_provider_summary">Update host providers when enabling domain rules</string>
 </resources>

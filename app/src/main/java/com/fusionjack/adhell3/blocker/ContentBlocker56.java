@@ -106,7 +106,7 @@ public class ContentBlocker56 implements ContentBlocker {
     }
 
     @Override
-    public void enableDomainRules() {
+    public void enableDomainRules(boolean updateProviders) {
         if (firewall == null) {
             return;
         }
@@ -118,7 +118,7 @@ public class ContentBlocker56 implements ContentBlocker {
             processWhitelistedApps();
             processWhitelistedDomains();
             processUserBlockedDomains();
-            processBlockedDomains();
+            processBlockedDomains(updateProviders);
             AdhellFactory.getInstance().applyDns(handler);
 
             LogUtils.getInstance().writeInfo("\nDomain rules are enabled.", handler);
@@ -366,8 +366,13 @@ public class ContentBlocker56 implements ContentBlocker {
         }
     }
 
-    private void processBlockedDomains() throws Exception {
+    private void processBlockedDomains(boolean updateProviders) throws Exception {
         LogUtils.getInstance().writeInfo("\nProcessing blocked domains...", handler);
+
+        if (updateProviders) {
+            LogUtils.getInstance().writeInfo("Updating providers...", handler);
+            AdhellFactory.getInstance().updateAllProviders();
+        }
 
         List<String> denyList = BlockUrlUtils.getAllBlockedUrls(appDatabase);
         LogUtils.getInstance().writeInfo("Total unique domains to block: " + denyList.size(), handler);
