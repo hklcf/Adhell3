@@ -30,6 +30,11 @@ import java.lang.ref.WeakReference;
 public class SettingsFragment extends PreferenceFragmentCompat {
     private Context context;
 
+    private static final String DELETE_PREFERENCE = "delete_preference";
+    private static final String BACKUP_PREFERENCE = "backup_preference";
+    private static final String RESTORE_PREFERENCE = "restore_preference";
+    public static final String UPDATE_PROVIDERS_PREFERENCE = "update_provider_preference";
+
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         setPreferencesFromResource(R.xml.settings_preference, rootKey);
@@ -39,7 +44,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
     @Override
     public boolean onPreferenceTreeClick(Preference preference) {
         switch (preference.getKey()) {
-            case "delete_preference": {
+            case DELETE_PREFERENCE: {
                 View dialogView = LayoutInflater.from(getContext()).inflate(R.layout.dialog_question, (ViewGroup) getView(), false);
                 TextView titlTextView = dialogView.findViewById(R.id.titleTextView);
                 titlTextView.setText(R.string.delete_app_dialog_title);
@@ -63,7 +68,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                         .setNegativeButton(android.R.string.no, null).show();
                 break;
             }
-            case "backup_preference": {
+            case BACKUP_PREFERENCE: {
                 View dialogView = LayoutInflater.from(getContext()).inflate(R.layout.dialog_question, (ViewGroup) getView(), false);
                 TextView titlTextView = dialogView.findViewById(R.id.titleTextView);
                 titlTextView.setText(R.string.backup_database_dialog_title);
@@ -78,7 +83,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                         .setNegativeButton(android.R.string.no, null).show();
                 break;
             }
-            case "restore_preference": {
+            case RESTORE_PREFERENCE: {
                 View dialogView = LayoutInflater.from(getContext()).inflate(R.layout.dialog_question, (ViewGroup) getView(), false);
                 TextView titlTextView = dialogView.findViewById(R.id.titleTextView);
                 titlTextView.setText(R.string.restore_database_dialog_title);

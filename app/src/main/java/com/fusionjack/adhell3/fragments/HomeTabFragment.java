@@ -418,7 +418,7 @@ public class HomeTabFragment extends Fragment {
             if (isDomain) {
                 if (isDomainRuleEmpty) {
                     SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(contextReference.get());
-                    boolean updateProviders = preferences.getBoolean("update_provider_preference", false);
+                    boolean updateProviders = preferences.getBoolean(SettingsFragment.UPDATE_PROVIDERS_PREFERENCE, false);
                     contentBlocker.enableDomainRules(updateProviders);
                 } else {
                     contentBlocker.disableDomainRules();
