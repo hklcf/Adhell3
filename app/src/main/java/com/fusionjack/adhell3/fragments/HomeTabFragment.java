@@ -67,6 +67,7 @@ public class HomeTabFragment extends Fragment {
         super.onCreate(savedInstanceState);
         fragmentManager = getActivity().getSupportFragmentManager();
         parentActivity = (AppCompatActivity) getActivity();
+        contentBlocker = ContentBlocker56.getInstance();
     }
 
     @Override
@@ -97,8 +98,6 @@ public class HomeTabFragment extends Fragment {
         appComponentStatusTextView = view.findViewById(R.id.appComponentStatusTextView);
         swipeContainer = view.findViewById(R.id.swipeContainer);
         infoTextView = view.findViewById(R.id.infoTextView);
-
-        contentBlocker = ContentBlocker56.getInstance();
 
         infoTextView.setVisibility(View.INVISIBLE);
         swipeContainer.setVisibility(View.INVISIBLE);
@@ -134,8 +133,6 @@ public class HomeTabFragment extends Fragment {
             adhellAppIntegrity.fillPackageDb();
         });
 
-        updateUserInterface();
-
         return view;
     }
 
@@ -146,6 +143,8 @@ public class HomeTabFragment extends Fragment {
     }
 
     private void updateUserInterface() {
+        new SetInfoAsyncTask(getContext()).execute();
+
         boolean isDomainRuleEmpty = contentBlocker.isDomainRuleEmpty();
         boolean isFirewallRuleEmpty = contentBlocker.isFirewallRuleEmpty();
 
@@ -194,8 +193,6 @@ public class HomeTabFragment extends Fragment {
             appComponentStatusTextView.setText(R.string.app_component_disabled);
             appComponentSwitch.setChecked(false);
         }
-
-        new SetInfoAsyncTask(getContext()).execute();
     }
 
     private static class SetInfoAsyncTask extends AsyncTask<Void, Void, Void> {
