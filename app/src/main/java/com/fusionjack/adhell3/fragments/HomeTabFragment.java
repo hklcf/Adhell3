@@ -139,6 +139,12 @@ public class HomeTabFragment extends Fragment {
         return view;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        updateUserInterface();
+    }
+
     private void updateUserInterface() {
         boolean isDomainRuleEmpty = contentBlocker.isDomainRuleEmpty();
         boolean isFirewallRuleEmpty = contentBlocker.isFirewallRuleEmpty();
