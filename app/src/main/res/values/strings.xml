@@ -107,6 +107,7 @@
         \nAdhell can block up to %1$d unique domains.
         \nToggle Domain rules to apply changes.
     </string>
+    <string name="total_unique_domains">Total unique domains: %1$d</string>
     <string name="others_bottombar_title">Other</string>
     <string name="mobile_restricter_fragment_title">Mobile Data</string>
     <string name="wifi_restricter_fragment_title">Wi-Fi Data</string>

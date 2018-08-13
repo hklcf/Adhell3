@@ -41,6 +41,7 @@ import static com.fusionjack.adhell3.fragments.DomainTabPageFragment.PROVIDER_CO
 public class ProviderListFragment extends Fragment {
     private Context context;
     private FragmentActivity activity;
+    private TextView infoTextView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -57,6 +58,12 @@ public class ProviderListFragment extends Fragment {
         TextView hintTextView = view.findViewById(R.id.providerInfoTextView);
         String strFormat = getResources().getString(R.string.provider_info);
         hintTextView.setText(String.format(strFormat, AdhellAppIntegrity.BLOCK_URL_LIMIT));
+
+        infoTextView = view.findViewById(R.id.infoTextView);
+        strFormat = getResources().getString(R.string.total_unique_domains);
+        infoTextView.setText(String.format(strFormat, 0));
+
+        updateTotalDomainCount();
 
         // Provider list
         ListView providerListView = view.findViewById(R.id.providerListView);
@@ -88,7 +95,7 @@ public class ProviderListFragment extends Fragment {
 
         SwipeRefreshLayout dnsSwipeContainer = view.findViewById(R.id.providerSwipeContainer);
         dnsSwipeContainer.setOnRefreshListener(() ->
-                new UpdateProviderAsyncTask(context).execute()
+                new UpdateProviderAsyncTask(this, context).execute()
         );
 
         FloatingActionsMenu providerFloatMenu = view.findViewById(R.id.provider_actions);
@@ -112,6 +119,14 @@ public class ProviderListFragment extends Fragment {
         });
 
         return view;
+    }
+
+    private void updateTotalDomainCount() {
+        AsyncTask.execute(() -> {
+            AppDatabase appDatabase = AdhellFactory.getInstance().getAppDatabase();
+            String strFormat = getResources().getString(R.string.total_unique_domains);
+            infoTextView.setText(String.format(strFormat, BlockUrlUtils.getAllBlockedUrlsCount(appDatabase)));
+        });
     }
 
     private static class AddProviderAsyncTask extends AsyncTask<Void, Void, Void> {
@@ -200,10 +215,12 @@ public class ProviderListFragment extends Fragment {
     }
 
     private static class UpdateProviderAsyncTask extends AsyncTask<Void, Void, Void> {
+        private ProviderListFragment parentFragment;
         private WeakReference<Context> contextWeakReference;
 
-        UpdateProviderAsyncTask(Context context) {
+        UpdateProviderAsyncTask(ProviderListFragment parentFragment, Context context) {
             this.contextWeakReference = new WeakReference<>(context);
+            this.parentFragment = parentFragment;
         }
 
         @Override
@@ -222,6 +239,8 @@ public class ProviderListFragment extends Fragment {
                 if (swipeContainer != null) {
                     swipeContainer.setRefreshing(false);
                 }
+
+                parentFragment.updateTotalDomainCount();
             }
         }
     }

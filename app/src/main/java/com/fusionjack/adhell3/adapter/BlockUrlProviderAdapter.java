@@ -1,5 +1,6 @@
 package com.fusionjack.adhell3.adapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
@@ -133,14 +134,21 @@ public class BlockUrlProviderAdapter extends ArrayAdapter<BlockUrlProvider> {
             if (context != null) {
                 adapter.notifyDataSetChanged();
 
-                String message;
                 if (totalUrls > AdhellAppIntegrity.BLOCK_URL_LIMIT) {
-                    message = String.format("The total number of unique URLs %d exceeds the maximum limit of %d",
+                    String message = String.format("The total number of unique domains %d exceeds the maximum limit of %d",
                                     totalUrls, AdhellAppIntegrity.BLOCK_URL_LIMIT);
+                    Toast.makeText(context, message, Toast.LENGTH_LONG).show();
                 } else {
-                    message = String.format("Total number of unique URLs: %d", totalUrls);
+                    // Update the total unique domain count
+                    TextView infoTextView = ((Activity) context).findViewById(R.id.infoTextView);
+                    if (infoTextView != null) {
+                        AsyncTask.execute(() -> {
+                            AppDatabase appDatabase = AdhellFactory.getInstance().getAppDatabase();
+                            String strFormat = context.getResources().getString(R.string.total_unique_domains);
+                            infoTextView.setText(String.format(strFormat, BlockUrlUtils.getAllBlockedUrlsCount(appDatabase)));
+                        });
+                    }
                 }
-                Toast.makeText(context, message, Toast.LENGTH_LONG).show();
             }
         }
     }
