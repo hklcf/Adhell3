@@ -180,4 +180,12 @@
     </string>
     <string name="update_provider_title">Update host providers</string>
     <string name="update_provider_summary">Update host providers when enabling domain rules</string>
+    <string name="dialog_set_password_title">Set password</string>
+    <string name="dialog_set_password_summary">Protect this app with a password</string>
+    <string name="dialog_enter_password_title">Enter password</string>
+    <string name="dialog_enter_password_summary">Enter the password to use this app</string>
+    <string name="dialog_wrong_password">The password is wrong!</string>
+    <string name="dialog_empty_password">The password cannot be empty!</string>
+    <string name="set_password_title">Protect Adhell3 with a password</string>
+    <string name="set_password_summary">If you forget the password, you need to uninstall Adhell3.</string>
 </resources>

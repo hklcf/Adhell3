@@ -7,9 +7,15 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.fusionjack.adhell3.dialogfragment.ActivationDialogFragment;
@@ -18,9 +24,11 @@ import com.fusionjack.adhell3.fragments.HomeTabFragment;
 import com.fusionjack.adhell3.fragments.DomainTabFragment;
 import com.fusionjack.adhell3.fragments.OtherTabFragment;
 import com.fusionjack.adhell3.utils.AdhellFactory;
+import com.fusionjack.adhell3.utils.AppPreferences;
 import com.fusionjack.adhell3.utils.CrashHandler;
 import com.fusionjack.adhell3.utils.DeviceAdminInteractor;
 import com.fusionjack.adhell3.utils.LogUtils;
+import com.fusionjack.adhell3.utils.PasswordStorage;
 import com.roughike.bottombar.BottomBar;
 
 public class MainActivity extends AppCompatActivity {
@@ -29,7 +37,9 @@ public class MainActivity extends AppCompatActivity {
     protected DeviceAdminInteractor adminInteractor;
     private FragmentManager fragmentManager;
     private ActivationDialogFragment activationDialogFragment;
+    private AlertDialog passwordDialog;
     private boolean doubleBackToExitPressedOnce = false;
+    private boolean mainViewInitiated = false;
 
     @Override
     public void onBackPressed() {
@@ -58,15 +68,19 @@ public class MainActivity extends AppCompatActivity {
         }
 
         fragmentManager = getSupportFragmentManager();
+    }
+
+    private void init() {
         adminInteractor = DeviceAdminInteractor.getInstance();
+        activationDialogFragment = new ActivationDialogFragment();
+        activationDialogFragment.setCancelable(false);
+
         if (!adminInteractor.isSupported()) {
             Log.i(TAG, "Device not supported");
             AdhellFactory.getInstance().createNotSupportedDialog(this);
             return;
         }
 
-        activationDialogFragment = new ActivationDialogFragment();
-        activationDialogFragment.setCancelable(false);
         setContentView(R.layout.activity_main);
         BottomBar bottomBar = findViewById(R.id.bottomBar);
         bottomBar.setTabTitleTextAppearance(R.style.bottomBarTextView);
@@ -90,6 +104,48 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+
+        String passwordHash = AppPreferences.getInstance().getPasswordHash();
+        if (!passwordHash.isEmpty()) {
+            if (passwordDialog == null || !passwordDialog.isShowing()) {
+                View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_enter_password, findViewById(android.R.id.content), false);
+                passwordDialog = new AlertDialog.Builder(this)
+                        .setView(dialogView)
+                        .setPositiveButton(android.R.string.yes, null)
+                        .create();
+
+                passwordDialog.setOnShowListener(dialogInterface -> {
+                    Button button = passwordDialog.getButton(AlertDialog.BUTTON_POSITIVE);
+                    button.setOnClickListener(view -> {
+                        EditText passwordEditText = dialogView.findViewById(R.id.passwordEditText);
+                        String password = passwordEditText.getText().toString();
+                        try {
+                            if (PasswordStorage.verifyPassword(password, passwordHash)) {
+                                passwordDialog.dismiss();
+                                if (!mainViewInitiated) {
+                                    init();
+                                }
+                            } else {
+                                TextView infoTextView = dialogView.findViewById(R.id.infoTextView);
+                                infoTextView.setText(R.string.dialog_wrong_password);
+                            }
+                        } catch (PasswordStorage.CannotPerformOperationException | PasswordStorage.InvalidHashException e) {
+                            e.printStackTrace();
+                        }
+                    });
+                });
+                passwordDialog.setCancelable(false);
+                passwordDialog.show();
+            }
+        } else {
+            if (!mainViewInitiated) {
+                init();
+            }
+        }
+
+        if (!mainViewInitiated) {
+            return;
+        }
 
         if (!adminInteractor.isAdminActive()) {
             Log.d(TAG, "Admin is not active. Request enabling");

@@ -26,4 +26,10 @@
         android:summary="@string/update_provider_summary"
         android:defaultValue="false"/>
 
+    <SwitchPreference
+        android:key="set_password_preference"
+        android:title="@string/set_password_title"
+        android:summary="@string/set_password_summary"
+        android:defaultValue="false"/>
+
 </android.support.v7.preference.PreferenceScreen>

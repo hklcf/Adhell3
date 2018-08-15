@@ -9,12 +9,16 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v14.preference.SwitchPreference;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceFragmentCompat;
+import android.support.v7.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.fusionjack.adhell3.BuildConfig;
@@ -24,8 +28,8 @@ import com.fusionjack.adhell3.blocker.ContentBlocker56;
 import com.fusionjack.adhell3.db.DatabaseFactory;
 import com.fusionjack.adhell3.receiver.CustomDeviceAdminReceiver;
 import com.fusionjack.adhell3.utils.AdhellFactory;
-
-import java.lang.ref.WeakReference;
+import com.fusionjack.adhell3.utils.AppPreferences;
+import com.fusionjack.adhell3.utils.PasswordStorage;
 
 public class SettingsFragment extends PreferenceFragmentCompat {
     private Context context;
@@ -34,6 +38,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
     private static final String BACKUP_PREFERENCE = "backup_preference";
     private static final String RESTORE_PREFERENCE = "restore_preference";
     public static final String UPDATE_PROVIDERS_PREFERENCE = "update_provider_preference";
+    public static final String SET_PASSWORD_PREFERENCE = "set_password_preference";
 
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
@@ -98,6 +103,46 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                         .setNegativeButton(android.R.string.no, null).show();
                 break;
             }
+            case SET_PASSWORD_PREFERENCE: {
+                PreferenceManager preferenceManager = getPreferenceManager();
+                if (preferenceManager.getSharedPreferences().getBoolean(SET_PASSWORD_PREFERENCE, false)) {
+                    View dialogView = LayoutInflater.from(getContext()).inflate(R.layout.dialog_set_password, (ViewGroup) getView(), false);
+                    AlertDialog passwordDialog = new AlertDialog.Builder(context)
+                            .setView(dialogView)
+                            .setPositiveButton(android.R.string.yes, null)
+                            .setNegativeButton(android.R.string.no, null)
+                            .create();
+
+                    passwordDialog.setOnShowListener(dialogInterface -> {
+                        Button positiveButton = passwordDialog.getButton(AlertDialog.BUTTON_POSITIVE);
+                        positiveButton.setOnClickListener(view -> {
+                            EditText passwordEditText = dialogView.findViewById(R.id.passwordEditText);
+                            String password = passwordEditText.getText().toString();
+                            if (!password.isEmpty()) {
+                                try {
+                                    AppPreferences.getInstance().setPassword(password);
+                                    passwordDialog.dismiss();
+                                } catch (PasswordStorage.CannotPerformOperationException e) {
+                                    e.printStackTrace();
+                                }
+                            } else {
+                                TextView infoTextView = dialogView.findViewById(R.id.infoTextView);
+                                infoTextView.setText(R.string.dialog_empty_password);
+                            }
+                        });
+
+                        Button negativeButton = passwordDialog.getButton(AlertDialog.BUTTON_NEGATIVE);
+                        negativeButton.setOnClickListener(view -> {
+                            ((SwitchPreference) preference).setChecked(false);
+                            passwordDialog.dismiss();
+                        });
+                    });
+                    passwordDialog.setCancelable(false);
+                    passwordDialog.show();
+                } else {
+                    AppPreferences.getInstance().resetPassword();
+                }
+            }
         }
         return super.onPreferenceTreeClick(preference);
     }
@@ -147,10 +192,8 @@ public class SettingsFragment extends PreferenceFragmentCompat {
     private static class RestoreDatabaseAsyncTask extends AsyncTask<Void, String, String> {
         private ProgressDialog dialog;
         private AlertDialog.Builder builder;
-        private WeakReference<Activity> activityWeakReference;
 
         RestoreDatabaseAsyncTask(Activity activity) {
-            this.activityWeakReference = new WeakReference<>(activity);
             this.builder = new AlertDialog.Builder(activity);
             this.dialog = new ProgressDialog(activity);
         }

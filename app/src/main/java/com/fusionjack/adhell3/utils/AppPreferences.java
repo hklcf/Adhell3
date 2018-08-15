@@ -12,6 +12,7 @@ public final class AppPreferences {
     private final static String DNS_ALL_APPS_ENABLED = "dnsAllAppsEnabled";
     private static final String DNS1 = "dns1";
     private static final String DNS2 = "dns2";
+    private static final String PASSWORD = "password";
 
     private AppPreferences() {
         sharedPreferences = AdhellFactory.getInstance().getSharedPreferences();
@@ -94,5 +95,21 @@ public final class AppPreferences {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.remove(BLOCKED_DOMAINS_COUNT);
         editor.apply();
+    }
+
+    public void resetPassword() {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(PASSWORD, "");
+        editor.apply();
+    }
+
+    public void setPassword(String password) throws PasswordStorage.CannotPerformOperationException {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(PASSWORD, PasswordStorage.createHash(password));
+        editor.apply();
+    }
+
+    public String getPasswordHash() {
+        return sharedPreferences.getString(PASSWORD, "");
     }
 }
