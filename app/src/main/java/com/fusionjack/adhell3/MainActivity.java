@@ -18,6 +18,7 @@ import com.fusionjack.adhell3.fragments.HomeTabFragment;
 import com.fusionjack.adhell3.fragments.DomainTabFragment;
 import com.fusionjack.adhell3.fragments.OtherTabFragment;
 import com.fusionjack.adhell3.utils.AdhellFactory;
+import com.fusionjack.adhell3.utils.CrashHandler;
 import com.fusionjack.adhell3.utils.DeviceAdminInteractor;
 import com.fusionjack.adhell3.utils.LogUtils;
 import com.roughike.bottombar.BottomBar;
@@ -50,6 +51,11 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Set the crash handler to log crash's stack trace into a file
+        if (!(Thread.getDefaultUncaughtExceptionHandler() instanceof CrashHandler)) {
+            Thread.setDefaultUncaughtExceptionHandler(CrashHandler.getInstance());
+        }
 
         fragmentManager = getSupportFragmentManager();
         adminInteractor = DeviceAdminInteractor.getInstance();
