@@ -1,6 +1,5 @@
 package com.fusionjack.adhell3.adapter;
 
-import android.app.Activity;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
@@ -18,6 +17,7 @@ import com.fusionjack.adhell3.App;
 import com.fusionjack.adhell3.R;
 import com.fusionjack.adhell3.db.AppDatabase;
 import com.fusionjack.adhell3.db.entity.BlockUrlProvider;
+import com.fusionjack.adhell3.tasks.SetDomainCountAsyncTask;
 import com.fusionjack.adhell3.utils.AdhellAppIntegrity;
 import com.fusionjack.adhell3.utils.AdhellFactory;
 import com.fusionjack.adhell3.utils.BlockUrlUtils;
@@ -140,14 +140,7 @@ public class BlockUrlProviderAdapter extends ArrayAdapter<BlockUrlProvider> {
                     Toast.makeText(context, message, Toast.LENGTH_LONG).show();
                 } else {
                     // Update the total unique domain count
-                    TextView infoTextView = ((Activity) context).findViewById(R.id.infoTextView);
-                    if (infoTextView != null) {
-                        AsyncTask.execute(() -> {
-                            AppDatabase appDatabase = AdhellFactory.getInstance().getAppDatabase();
-                            String strFormat = context.getResources().getString(R.string.total_unique_domains);
-                            infoTextView.setText(String.format(strFormat, BlockUrlUtils.getAllBlockedUrlsCount(appDatabase)));
-                        });
-                    }
+                    new SetDomainCountAsyncTask(context).execute();
                 }
             }
         }
