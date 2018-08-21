@@ -142,9 +142,11 @@ public class MainActivity extends AppCompatActivity {
 
     private boolean isPasswordShowing() {
         String passwordHash = AppPreferences.getInstance().getPasswordHash();
-        if (!passwordHash.isEmpty() && !passwordDialog.isShowing()) {
-            Log.d(TAG, "Showing password dialog");
-            passwordDialog.show();
+        if (!passwordHash.isEmpty()) {
+            if (!passwordDialog.isShowing()) {
+                Log.d(TAG, "Showing password dialog");
+                passwordDialog.show();
+            }
             return true;
         }
         return false;
