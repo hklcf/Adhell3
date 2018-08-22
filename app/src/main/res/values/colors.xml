@@ -9,4 +9,6 @@
     <color name="colorSelector">#d7ccc8</color>
     <color name="colorFab">@color/colorBorder</color>
     <color name="colorButton">@color/colorBorder</color>
+    <color name="colorBottomNavSelected">@android:color/white</color>
+    <color name="colorBottomNavUnselected">#BCAAA4</color>
 </resources>

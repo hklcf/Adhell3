@@ -12,10 +12,6 @@
         <item name="preferenceTheme">@style/PreferenceThemeOverlay.v14.Material</item>
     </style>
 
-    <style name="bottomBarTextView" parent="@android:style/TextAppearance.Widget.TextView">
-        <item name="android:textSize">12sp</item>
-    </style>
-
     <style name="ManagementTabLayout" parent="Widget.Design.TabLayout">
         <item name="tabMaxWidth">0dp</item>
         <item name="tabIndicatorColor">@color/colorAccent</item>

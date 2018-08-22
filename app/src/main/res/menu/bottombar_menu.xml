@@ -1,0 +1,18 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/homeTab"
+        android:icon="@drawable/ic_home_black_24dp"
+        android:title="@string/home_bottombar_title"/>
+    <item
+        android:id="@+id/appsManagementTab"
+        android:icon="@drawable/ic_business_black_24dp"
+        android:title="@string/apps_management_bottombar_title"/>
+    <item
+        android:id="@+id/domainsTab"
+        android:icon="@drawable/ic_public_black_24dp"
+        android:title="@string/domains_bottombar_title"/>
+    <item
+        android:id="@+id/othersTab"
+        android:icon="@drawable/ic_dashboard_black_24dp"
+        android:title="@string/others_bottombar_title"/>
+</menu>
