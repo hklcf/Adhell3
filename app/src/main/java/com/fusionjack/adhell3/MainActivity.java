@@ -70,17 +70,17 @@ public class MainActivity extends AppCompatActivity {
             Thread.setDefaultUncaughtExceptionHandler(CrashHandler.getInstance());
         }
 
+        fragmentManager = getSupportFragmentManager();
+        activationDialogFragment = new ActivationDialogFragment();
+        activationDialogFragment.setCancelable(false);
+        passwordDialog = createPasswordDialog();
+
         // Early exit if the device doesn't support Knox
         if (!DeviceAdminInteractor.getInstance().isSupported()) {
             Log.i(TAG, "Device not supported");
             AdhellFactory.getInstance().createNotSupportedDialog(this);
             return;
         }
-
-        fragmentManager = getSupportFragmentManager();
-        activationDialogFragment = new ActivationDialogFragment();
-        activationDialogFragment.setCancelable(false);
-        passwordDialog = createPasswordDialog();
 
         setContentView(R.layout.activity_main);
 
