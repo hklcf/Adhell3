@@ -65,9 +65,11 @@ Set custom DNS for selected apps. Only user apps are supported.
 - For `Configuration on demand is not supported` error, see this comment https://gitlab.com/fusionjack/adhell3/commit/1fb8ea98cf43507b32db56d9fb584b33dc6579f1#note_74463246
 
 ### Knox SDK
-- Download latest Knox SDK zip and supportlib.jar from https://seap.samsung.com/sdk/knox-android
+- Download latest Knox SDK and supportlib from https://seap.samsung.com/sdk/knox-android
 - Create `libs` sub-folder in `app` folder: `app\libs`
-- Put the `knoxsdk.jar` and `supportlib.jar` to `app\libs` folder in the project 
+- Extract `knoxsdk.jar` and `supportlib.jar` respectively from both zip files
+- Rename the supportlib jar file name to `supportlib.jar`
+- Put both jar files to `app\libs` folder
 
 ## Migration guide from 3.0.0.x to 3.1.1.x
 - Make a backup database in Adhell3

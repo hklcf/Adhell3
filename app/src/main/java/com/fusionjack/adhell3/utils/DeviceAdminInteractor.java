@@ -29,6 +29,7 @@ import static com.samsung.android.knox.EnterpriseDeviceManager.KNOX_VERSION_CODE
 import static com.samsung.android.knox.EnterpriseDeviceManager.KNOX_VERSION_CODES.KNOX_2_9;
 import static com.samsung.android.knox.EnterpriseDeviceManager.KNOX_VERSION_CODES.KNOX_3_0;
 import static com.samsung.android.knox.EnterpriseDeviceManager.KNOX_VERSION_CODES.KNOX_3_1;
+import static com.samsung.android.knox.EnterpriseDeviceManager.KNOX_VERSION_CODES.KNOX_3_2;
 
 public final class DeviceAdminInteractor {
     private static final int RESULT_ENABLE = 42;
@@ -181,7 +182,10 @@ public final class DeviceAdminInteractor {
             Log.w(TAG, "Knox is not supported: enterpriseDeviceManager is null");
             return false;
         }
-        switch (EnterpriseDeviceManager.getAPILevel()) {
+
+        int apiLevel = EnterpriseDeviceManager.getAPILevel();
+        Log.i(TAG, "Knox API level: " + apiLevel);
+        switch (apiLevel) {
             case KNOX_2_6:
             case KNOX_2_7:
             case KNOX_2_7_1:
@@ -189,6 +193,7 @@ public final class DeviceAdminInteractor {
             case KNOX_2_9:
             case KNOX_3_0:
             case KNOX_3_1:
+            case KNOX_3_2:
                 return true;
             default:
                 return false;
@@ -210,6 +215,7 @@ public final class DeviceAdminInteractor {
             case KNOX_2_9:
             case KNOX_3_0:
             case KNOX_3_1:
+            case KNOX_3_2:
                 return false;
             default:
                 return true;
