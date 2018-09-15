@@ -15,6 +15,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -92,6 +93,16 @@ public class MainActivity extends AppCompatActivity {
 
         // Nasty workaround to show text and icon if the tab count more than 3
         removeShiftMode(bottomBar);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                fragmentManager.popBackStack();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
