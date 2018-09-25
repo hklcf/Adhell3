@@ -16,8 +16,8 @@ import java.util.List;
 @Dao
 @TypeConverters(DateConverter.class)
 public interface UserBlockUrlDao {
-    @Query("SELECT * FROM UserBlockUrl")
-    LiveData<List<UserBlockUrl>> getAll();
+    @Query("SELECT url FROM UserBlockUrl")
+    LiveData<List<String>> getAll();
 
     @Query("SELECT * FROM UserBlockUrl")
     List<UserBlockUrl> getAll2();

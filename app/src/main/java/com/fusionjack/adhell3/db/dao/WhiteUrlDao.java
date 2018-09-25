@@ -17,8 +17,8 @@ import java.util.List;
 @TypeConverters(DateConverter.class)
 public interface WhiteUrlDao {
 
-    @Query("SELECT * FROM WhiteUrl")
-    LiveData<List<WhiteUrl>> getAll();
+    @Query("SELECT url FROM WhiteUrl")
+    LiveData<List<String>> getAll();
 
     @Query("SELECT * FROM WhiteUrl")
     List<WhiteUrl> getAll2();

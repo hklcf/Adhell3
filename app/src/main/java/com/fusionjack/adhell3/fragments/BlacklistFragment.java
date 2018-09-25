@@ -1,27 +1,19 @@
 package com.fusionjack.adhell3.fragments;
 
-import android.arch.lifecycle.ViewModelProviders;
-import android.content.Context;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import com.fusionjack.adhell3.R;
-import com.fusionjack.adhell3.db.entity.UserBlockUrl;
-import com.fusionjack.adhell3.tasks.AddUrlAsyncTask;
-import com.fusionjack.adhell3.tasks.RefreshListAsyncTask;
-import com.fusionjack.adhell3.tasks.RemoveUrlAsyncTask;
 import com.fusionjack.adhell3.utils.BlockUrlPatternsMatch;
-import com.fusionjack.adhell3.viewmodel.BlackUrlViewModel;
+import com.fusionjack.adhell3.viewmodel.UserListViewModel;
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
 
@@ -29,50 +21,34 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
-public class BlacklistFragment extends Fragment {
-    private static final String ARG_PAGE = "page";
-    private int page;
-    private Context context;
+public class BlacklistFragment extends UserListFragment {
+    private ArrayAdapter adapter;
+    private UserListViewModel viewModel;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Bundle bundle = getArguments();
-        if (bundle != null) {
-            this.page = bundle.getInt(ARG_PAGE);
-        }
-        this.context = getContext();
+
+        List<String> items = new ArrayList<>();
+        adapter = new ArrayAdapter<>(context, android.R.layout.simple_list_item_1, items);
+
+        viewModel = UserListViewModel.createBlackListViewModel();
+        viewModel.getItems().observe(this, blackItems -> {
+            items.clear();
+            items.addAll(blackItems);
+            adapter.notifyDataSetChanged();
+        });
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_blacklist, container, false);
 
-        SwipeRefreshLayout blacklistSwipeContainer = view.findViewById(R.id.blacklistSwipeContainer);
-        blacklistSwipeContainer.setOnRefreshListener(() ->
-                new RefreshListAsyncTask(page, context).execute()
-        );
-
         ListView blacklistView = view.findViewById(R.id.blackListView);
+        blacklistView.setAdapter(adapter);
         blacklistView.setOnItemClickListener((parent, view1, position, id) -> {
-            String url = (String) parent.getItemAtPosition(position);
-            new RemoveUrlAsyncTask(url, page, context).execute();
-        });
-
-        BlackUrlViewModel blackViewModel = ViewModelProviders.of(getActivity()).get(BlackUrlViewModel.class);
-        blackViewModel.getBlockUrls().observe(this, blackUrls -> {
-            if (blackUrls == null) {
-                return;
-            }
-            ListAdapter adapter = blacklistView.getAdapter();
-            if (adapter == null) {
-                List<String> urls = new ArrayList<>();
-                for (UserBlockUrl blockUrl : blackUrls) {
-                    urls.add(blockUrl.url);
-                }
-                ArrayAdapter<String> itemsAdapter = new ArrayAdapter<>(context, android.R.layout.simple_list_item_1, urls);
-                blacklistView.setAdapter(itemsAdapter);
-            }
+            String item = (String) parent.getItemAtPosition(position);
+            viewModel.removeItem(item, deleteObserver);
         });
 
         FloatingActionsMenu blackFloatMenu = view.findViewById(R.id.blacklist_actions);
@@ -89,7 +65,7 @@ public class BlacklistFragment extends Fragment {
                         if (!BlockUrlPatternsMatch.isUrlValid(domainToAdd)) {
                             Toast.makeText(context, "Url not valid. Please check", Toast.LENGTH_SHORT).show();
                         } else {
-                            new AddUrlAsyncTask(domainToAdd, page, context).execute();
+                            viewModel.addItem(domainToAdd, addObserver);
                         }
                     })
                     .setNegativeButton(android.R.string.no, null).show();
@@ -109,7 +85,7 @@ public class BlacklistFragment extends Fragment {
                         if (tokens.countTokens() != 3) {
                             Toast.makeText(context, "Rule not valid. Please check", Toast.LENGTH_SHORT).show();
                         } else {
-                            new AddUrlAsyncTask(ruleToAdd, page, context).execute();
+                            viewModel.addItem(ruleToAdd, addObserver);
                         }
                     })
                     .setNegativeButton(android.R.string.no, null).show();
