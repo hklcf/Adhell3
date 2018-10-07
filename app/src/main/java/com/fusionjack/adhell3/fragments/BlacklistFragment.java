@@ -1,5 +1,6 @@
 package com.fusionjack.adhell3.fragments;
 
+import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
@@ -32,7 +33,7 @@ public class BlacklistFragment extends UserListFragment {
         List<String> items = new ArrayList<>();
         adapter = new ArrayAdapter<>(context, android.R.layout.simple_list_item_1, items);
 
-        viewModel = UserListViewModel.createBlackListViewModel();
+        viewModel = ViewModelProviders.of(this, new UserListViewModel.BlackListFactory()).get(UserListViewModel.class);
         viewModel.getItems().observe(this, blackItems -> {
             items.clear();
             items.addAll(blackItems);

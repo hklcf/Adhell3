@@ -1,5 +1,6 @@
 package com.fusionjack.adhell3.fragments;
 
+import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
@@ -31,7 +32,7 @@ public class WhitelistFragment extends UserListFragment {
 
         List<String> items = new ArrayList<>();
         adapter = new ArrayAdapter<>(context, android.R.layout.simple_list_item_1, items);
-        viewModel = UserListViewModel.createWhiteListViewModel();
+        viewModel = ViewModelProviders.of(this, new UserListViewModel.WhiteListFactory()).get(UserListViewModel.class);;
         viewModel.getItems().observe(this, whiteItems -> {
             items.clear();
             items.addAll(whiteItems);

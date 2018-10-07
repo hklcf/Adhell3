@@ -2,6 +2,8 @@ package com.fusionjack.adhell3.viewmodel;
 
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.ViewModel;
+import android.arch.lifecycle.ViewModelProvider;
+import android.support.annotation.NonNull;
 
 import com.fusionjack.adhell3.repository.BlackListRepository;
 import com.fusionjack.adhell3.repository.UserListRepository;
@@ -17,16 +19,8 @@ public class UserListViewModel extends ViewModel {
     private LiveData<List<String>> items;
     private UserListRepository repository;
 
-    private UserListViewModel(UserListRepository repository) {
+    public UserListViewModel(UserListRepository repository) {
         this.repository = repository;
-    }
-
-    public static UserListViewModel createBlackListViewModel() {
-        return new UserListViewModel(new BlackListRepository());
-    }
-
-    public static UserListViewModel createWhiteListViewModel() {
-        return new UserListViewModel(new WhiteListRepository());
     }
 
     public LiveData<List<String>> getItems() {
@@ -48,5 +42,21 @@ public class UserListViewModel extends ViewModel {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(observer);
+    }
+
+    public static class BlackListFactory extends ViewModelProvider.NewInstanceFactory {
+        @NonNull
+        @Override
+        public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
+            return (T) new UserListViewModel(new BlackListRepository());
+        }
+    }
+
+    public static class WhiteListFactory extends ViewModelProvider.NewInstanceFactory {
+        @NonNull
+        @Override
+        public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
+            return (T) new UserListViewModel(new WhiteListRepository());
+        }
     }
 }
