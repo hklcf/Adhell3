@@ -128,17 +128,26 @@ public final class DeviceAdminInteractor {
     }
 
     public String getKnoxKey(SharedPreferences sharedPreferences) {
-        return sharedPreferences.getString(KNOX_KEY, BuildConfig.SKL_KEY);
+        return getKey(KNOX_KEY, BuildConfig.SKL_KEY, sharedPreferences);
+    }
+
+    public String getBackwardKey(SharedPreferences sharedPreferences) {
+        return getKey(BACKWARD_KEY, BuildConfig.BACKWARDS_KEY, sharedPreferences);
+    }
+
+    private String getKey(String prefName, String configKey, SharedPreferences sharedPreferences) {
+        String storedKey = sharedPreferences.getString(prefName, configKey);
+        if (!configKey.isEmpty() && !configKey.equalsIgnoreCase(storedKey)) {
+            // The key might be newer than the stored one
+            return configKey;
+        }
+        return storedKey;
     }
 
     public void setKnoxKey(SharedPreferences sharedPreferences, String key) {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString(KNOX_KEY, key);
         editor.apply();
-    }
-
-    public String getBackwardKey(SharedPreferences sharedPreferences) {
-        return sharedPreferences.getString(BACKWARD_KEY, BuildConfig.BACKWARDS_KEY);
     }
 
     public void setBackwardKey(SharedPreferences sharedPreferences, String key) {
