@@ -1,4 +1,4 @@
-package com.fusionjack.adhell3.repository;
+package com.fusionjack.adhell3.db.repository;
 
 import com.fusionjack.adhell3.db.AppDatabase;
 import com.fusionjack.adhell3.utils.AdhellFactory;

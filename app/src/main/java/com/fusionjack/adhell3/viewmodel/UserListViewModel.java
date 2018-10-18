@@ -5,9 +5,9 @@ import android.arch.lifecycle.ViewModel;
 import android.arch.lifecycle.ViewModelProvider;
 import android.support.annotation.NonNull;
 
-import com.fusionjack.adhell3.repository.BlackListRepository;
-import com.fusionjack.adhell3.repository.UserListRepository;
-import com.fusionjack.adhell3.repository.WhiteListRepository;
+import com.fusionjack.adhell3.db.repository.BlackListRepository;
+import com.fusionjack.adhell3.db.repository.UserListRepository;
+import com.fusionjack.adhell3.db.repository.WhiteListRepository;
 
 import java.util.List;
 
