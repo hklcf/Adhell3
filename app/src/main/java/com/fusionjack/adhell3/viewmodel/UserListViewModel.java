@@ -47,6 +47,7 @@ public class UserListViewModel extends ViewModel {
     public static class BlackListFactory extends ViewModelProvider.NewInstanceFactory {
         @NonNull
         @Override
+        @SuppressWarnings("unchecked")
         public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
             return (T) new UserListViewModel(new BlackListRepository());
         }
@@ -55,6 +56,7 @@ public class UserListViewModel extends ViewModel {
     public static class WhiteListFactory extends ViewModelProvider.NewInstanceFactory {
         @NonNull
         @Override
+        @SuppressWarnings("unchecked")
         public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
             return (T) new UserListViewModel(new WhiteListRepository());
         }
