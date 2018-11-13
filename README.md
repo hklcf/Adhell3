@@ -1,11 +1,11 @@
 # Disclaimer
 Adhell3 is merely an app that is using the Samsung Knox SDK APIs. <br/>
-In order to use these APIs, the Knox SDK and the Samsung Knox License (SKL) key are needed. <br/>
+In order to use these APIs, the Knox SDK and a KPE Development license key are needed. <br/>
 These are Samsung's properties which are not available in this repository and therefore they need to be downloaded and obtained by the developer after accepting the agreement given by Samsung. <br/>
 The developer is then responsible how this app will be used and I don't take any responsibilities of any damages caused by this app. <br/>
 
 The Knox SDK can be downloaded here: https://seap.samsung.com/sdk/knox-android <br/>
-The Samsung Knox License key can be obtained here: https://seap.samsung.com/license-keys/create#section-knox-sdk <br/>
+The Knox License key can be obtained here: https://seap.samsung.com/license-keys/create#section-knox-sdk <br/>
 The API can be found here: https://seap.samsung.com/api-references/android/reference/packages.html
 
 
@@ -71,39 +71,11 @@ Set custom DNS for selected apps. Only user apps are supported.
 - Rename the supportlib jar file name to `supportlib.jar`
 - Put both jar files to `app\libs` folder
 
-## Migration guide from 3.0.0.x to 3.1.1.x
-- Make a backup database in Adhell3
-- Uninstall Adhell3 3.0.0.x (Use Settings - Delete Adhell)
-- Install Adhell3 3.1.1.x
-- Enable Admin and active key as usual
-- Give Adhell3 a storage permission manually (Settings - Apps - Adhell 3 - Permissions - Storage)
-- Restore database and enjoy!
-
-## Migration note from Knox Standard SDK to Knox SDK
-* Knox SDK license key is now needed<br/>
-It contains two keys: Samsung Knox License (SKL) key and Backwards-compatible key<br/>
-For devices with Knox 2.8 and newer, only SKL key is needed.<br/>
-For devices with Knox 2.7.1 or earlier, the backwards-compatible key additionally to the SKL key is needed.
-
-* Support only Knox version 2.6 - 3.1 (API level 19 - 25)<br/>
-Knox version 2.6 is equivalent to Standard SDK version 5.6. See this site for the version mapping: https://seap.samsung.com/sdk/knox-version-mapping<br/>
-The API to support Knox version 2.5 and earlier is not available anymore in Knox SDK. Hence, I drop these versions.
-    
-* App permission behavior changes<br/>
-With Knox SDK, it is only possible to disable app permission that has protection-level of 'dangerous'.<br/>
-If a permission is disabled, other permissions belong to the same group will also be disabled. E.g. it is not possible anymore to just disable WRITE_EXTERNAL_STORAGE without disabling READ_EXTERNAL_STORAGE.<br/>
-This functionality is basically the same if you disable app permission in Android Settings - Apps - [AppName] - Permissions. You only see the permission groups.
-    
-* Not using local database anymore<br/>
-Starting with 3.1.1.x, the Adhell3 database won't be created in internal storage anymore.<br/>
-This was a convenience feature when most of the people need to re-install Adhell3 and each time with different package name.<br/>
-Since you can compile it by yourself, you can just assign the same package name so that your existing Adhell3 will be updated.
-
 ## Customization
 ### Change the default 15k domain limit
 * Put `domain.limit` in `app.properties`, e.g. `domain.limit=50000`
 
-### Make SKL key and backwards-compatible key available when activating Adhell3
+### Make license key and backwards-compatible key available when activating Adhell3
 * Put `skl.key` in `app.properties`, e.g. `skl.key=KLM06-XXXXX-XXXXX-XXXXX-XXXXX-XXXXX`
 * Put `backwards.key` in `app.properties`, e.g. `backwards.key=B6B2BXXXXXXXXXXXXXXXX`
 * If you use these properties, beware when you distribute your app as the app contains the keys in plain text
@@ -146,15 +118,18 @@ Explanation:
 
 
 ## Prerequisite for using Adhell3
-You need an Samsung Knox License (SKL) key in order to use Adhell3. <br/>
-You need to enroll as a developer in order to get this license. As for developer, the license needs to be renewed every 3 months.
+You need a KPE Development license key in order to use Adhell3. <br/>
+You need to enroll as a developer in order to get this license. As for developer, the license needs to be renewed every 3 months.<br/>
+When you receive a mail about license expiration, you usually cannot generate a new key immediately and you need to wait for some days.</br>
+During this time, Adhell3 is still working properly. Adhell3 will show an activation dialog if the key cannot be used anymore. This time you should be able to generate a new key.
+
 - Enroll as a developer with this link: https://seap.samsung.com/enrollment
 - Generate a license key with this link: https://seap.samsung.com/license-keys/create#section-knox-sdk
 - Give an alias name, e.g. test
 - Click on `Generate License Key`
-- There will be two keys: Samsung Knox License key (SKL) and Backwards-compatible key<br/>
-For devices with Knox 2.8 and newer, only SKL key is needed.<br/>
-For devices with Knox 2.7.1 or earlier, the backwards-compatible key additionally to the SKL key is needed.
+- There will be two keys: KPE key and backwards-compatible key<br/>
+For devices with Knox 2.8 and newer, only KPE key is needed.<br/>
+For devices with Knox 2.7.1 or earlier, the backwards-compatible key additionally to the KPE key is needed.
 
 
 ## Credits
