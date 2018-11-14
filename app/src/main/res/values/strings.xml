@@ -88,9 +88,10 @@
         \nTherefore, if they are still disabled after this operation, you need to uninstall Adhell to enable them.
         \n\nDo you really want to enable all apps\' components?
     </string>
-    <string name="dialog_toggle_title">Enable/Disable All Apps</string>
+    <string name="dialog_toggle_title">Custom DNS for All Apps</string>
     <string name="dialog_toggle_info">
-        Do you really want to enable/disable all apps?
+        Do you really want to apply or remove custom DNS for all apps?
+        \nApplying custom DNS to all apps might cause your internet connection to malfunction.
     </string>
     <string name="dialog_add_to_whitelist_question">Add the selected domain to your whitelist?</string>
     <string name="home_bottombar_title" translatable="false">Home</string>
