@@ -32,4 +32,9 @@
         android:summary="@string/set_password_summary"
         android:defaultValue="false"/>
 
+    <android.support.v7.preference.Preference
+        android:key="create_logcat_preference"
+        android:title="@string/create_logcat_title"
+        android:summary="@string/create_logcat_summary" />
+
 </android.support.v7.preference.PreferenceScreen>

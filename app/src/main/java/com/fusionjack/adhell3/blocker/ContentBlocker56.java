@@ -61,7 +61,6 @@ public class ContentBlocker56 implements ContentBlocker {
             return;
         }
 
-        LogUtils.getInstance().reset();
         LogUtils.getInstance().writeInfo("Enabling firewall rules...", handler);
 
         try {
@@ -88,7 +87,6 @@ public class ContentBlocker56 implements ContentBlocker {
             return;
         }
 
-        LogUtils.getInstance().reset();
         LogUtils.getInstance().writeInfo("Disabling firewall rules...", handler);
 
         // Clear firewall rules
@@ -111,7 +109,6 @@ public class ContentBlocker56 implements ContentBlocker {
             return;
         }
 
-        LogUtils.getInstance().reset();
         LogUtils.getInstance().writeInfo("Enabling domain rules...", handler);
 
         try {
@@ -145,7 +142,6 @@ public class ContentBlocker56 implements ContentBlocker {
             return;
         }
 
-        LogUtils.getInstance().reset();
         LogUtils.getInstance().writeInfo("Disabling domain rules...", handler);
 
         // Clear domain filter rules

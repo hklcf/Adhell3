@@ -9,6 +9,7 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.PrintStream;
 
 /**
@@ -17,24 +18,10 @@ import java.io.PrintStream;
 
 public class LogUtils {
 
-    private final String TAG = LogUtils.class.getCanonicalName();
+    private static final String TAG = LogUtils.class.getCanonicalName();
     private static LogUtils instance;
-    private PrintStream ps;
 
     private LogUtils() {
-        create();
-    }
-
-    private void create() {
-        File logFile = new File(Environment.getExternalStorageDirectory(), "adhell_log.txt");
-        if (logFile.exists()) {
-            logFile.delete();
-        }
-        try {
-            ps = new PrintStream(new BufferedOutputStream(new FileOutputStream(logFile, true)));
-        } catch (FileNotFoundException e) {
-            Log.e(TAG, e.getMessage(), e);
-        }
     }
 
     public static LogUtils getInstance() {
@@ -44,16 +31,16 @@ public class LogUtils {
         return instance;
     }
 
-    public void reset() {
-        close();
-        create();
-    }
-
-    public void close() {
-        if (ps != null) {
-            ps.close();
-            ps = null;
+    public static String createLogcat() {
+        String filename = String.format("adhell_logcat_%s.txt", System.currentTimeMillis());
+        File logFile = new File(Environment.getExternalStorageDirectory(), filename);
+        try {
+            Runtime.getRuntime().exec( "logcat -f " + logFile + " | grep com.fusionjack.adhell3");
+        } catch (IOException e) {
+            Log.e(TAG, e.getMessage(), e);
+            return "";
         }
+        return filename;
     }
 
     public void writeInfo(String text, Handler handler) {
@@ -62,23 +49,13 @@ public class LogUtils {
             message.sendToTarget();
         }
         Log.i(TAG, text);
-        writeText(text);
     }
 
-    public void writeError(String text, Throwable e, Handler handler) {
+    void writeError(String text, Throwable e, Handler handler) {
         if (handler != null) {
             Message message = handler.obtainMessage(0, text);
             message.sendToTarget();
         }
         Log.e(TAG, text, e);
-        writeText(text);
-    }
-
-    private void writeText(String text) {
-        if (ps != null) {
-            ps.append(text);
-            ps.append("\n");
-            ps.flush();
-        }
     }
 }

@@ -189,4 +189,8 @@
     <string name="dialog_empty_password">The password cannot be empty!</string>
     <string name="set_password_title">Protect Adhell3 with a password</string>
     <string name="set_password_summary">If you forget the password, you need to uninstall Adhell3.</string>
+    <string name="create_logcat_title">Create logcat</string>
+    <string name="create_logcat_summary">Create logcat on internal storage for debugging purpose.</string>
+    <string name="logcat_created">Logcat \'%1$s\' has been created.</string>
+    <string name="logcat_not_created">Logcat cannot be created.</string>
 </resources>

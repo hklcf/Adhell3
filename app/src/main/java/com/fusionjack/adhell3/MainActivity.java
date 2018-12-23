@@ -126,7 +126,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         Log.d(TAG, "Destroying activity");
-        LogUtils.getInstance().close();
     }
 
     private void onTabSelected(int tabId) {

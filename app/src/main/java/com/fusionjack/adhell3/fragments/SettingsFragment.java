@@ -20,6 +20,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.fusionjack.adhell3.BuildConfig;
 import com.fusionjack.adhell3.R;
@@ -29,6 +30,7 @@ import com.fusionjack.adhell3.db.DatabaseFactory;
 import com.fusionjack.adhell3.receiver.CustomDeviceAdminReceiver;
 import com.fusionjack.adhell3.utils.AdhellFactory;
 import com.fusionjack.adhell3.utils.AppPreferences;
+import com.fusionjack.adhell3.utils.LogUtils;
 import com.fusionjack.adhell3.utils.PasswordStorage;
 
 public class SettingsFragment extends PreferenceFragmentCompat {
@@ -39,6 +41,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
     private static final String RESTORE_PREFERENCE = "restore_preference";
     public static final String UPDATE_PROVIDERS_PREFERENCE = "update_provider_preference";
     public static final String SET_PASSWORD_PREFERENCE = "set_password_preference";
+    public static final String CREATE_LOGCAT_PREFERENCE = "create_logcat_preference";
 
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
@@ -141,6 +144,15 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                     passwordDialog.show();
                 } else {
                     AppPreferences.getInstance().resetPassword();
+                }
+            }
+            case CREATE_LOGCAT_PREFERENCE: {
+                String filename = LogUtils.createLogcat();
+                if (filename.isEmpty()) {
+                    Toast.makeText(context, R.string.logcat_not_created, Toast.LENGTH_LONG).show();
+                } else {
+                    String message = context.getResources().getString(R.string.logcat_created);
+                    Toast.makeText(context, String.format(message, filename), Toast.LENGTH_LONG).show();
                 }
             }
         }
