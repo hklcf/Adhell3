@@ -1,7 +1,6 @@
 package com.fusionjack.adhell3.utils;
 
 import android.content.SharedPreferences;
-import android.util.Log;
 
 import com.fusionjack.adhell3.BuildConfig;
 import com.fusionjack.adhell3.db.AppDatabase;
@@ -21,7 +20,6 @@ public class AdhellAppIntegrity {
     public static final int BLOCK_URL_LIMIT = BuildConfig.DOMAIN_LIMIT;
     public final static String DEFAULT_POLICY_ID = "default-policy";
 
-    private static final String TAG = AdhellAppIntegrity.class.getCanonicalName();
     private static final String DEFAULT_POLICY_CHECKED = "adhell_default_policy_created";
     private static final String DISABLED_PACKAGES_MOVED = "adhell_disabled_packages_moved";
     private static final String FIREWALL_WHITELISTED_PACKAGES_MOVED = "adhell_firewall_whitelisted_packages_moved";
@@ -85,10 +83,10 @@ public class AdhellAppIntegrity {
     public void checkDefaultPolicyExists() {
         PolicyPackage policyPackage = appDatabase.policyPackageDao().getPolicyById(DEFAULT_POLICY_ID);
         if (policyPackage != null) {
-            Log.d(TAG, "Default PolicyPackage exists");
+            LogUtils.info( "Default PolicyPackage exists");
             return;
         }
-        Log.d(TAG, "Default PolicyPackage does not exist. Creating default policy.");
+        LogUtils.info( "Default PolicyPackage does not exist. Creating default policy.");
         policyPackage = new PolicyPackage();
         policyPackage.id = DEFAULT_POLICY_ID;
         policyPackage.name = "Default Policy";
@@ -96,21 +94,21 @@ public class AdhellAppIntegrity {
         policyPackage.active = true;
         policyPackage.createdAt = policyPackage.updatedAt = new Date();
         appDatabase.policyPackageDao().insert(policyPackage);
-        Log.d(TAG, "Default PolicyPackage has been added");
+        LogUtils.info( "Default PolicyPackage has been added");
     }
 
     private void copyDataFromAppInfoToDisabledPackage() {
         List<DisabledPackage> disabledPackages = appDatabase.disabledPackageDao().getAll();
         if (disabledPackages.size() > 0) {
-            Log.d(TAG, "DisabledPackages is not empty. No need to move data from AppInfo table");
+            LogUtils.info( "DisabledPackages is not empty. No need to move data from AppInfo table");
             return;
         }
         List<AppInfo> disabledApps = appDatabase.applicationInfoDao().getDisabledApps();
         if (disabledApps.size() == 0) {
-            Log.d(TAG, "No disabledgetDisabledApps apps in AppInfo table");
+            LogUtils.info( "No disabledgetDisabledApps apps in AppInfo table");
             return;
         }
-        Log.d(TAG, "There is " + disabledApps.size() + " to move to DisabledPackage table");
+        LogUtils.info( "There is " + disabledApps.size() + " to move to DisabledPackage table");
         disabledPackages = new ArrayList<>();
         for (AppInfo appInfo : disabledApps) {
             DisabledPackage disabledPackage = new DisabledPackage();
@@ -125,15 +123,15 @@ public class AdhellAppIntegrity {
         List<FirewallWhitelistedPackage> firewallWhitelistedPackages
                 = appDatabase.firewallWhitelistedPackageDao().getAll();
         if (firewallWhitelistedPackages.size() > 0) {
-            Log.d(TAG, "FirewallWhitelist package size is: " + firewallWhitelistedPackages.size() + ". No need to move data");
+            LogUtils.info( "FirewallWhitelist package size is: " + firewallWhitelistedPackages.size() + ". No need to move data");
             return;
         }
         List<AppInfo> whitelistedApps = appDatabase.applicationInfoDao().getWhitelistedApps();
         if (whitelistedApps.size() == 0) {
-            Log.d(TAG, "No whitelisted apps in AppInfo table");
+            LogUtils.info( "No whitelisted apps in AppInfo table");
             return;
         }
-        Log.d(TAG, "There is " + whitelistedApps.size() + " to move");
+        LogUtils.info( "There is " + whitelistedApps.size() + " to move");
         firewallWhitelistedPackages = new ArrayList<>();
         for (AppInfo appInfo : whitelistedApps) {
             FirewallWhitelistedPackage whitelistedPackage = new FirewallWhitelistedPackage();
@@ -177,13 +175,13 @@ public class AdhellAppIntegrity {
         try {
             blockUrls = BlockUrlUtils.loadBlockUrls(blockUrlProvider);
             blockUrlProvider.count = blockUrls.size();
-            Log.d(TAG, "Number of urls to insert: " + blockUrlProvider.count);
+            LogUtils.info( "Number of urls to insert: " + blockUrlProvider.count);
             // Save url provider
             appDatabase.blockUrlProviderDao().updateBlockUrlProviders(blockUrlProvider);
             // Save urls from providers
             appDatabase.blockUrlDao().insertAll(blockUrls);
         } catch (Exception e) {
-            Log.e(TAG, e.getMessage(), e);
+            LogUtils.error( e.getMessage(), e);
         }
     }
 

@@ -186,15 +186,15 @@ public final class AdhellFactory {
             String dns1 = AppPreferences.getInstance().getDns1();
             String dns2 = AppPreferences.getInstance().getDns2();
             if (Patterns.IP_ADDRESS.matcher(dns1).matches() && Patterns.IP_ADDRESS.matcher(dns2).matches()) {
-                LogUtils.getInstance().writeInfo("\nProcessing DNS...", handler);
+                LogUtils.info("\nProcessing DNS...", handler);
 
-                LogUtils.getInstance().writeInfo("DNS 1: " + dns1, handler);
-                LogUtils.getInstance().writeInfo("DNS 2: " + dns2, handler);
+                LogUtils.info("DNS 1: " + dns1, handler);
+                LogUtils.info("DNS 2: " + dns2, handler);
                 List<AppInfo> dnsPackages = appDatabase.applicationInfoDao().getDnsApps();
                 if (dnsPackages.size() == 0) {
-                    LogUtils.getInstance().writeInfo("No app is selected", handler);
+                    LogUtils.info("No app is selected", handler);
                 } else {
-                    LogUtils.getInstance().writeInfo("Size: " + dnsPackages.size(), handler);
+                    LogUtils.info("Size: " + dnsPackages.size(), handler);
                     List<DomainFilterRule> rules = new ArrayList<>();
                     for (AppInfo app : dnsPackages) {
                         DomainFilterRule rule = new DomainFilterRule(new AppIdentity(app.packageName, null));

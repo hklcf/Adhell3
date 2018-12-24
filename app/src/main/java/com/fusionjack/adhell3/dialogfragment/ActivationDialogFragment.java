@@ -11,7 +11,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +21,7 @@ import android.widget.Toast;
 import com.fusionjack.adhell3.R;
 import com.fusionjack.adhell3.fragments.HomeTabFragment;
 import com.fusionjack.adhell3.utils.DeviceAdminInteractor;
+import com.fusionjack.adhell3.utils.LogUtils;
 import com.samsung.android.knox.license.EnterpriseLicenseManager;
 import com.samsung.android.knox.license.KnoxEnterpriseLicenseManager;
 
@@ -35,7 +35,6 @@ import io.reactivex.schedulers.Schedulers;
 
 
 public class ActivationDialogFragment extends DialogFragment {
-    private static final String TAG = ActivationDialogFragment.class.getCanonicalName();
     BroadcastReceiver receiver;
     private DeviceAdminInteractor deviceAdminInteractor;
     private Single<String> knoxKeyObservable;
@@ -54,7 +53,7 @@ public class ActivationDialogFragment extends DialogFragment {
                 emmiter.onSuccess(knoxKey);
             } catch (Throwable e) {
                 emmiter.onError(e);
-                Log.e(TAG, "Failed to get knox key", e);
+                LogUtils.error( "Failed to get knox key", e);
             }
         });
     }
@@ -133,7 +132,7 @@ public class ActivationDialogFragment extends DialogFragment {
                             getActivity().unregisterReceiver(receiver);
                             allowActivateKnox(false);
                             activateKnoxButton.setText(R.string.license_activated);
-                            Log.d(TAG, "License activated");
+                            LogUtils.info( "License activated");
                             dismiss();
                         }
                     } else {
@@ -144,7 +143,7 @@ public class ActivationDialogFragment extends DialogFragment {
                         // Allow the user to try again
                         allowActivateKnox(true);
                         activateKnoxButton.setText(R.string.activate_license);
-                        Log.w(TAG, "License activation failed");
+                        LogUtils.info( "License activation failed");
                     }
                 }
 
@@ -155,7 +154,7 @@ public class ActivationDialogFragment extends DialogFragment {
                     if (errorCode == EnterpriseLicenseManager.ERROR_NONE) {
                         allowActivateKnox(false);
                         activateKnoxButton.setText(R.string.license_activated);
-                        Log.d(TAG, "License activated");
+                        LogUtils.info( "License activated");
                         dismiss();
                     } else  {
                         String status = intent.getStringExtra(EnterpriseLicenseManager.EXTRA_LICENSE_STATUS);
@@ -164,7 +163,7 @@ public class ActivationDialogFragment extends DialogFragment {
                         // Allow the user to try again
                         allowActivateKnox(true);
                         activateKnoxButton.setText(R.string.activate_license);
-                        Log.w(TAG, "License activation failed");
+                        LogUtils.info( "License activation failed");
                     }
                 }
             }

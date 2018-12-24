@@ -17,7 +17,6 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.preference.PreferenceManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,13 +39,13 @@ import com.fusionjack.adhell3.utils.AdhellAppIntegrity;
 import com.fusionjack.adhell3.utils.AdhellFactory;
 import com.fusionjack.adhell3.utils.AppPreferences;
 import com.fusionjack.adhell3.utils.FirewallUtils;
+import com.fusionjack.adhell3.utils.LogUtils;
 
 import java.lang.ref.WeakReference;
 import java.util.Date;
 import java.util.List;
 
 public class HomeTabFragment extends Fragment {
-    private static final String TAG = HomeTabFragment.class.getCanonicalName();
 
     private FragmentManager fragmentManager;
     private AppCompatActivity parentActivity;
@@ -110,19 +109,19 @@ public class HomeTabFragment extends Fragment {
         }
 
         domainSwitch.setOnClickListener(v -> {
-            Log.d(TAG, "Domain switch button has been clicked");
+            LogUtils.info( "Domain switch button has been clicked");
             new SetFirewallAsyncTask(true, this, fragmentManager, getContext()).execute();
         });
         firewallSwitch.setOnClickListener(v -> {
-            Log.d(TAG, "Firewall switch button has been clicked");
+            LogUtils.info( "Firewall switch button has been clicked");
             new SetFirewallAsyncTask(false, this, fragmentManager, getContext()).execute();
         });
         disablerSwitch.setOnClickListener(v -> {
-            Log.d(TAG, "App disabler switch button has been clicked");
+            LogUtils.info( "App disabler switch button has been clicked");
             new AppDisablerAsyncTask(this, getActivity()).execute();
         });
         appComponentSwitch.setOnClickListener(v -> {
-            Log.d(TAG, "App component switch button has been clicked");
+            LogUtils.info( "App component switch button has been clicked");
             new AppComponentAsyncTask(this, getActivity()).execute();
         });
 

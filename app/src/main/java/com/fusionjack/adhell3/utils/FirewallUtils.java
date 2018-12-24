@@ -45,7 +45,7 @@ public final class FirewallUtils {
             handleResponse(response, handler);
         } catch (SecurityException ex) {
             // Missing required MDM permission
-            LogUtils.getInstance().writeError("Failed to add domain filter rule to Knox Firewall", ex, handler);
+            LogUtils.error("Failed to add domain filter rule to Knox Firewall", ex, handler);
         }
     }
 
@@ -59,7 +59,7 @@ public final class FirewallUtils {
             handleResponse(response, handler);
         } catch (SecurityException ex) {
             // Missing required MDM permission
-            LogUtils.getInstance().writeError("Failed to add firewall rules to Knox Firewall", ex, handler);
+            LogUtils.error("Failed to add firewall rules to Knox Firewall", ex, handler);
         }
     }
 
@@ -187,18 +187,18 @@ public final class FirewallUtils {
     private void handleResponse(FirewallResponse[] response, Handler handler) throws Exception {
         if (response == null) {
             Exception ex = new Exception("There was no response from Knox Firewall");
-            LogUtils.getInstance().writeError("There was no response from Knox Firewall", ex, handler);
+            LogUtils.error("There was no response from Knox Firewall", ex, handler);
             throw ex;
         } else {
             if (FirewallResponse.Result.SUCCESS == response[0].getResult()) {
-                LogUtils.getInstance().writeInfo("Result: Success", handler);
+                LogUtils.info("Result: Success", handler);
             } else {
-                LogUtils.getInstance().writeInfo("Result: Failed", handler);
+                LogUtils.info("Result: Failed", handler);
                 Exception ex = new Exception(response[0].getMessage());
                 StringWriter sw = new StringWriter();
                 PrintWriter pw = new PrintWriter(sw);
                 ex.printStackTrace(pw);
-                LogUtils.getInstance().writeError(sw.toString(), ex, handler);
+                LogUtils.error(sw.toString(), ex, handler);
                 throw ex;
             }
         }

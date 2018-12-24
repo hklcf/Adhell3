@@ -13,7 +13,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -37,7 +36,6 @@ import com.fusionjack.adhell3.utils.PasswordStorage;
 import java.lang.reflect.Field;
 
 public class MainActivity extends AppCompatActivity {
-    private static final String TAG = MainActivity.class.getCanonicalName();
     private static final String BACK_STACK_TAB_TAG = "tab_fragment";
     private FragmentManager fragmentManager;
     private ActivationDialogFragment activationDialogFragment;
@@ -78,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Early exit if the device doesn't support Knox
         if (!DeviceAdminInteractor.getInstance().isSupported()) {
-            Log.i(TAG, "Device not supported");
+            LogUtils.info("Device not supported");
             AdhellFactory.getInstance().createNotSupportedDialog(this);
             return;
         }
@@ -119,17 +117,17 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
-        Log.d(TAG, "Everything is okay");
+        LogUtils.info("Everything is okay");
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Log.d(TAG, "Destroying activity");
+        LogUtils.info("Destroying activity");
     }
 
     private void onTabSelected(int tabId) {
-        Log.d(TAG, "Tab '" + tabId + "' is selected");
+        LogUtils.info( "Tab '" + tabId + "' is selected");
         fragmentManager.popBackStack(BACK_STACK_TAB_TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         Fragment replacing;
         switch (tabId) {
@@ -164,7 +162,7 @@ public class MainActivity extends AppCompatActivity {
         String passwordHash = AppPreferences.getInstance().getPasswordHash();
         if (!passwordHash.isEmpty()) {
             if (!passwordDialog.isShowing()) {
-                Log.d(TAG, "Showing password dialog");
+                LogUtils.info( "Showing password dialog");
                 passwordDialog.show();
             }
             return true;
@@ -174,7 +172,7 @@ public class MainActivity extends AppCompatActivity {
 
     private boolean isKnoxValid() {
         if (!DeviceAdminInteractor.getInstance().isAdminActive()) {
-            Log.d(TAG, "Admin is not active, showing activation dialog");
+            LogUtils.info( "Admin is not active, showing activation dialog");
             if (!activationDialogFragment.isVisible()) {
                 activationDialogFragment.show(fragmentManager, "dialog_fragment_activation_adhell");
             }
@@ -182,13 +180,13 @@ public class MainActivity extends AppCompatActivity {
         }
 
         if (!DeviceAdminInteractor.getInstance().isKnoxEnabled(this)) {
-            Log.d(TAG, "Knox is disabled, showing activation dialog");
-            Log.d(TAG, "Check if internet connection exists");
+            LogUtils.info( "Knox is disabled, showing activation dialog");
+            LogUtils.info( "Check if internet connection exists");
             ConnectivityManager cm = (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
             if (cm != null) {
                 NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
                 boolean isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
-                Log.d(TAG, "Is internet connection exists: " + isConnected);
+                LogUtils.info( "Is internet connection exists: " + isConnected);
                 if (!isConnected) {
                     AdhellFactory.getInstance().createNoInternetConnectionDialog(this);
                 }
@@ -257,9 +255,9 @@ public class MainActivity extends AppCompatActivity {
                 item.setChecked(item.getItemData().isChecked());
             }
         } catch (NoSuchFieldException e) {
-            Log.e("BottomNav", "Unable to get shift mode field", e);
+            LogUtils.error( "Unable to get shift mode field", e);
         } catch (IllegalAccessException e) {
-            Log.e("BottomNav", "Unable to change value of shift mode", e);
+            LogUtils.error( "Unable to change value of shift mode", e);
         }
     }
 }

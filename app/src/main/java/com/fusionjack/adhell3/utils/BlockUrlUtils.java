@@ -2,7 +2,6 @@ package com.fusionjack.adhell3.utils;
 
 import android.os.Handler;
 import android.support.annotation.NonNull;
-import android.util.Log;
 import android.webkit.URLUtil;
 
 import com.fusionjack.adhell3.db.AppDatabase;
@@ -26,8 +25,6 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 public class BlockUrlUtils {
-
-    private static final String TAG = BlockUrlUtils.class.getCanonicalName();
 
     // Pattern to detect lines that do not start with a word or wildcard
     private static final Pattern linePattern = Pattern.compile("(?im)^(?![a-z0-9*]|\\|{2}).+$");
@@ -71,7 +68,7 @@ public class BlockUrlUtils {
             List<BlockUrl> blockUrls = BlockUrlPatternsMatch.validHostFileDomains(hostFileStr, blockUrlProvider.id);
 
             Date end = new Date();
-            Log.i(TAG, "Domain processing duration: " + (end.getTime() - start.getTime()) + " ms");
+            LogUtils.info( "Domain processing duration: " + (end.getTime() - start.getTime()) + " ms");
 
             return blockUrls;
         }
@@ -87,13 +84,13 @@ public class BlockUrlUtils {
             if (url.indexOf('|') == -1) {
                 list.add(url);
                 if (enableLog) {
-                    LogUtils.getInstance().writeInfo("Domain: " + url, handler);
+                    LogUtils.info("Domain: " + url, handler);
                 }
                 userBlockUrlCount++;
             }
         }
         if (enableLog) {
-            LogUtils.getInstance().writeInfo("Size: " + userBlockUrlCount, handler);
+            LogUtils.info("Size: " + userBlockUrlCount, handler);
         }
         return list;
     }

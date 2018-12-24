@@ -1,61 +1,70 @@
 package com.fusionjack.adhell3.utils;
 
+import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
-import java.io.BufferedOutputStream;
+import com.fusionjack.adhell3.BuildConfig;
+import com.samsung.android.knox.EnterpriseDeviceManager;
+
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.PrintStream;
 
 /**
  * Created by fusionjack on 15/03/2018.
  */
 
-public class LogUtils {
-
-    private static final String TAG = LogUtils.class.getCanonicalName();
-    private static LogUtils instance;
+public final class LogUtils {
 
     private LogUtils() {
     }
 
-    public static LogUtils getInstance() {
-        if (instance == null) {
-            instance = new LogUtils();
-        }
-        return instance;
-    }
-
     public static String createLogcat() {
+        info("Build version: " + BuildConfig.VERSION_NAME);
+        info("Knox API: " + Integer.toString(EnterpriseDeviceManager.getAPILevel()));
+        info("Android API: " + Integer.toString(Build.VERSION.SDK_INT));
         String filename = String.format("adhell_logcat_%s.txt", System.currentTimeMillis());
         File logFile = new File(Environment.getExternalStorageDirectory(), filename);
         try {
             Runtime.getRuntime().exec( "logcat -f " + logFile + " | grep com.fusionjack.adhell3");
         } catch (IOException e) {
-            Log.e(TAG, e.getMessage(), e);
+            error(e.getMessage(), e);
             return "";
         }
         return filename;
     }
 
-    public void writeInfo(String text, Handler handler) {
-        if (handler != null) {
-            Message message = handler.obtainMessage(0, text);
-            message.sendToTarget();
-        }
-        Log.i(TAG, text);
+    public static void info(String text) {
+        Log.i(getCallerInfo(), text);
     }
 
-    void writeError(String text, Throwable e, Handler handler) {
+    public static void info(String text, Handler handler) {
         if (handler != null) {
             Message message = handler.obtainMessage(0, text);
             message.sendToTarget();
         }
-        Log.e(TAG, text, e);
+        Log.i(getCallerInfo(), text);
+    }
+
+    public static void error(String text, Throwable e) {
+        Log.e(getCallerInfo(), text, e);
+    }
+
+    public static void error(String text, Throwable e, Handler handler) {
+        if (handler != null) {
+            Message message = handler.obtainMessage(0, text);
+            message.sendToTarget();
+        }
+        Log.e(getCallerInfo(), text, e);
+    }
+
+    private static String getCallerInfo() {
+        StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
+        if (stackTraceElements.length > 4) {
+            return stackTraceElements[4].getClassName() + "(" + stackTraceElements[4].getMethodName() + ")";
+        }
+        return "Empty class name";
     }
 }

@@ -9,7 +9,6 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.support.annotation.Nullable;
-import android.util.Log;
 
 import com.fusionjack.adhell3.App;
 import com.fusionjack.adhell3.BuildConfig;
@@ -34,7 +33,6 @@ import static com.samsung.android.knox.EnterpriseDeviceManager.KNOX_VERSION_CODE
 
 public final class DeviceAdminInteractor {
     private static final int RESULT_ENABLE = 42;
-    private static final String TAG = DeviceAdminInteractor.class.getCanonicalName();
 
     private static DeviceAdminInteractor instance;
 
@@ -159,21 +157,21 @@ public final class DeviceAdminInteractor {
 
     public boolean installApk(String pathToApk) {
         if (applicationPolicy == null) {
-            Log.i(TAG, "applicationPolicy variable is null");
+            LogUtils.info( "applicationPolicy variable is null");
             return false;
         }
         try {
             File file = new File(pathToApk);
             if (!file.exists()) {
-                Log.i(TAG, "apk fail does not exist: " + pathToApk);
+                LogUtils.info( "apk fail does not exist: " + pathToApk);
                 return false;
             }
 
             boolean result = applicationPolicy.installApplication(pathToApk, false);
-            Log.i(TAG, "Is Application installed: " + result);
+            LogUtils.info( "Is Application installed: " + result);
             return result;
         } catch (Throwable e) {
-            Log.e(TAG, "Failed to install application", e);
+            LogUtils.error( "Failed to install application", e);
             return false;
         }
     }
@@ -183,18 +181,18 @@ public final class DeviceAdminInteractor {
     }
 
     private boolean isSamsung() {
-        Log.i(TAG, "Device manufacturer: " + Build.MANUFACTURER);
+        LogUtils.info( "Device manufacturer: " + Build.MANUFACTURER);
         return Build.MANUFACTURER.equals("samsung");
     }
 
     private boolean isKnoxVersionSupported() {
         if (enterpriseDeviceManager == null) {
-            Log.w(TAG, "Knox is not supported: enterpriseDeviceManager is null");
+            LogUtils.info( "Knox is not supported: enterpriseDeviceManager is null");
             return false;
         }
 
         int apiLevel = EnterpriseDeviceManager.getAPILevel();
-        Log.i(TAG, "Knox API level: " + apiLevel);
+        LogUtils.info( "Knox API level: " + apiLevel);
         switch (apiLevel) {
             case KNOX_2_6:
             case KNOX_2_7:
@@ -213,10 +211,10 @@ public final class DeviceAdminInteractor {
 
     private boolean isKnoxSupported() {
         if (knoxEnterpriseLicenseManager == null || enterpriseLicenseManager == null) {
-            Log.w(TAG, "Knox is not supported: knoxEnterpriseLicenseManager or enterpriseLicenseManager is null");
+            LogUtils.info( "Knox is not supported: knoxEnterpriseLicenseManager or enterpriseLicenseManager is null");
             return false;
         }
-        Log.i(TAG, "Knox is supported");
+        LogUtils.info( "Knox is supported");
         return true;
     }
 
