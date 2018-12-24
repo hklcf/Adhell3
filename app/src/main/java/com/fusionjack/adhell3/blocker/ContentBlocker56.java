@@ -16,6 +16,9 @@ import com.samsung.android.knox.net.firewall.Firewall;
 import com.samsung.android.knox.net.firewall.FirewallResponse;
 import com.samsung.android.knox.net.firewall.FirewallRule;
 
+import java.net.Inet4Address;
+import java.net.Inet6Address;
+import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -189,16 +192,35 @@ public class ContentBlocker56 implements ContentBlocker {
 
                     LogUtils.info("\nRule: " + packageName + "|" + ip + "|" + port, handler);
                     if (add) {
-                        FirewallRule[] firewallRules = new FirewallRule[2];
-                        firewallRules[0] = new FirewallRule(FirewallRule.RuleType.DENY, Firewall.AddressType.IPV4);
-                        firewallRules[0].setIpAddress(ip);
-                        firewallRules[0].setPortNumber(port);
-                        firewallRules[0].setApplication(new AppIdentity(packageName, null));
+                        FirewallRule[] firewallRules;
+                        if (ip.equalsIgnoreCase("*")) {
+                            firewallRules = new FirewallRule[2];
+                            firewallRules[0] = new FirewallRule(FirewallRule.RuleType.DENY, Firewall.AddressType.IPV4);
+                            firewallRules[0].setIpAddress(ip);
+                            firewallRules[0].setPortNumber(port);
+                            firewallRules[0].setApplication(new AppIdentity(packageName, null));
 
-                        firewallRules[1] = new FirewallRule(FirewallRule.RuleType.DENY, Firewall.AddressType.IPV6);
-                        firewallRules[1].setIpAddress(ip);
-                        firewallRules[1].setPortNumber(port);
-                        firewallRules[1].setApplication(new AppIdentity(packageName, null));
+                            firewallRules[1] = new FirewallRule(FirewallRule.RuleType.DENY, Firewall.AddressType.IPV6);
+                            firewallRules[1].setIpAddress(ip);
+                            firewallRules[1].setPortNumber(port);
+                            firewallRules[1].setApplication(new AppIdentity(packageName, null));
+                        } else {
+                            Firewall.AddressType type;
+                            InetAddress address = InetAddress.getByName(ip);
+                            if (address instanceof Inet6Address) {
+                                type = Firewall.AddressType.IPV6;
+                            } else if (address instanceof Inet4Address) {
+                                type = Firewall.AddressType.IPV4;
+                            } else {
+                                throw new Exception("Unknown ip address type");
+                            }
+
+                            firewallRules = new FirewallRule[1];
+                            firewallRules[0] = new FirewallRule(FirewallRule.RuleType.DENY, type);
+                            firewallRules[0].setIpAddress(ip);
+                            firewallRules[0].setPortNumber(port);
+                            firewallRules[0].setApplication(new AppIdentity(packageName, null));
+                        }
 
                         firewallUtils.addFirewallRules(firewallRules, handler);
                     } else {
