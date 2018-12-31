@@ -16,7 +16,7 @@ import java.util.Date;
 import java.util.List;
 
 public class AdhellAppIntegrity {
-    public static final String ADHELL_STANDARD_PACKAGE = "https://raw.githubusercontent.com/mmotti/mmotti-host-file/master/hosts";
+    public static final String ADHELL_STANDARD_PACKAGE = BuildConfig.DEFAULT_HOST;
     public static final int BLOCK_URL_LIMIT = BuildConfig.DOMAIN_LIMIT;
     public final static String DEFAULT_POLICY_ID = "default-policy";
 

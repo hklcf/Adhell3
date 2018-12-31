@@ -23,6 +23,7 @@ android {
         def backwardsKey = ""
         def disableApps = "false"
         def appComponent = "false"
+        def defaultHost = "https://raw.githubusercontent.com/mmotti/mmotti-host-file/master/hosts"
 
         if (appPropsFile.exists()) {
             Properties appProps = new Properties()
@@ -48,6 +49,9 @@ android {
             if (appProps['enable.appComponent'] != null) {
                 appComponent = appProps['enable.appComponent']
             }
+            if (appProps['default.host'] != null) {
+                defaultHost = appProps['default.host']
+            }
         }
 
         applicationId packageName
@@ -62,6 +66,7 @@ android {
         buildConfigField("String", "BACKWARDS_KEY", '"' + backwardsKey + '"')
         buildConfigField("boolean", "DISABLE_APPS", disableApps)
         buildConfigField("boolean", "APP_COMPONENT", appComponent)
+        buildConfigField("String", "DEFAULT_HOST", '"' + defaultHost + '"')
     }
 
     buildTypes {
