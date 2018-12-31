@@ -98,7 +98,7 @@ An ability to disable user or system applications entirely
 An ability to disable app's permissions, services and receivers. Only user apps are supported.
 
 ### Override default host with your own compiled host
-* Put `default.host` in `app.properties`, e.g. `https://gitlab.com/fusionjack/hosts/raw/master/hosts`
+* Put `default.host` in `app.properties`, e.g. `default.host=https://gitlab.com/fusionjack/hosts/raw/master/hosts`
 
 ## How to build apk
 
