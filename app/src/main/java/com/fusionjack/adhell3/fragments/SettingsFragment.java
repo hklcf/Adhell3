@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v14.preference.SwitchPreference;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceFragmentCompat;
@@ -27,6 +28,7 @@ import com.fusionjack.adhell3.R;
 import com.fusionjack.adhell3.blocker.ContentBlocker;
 import com.fusionjack.adhell3.blocker.ContentBlocker56;
 import com.fusionjack.adhell3.db.DatabaseFactory;
+import com.fusionjack.adhell3.dialogfragment.ActivationDialogFragment;
 import com.fusionjack.adhell3.receiver.CustomDeviceAdminReceiver;
 import com.fusionjack.adhell3.utils.AdhellFactory;
 import com.fusionjack.adhell3.utils.AppPreferences;
@@ -42,6 +44,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
     public static final String UPDATE_PROVIDERS_PREFERENCE = "update_provider_preference";
     public static final String SET_PASSWORD_PREFERENCE = "set_password_preference";
     public static final String CREATE_LOGCAT_PREFERENCE = "create_logcat_preference";
+    public static final String CHANGE_KEY_PREFERENCE = "change_key_preference";
 
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
@@ -153,6 +156,12 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 } else {
                     String message = context.getResources().getString(R.string.logcat_created);
                     Toast.makeText(context, String.format(message, filename), Toast.LENGTH_LONG).show();
+                }
+            }
+            case CHANGE_KEY_PREFERENCE: {
+                ActivationDialogFragment fragment = new ActivationDialogFragment();
+                if (!fragment.isVisible()) {
+                    fragment.show(((FragmentActivity) context).getSupportFragmentManager(), "dialog_activation");
                 }
             }
         }

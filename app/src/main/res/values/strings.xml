@@ -24,21 +24,23 @@
     <string name="enable_adhell_title">Enable Adhell</string>
     <string name="enable_adhell_info">
         To enable Adhell, you must activate Admin mode for this app.
-        \nAdhell uses Samsung Knox APIs which require the Device Administrator permission.
+        \nAdhell uses Knox APIs which require device administrator permission.
     </string>
     <string name="turn_on_admin">Turn On Admin</string>
     <string name="license_key_info">
-        Adhell utilizes Samsung Knox SDK which requires a Samsung Knox License (SKL) license key.
+        Adhell utilizes Knox SDK which requires KPE Development key.
         \nA developer license key needs to be renewed every 3 months.
     </string>
-    <string name="license_key">Samsung Knox License (SKL) key</string>
+    <string name="license_key">KPE Development key</string>
     <string name="license_backward_key">Backwards-compatible key</string>
     <string name="activate_license">Activate License</string>
+    <string name="deactivate_license">Deactivate License</string>
     <string name="license_activated">License Activated</string>
     <string name="enable_admin">Enable Admin</string>
     <string name="admin_enabled">Admin Enabled</string>
     <string name="no_internet_connection">Your device is not connected to the Internet.</string>
     <string name="activating_knox_license">Activating…</string>
+    <string name="deactivating_knox_license">Deactivating…</string>
     <string name="block_button_text_turn_off">Turn Off</string>
     <string name="block_button_text_turn_on">Turn On</string>
     <string name="whitelist_info">
@@ -193,4 +195,6 @@
     <string name="create_logcat_summary">Create logcat on internal storage for debugging purpose.</string>
     <string name="logcat_created">Logcat \'%1$s\' has been created.</string>
     <string name="logcat_not_created">Logcat cannot be created.</string>
+    <string name="change_key_title">Change license key</string>
+    <string name="change_key_summary">Show activation dialog to change the license key.</string>
 </resources>

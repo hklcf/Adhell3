@@ -97,13 +97,17 @@ public final class DeviceAdminInteractor {
         ((Activity) context).startActivityForResult(intent, RESULT_ENABLE);
     }
 
-    /**
-     * Force to activate Samsung KNOX Standard SDK
-     */
     public void activateKnoxKey(SharedPreferences sharedPreferences, Context context) {
         String knoxKey = getKnoxKey(sharedPreferences);
         if (knoxKey != null) {
             KnoxEnterpriseLicenseManager.getInstance(context).activateLicense(knoxKey);
+        }
+    }
+
+    public void deactivateKnoxKey(SharedPreferences sharedPreferences, Context context) {
+        String knoxKey = getKnoxKey(sharedPreferences);
+        if (knoxKey != null) {
+            KnoxEnterpriseLicenseManager.getInstance(context).deActivateLicense(knoxKey);
         }
     }
 
@@ -127,11 +131,11 @@ public final class DeviceAdminInteractor {
     }
 
     public String getKnoxKey(SharedPreferences sharedPreferences) {
-        return getKey(KNOX_KEY, BuildConfig.SKL_KEY, sharedPreferences);
+        return sharedPreferences.getString(KNOX_KEY, BuildConfig.SKL_KEY);
     }
 
     public String getBackwardKey(SharedPreferences sharedPreferences) {
-        return getKey(BACKWARD_KEY, BuildConfig.BACKWARDS_KEY, sharedPreferences);
+        return sharedPreferences.getString(BACKWARD_KEY, BuildConfig.BACKWARDS_KEY);
     }
 
     private String getKey(String prefName, String configKey, SharedPreferences sharedPreferences) {

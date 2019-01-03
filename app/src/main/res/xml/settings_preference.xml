@@ -37,4 +37,9 @@
         android:title="@string/create_logcat_title"
         android:summary="@string/create_logcat_summary" />
 
+    <android.support.v7.preference.Preference
+        android:key="change_key_preference"
+        android:title="@string/change_key_title"
+        android:summary="@string/change_key_summary" />
+
 </android.support.v7.preference.PreferenceScreen>
