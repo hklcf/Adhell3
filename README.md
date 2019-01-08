@@ -44,32 +44,44 @@ Backup the content of the database on internal storage so that later it can be u
 - DNS per application basis<br/>
 Set custom DNS for selected apps. Only user apps are supported.
 
-## Prerequisite for building apk
+## Building APK (Windows)
+Assume that our working directory is in `C:\Users\admin\adhell3`
+
 ### Java
-- Install JDK 8 for your platform http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html
+- Download and install JDK 8 from http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html
 - Don't use JDK 9 as there is issue with Gradle. See Issue #78.
- 
-### Git (Optional, but recommended)
-- Install git for your platform: https://git-scm.com/book/en/v2/Getting-Started-Installing-Git
 
-### Source code
-- Using git: Clone the project with `git clone https://gitlab.com/fusionjack/adhell3.git`
-- Without git: Download the source code as a zip file: https://gitlab.com/fusionjack/adhell3/repository/master/archive.zip
-- Create `app.properties` file inside app folder: `app\app.properties`
+### Android SDK
+- Download Android SDK tools from https://developer.android.com/studio/#downloads (sdk-tools-windows-xxxxxx.zip)
+- Extract it to the working directory `C:\Users\admin\adhell3\tools`
+
+### Adhell3 Project
+- Download the project as a zip file from https://gitlab.com/fusionjack/adhell3/repository/master/archive.zip
+- Extract the content to the working directory `C:\Users\admin\adhell3\project`
+- Create `app.properties` file in `C:\Users\admin\adhell3\project\app` folder: `C:\Users\admin\adhell3\project\app\app.properties`
 - Put `package.name=your.package.name` in the first line of the file
-
-### Android Studio
-- Download and install latest Android Studio from https://developer.android.com/studio/index.html
-- Open the Adhell3 project in Android Studio
-- Install missing SDK, build-tools and other things that are prompted
-- For `Configuration on demand is not supported` error, see this comment https://gitlab.com/fusionjack/adhell3/commit/1fb8ea98cf43507b32db56d9fb584b33dc6579f1#note_74463246
 
 ### Knox SDK
 - Download latest Knox SDK and supportlib from https://seap.samsung.com/sdk/knox-android
-- Create `libs` sub-folder in `app` folder: `app\libs`
 - Extract `knoxsdk.jar` and `supportlib.jar` respectively from both zip files
-- Rename the supportlib jar file name to `supportlib.jar`
-- Put both jar files to `app\libs` folder
+- Rename the supportlib jar file name to `supportlib.jar` if it is not the case
+- Create `libs` sub-folder in `C:\Users\admin\adhell3\project\app` folder: `C:\Users\admin\adhell3\project\app\libs`
+- Put both jar files to `C:\Users\admin\adhell3\project\app\libs` folder
+
+### Configuring Android SDK
+- Run these following commands in a Windows console:<br/>
+`cd C:\Users\admin\adhell3`<br/>
+`mkdir android-sdk`<br/>
+`cd tools\bin`<br/>
+`sdkmanager "platform-tools" --sdk_root=C:\Users\admin\adhell3\android-sdk`
+- Accept the license with `y`
+
+### Building APK
+- Run these following commands in a Windows console:<br/>
+`cd C:\Users\admin\adhell3\project`<br/>
+`set ANDROID_HOME=C:\Users\admin\adhell3\android-sdk`<br/>
+`gradlew clean assembleDebug`<br/>
+- Find the apk in `C:\Users\admin\adhell3\project\app\build\outputs\apk\debug`
 
 ## Customization
 ### Change the default 15k domain limit
@@ -99,25 +111,6 @@ An ability to disable app's permissions, services and receivers. Only user apps 
 
 ### Override default host with your own compiled host
 * Put `default.host` in `app.properties`, e.g. `default.host=https://gitlab.com/fusionjack/hosts/raw/master/hosts`
-
-## How to build apk
-
-### With Git
-Plug in your device and run this following commands in a bash console:<br/>
-1. `cd adhell3`<br/>
-2. `git stash && git pull --rebase && git stash pop`<br/>
-3. `bash gradlew clean installDebug`
-
-Explanation:
-1. Enter adhell3 folder
-2. It stores your changes, e.g package name, updates the source code and re-apply your changes
-3. Build and install apk on the device
-
-### Without Git
-1. Re-download the source code as a zip file and re-applies your changes manually<br/>
-2. Plug in your device and run this following commands in Windows console:<br/>
-`cd adhell3`<br/>
-`gradlew clean installDebug`
 
 
 ## Prerequisite for using Adhell3
