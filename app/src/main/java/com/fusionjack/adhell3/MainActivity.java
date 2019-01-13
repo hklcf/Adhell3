@@ -173,8 +173,8 @@ public class MainActivity extends AppCompatActivity {
     private boolean isKnoxValid() {
         if (!DeviceAdminInteractor.getInstance().isAdminActive()) {
             LogUtils.info( "Admin is not active, showing activation dialog");
-            if (!activationDialogFragment.isVisible()) {
-                activationDialogFragment.show(fragmentManager, "dialog_fragment_activation_adhell");
+            if (!isActivationDialogVisible()) {
+                activationDialogFragment.show(fragmentManager, ActivationDialogFragment.DIALOG_TAG);
             }
             return false;
         }
@@ -191,8 +191,8 @@ public class MainActivity extends AppCompatActivity {
                     AdhellFactory.getInstance().createNoInternetConnectionDialog(this);
                 }
             }
-            if (!activationDialogFragment.isVisible()) {
-                activationDialogFragment.show(fragmentManager, "dialog_fragment_activation_adhell");
+            if (!isActivationDialogVisible()) {
+                activationDialogFragment.show(fragmentManager, ActivationDialogFragment.DIALOG_TAG);
             }
             return false;
         }
@@ -203,6 +203,11 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return true;
+    }
+
+    private boolean isActivationDialogVisible() {
+        Fragment activationDialog = getSupportFragmentManager().findFragmentByTag(ActivationDialogFragment.DIALOG_TAG);
+        return activationDialog != null;
     }
 
     private AlertDialog createPasswordDialog() {

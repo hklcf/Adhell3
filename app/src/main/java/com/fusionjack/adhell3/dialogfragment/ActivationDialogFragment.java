@@ -44,6 +44,8 @@ public class ActivationDialogFragment extends DialogFragment {
     private EditText knoxKeyEditText;
     private EditText backwardKeyEditText;
 
+    public static final String DIALOG_TAG = "activation_dialog";
+
     public ActivationDialogFragment() {
         deviceAdminInteractor = DeviceAdminInteractor.getInstance();
 

@@ -10,7 +10,9 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v14.preference.SwitchPreference;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceFragmentCompat;
@@ -159,9 +161,11 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 }
             }
             case CHANGE_KEY_PREFERENCE: {
-                ActivationDialogFragment fragment = new ActivationDialogFragment();
-                if (!fragment.isVisible()) {
-                    fragment.show(((FragmentActivity) context).getSupportFragmentManager(), "dialog_activation");
+                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                Fragment activationDialog = fragmentManager.findFragmentByTag(ActivationDialogFragment.DIALOG_TAG);
+                if (activationDialog == null) {
+                    ActivationDialogFragment fragment = new ActivationDialogFragment();
+                    fragment.show(fragmentManager, ActivationDialogFragment.DIALOG_TAG);
                 }
             }
         }
