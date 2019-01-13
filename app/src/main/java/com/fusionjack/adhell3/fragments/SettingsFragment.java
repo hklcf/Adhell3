@@ -150,6 +150,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 } else {
                     AppPreferences.getInstance().resetPassword();
                 }
+                break;
             }
             case CREATE_LOGCAT_PREFERENCE: {
                 String filename = LogUtils.createLogcat();
@@ -159,6 +160,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                     String message = context.getResources().getString(R.string.logcat_created);
                     Toast.makeText(context, String.format(message, filename), Toast.LENGTH_LONG).show();
                 }
+                break;
             }
             case CHANGE_KEY_PREFERENCE: {
                 FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
@@ -167,6 +169,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                     ActivationDialogFragment fragment = new ActivationDialogFragment();
                     fragment.show(fragmentManager, ActivationDialogFragment.DIALOG_TAG);
                 }
+                break;
             }
         }
         return super.onPreferenceTreeClick(preference);
