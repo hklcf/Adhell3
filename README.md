@@ -10,6 +10,9 @@ The API can be found here: https://seap.samsung.com/api-references/android/refer
 
 Official Discord: https://discord.gg/hfreZum
 
+Adhell3 is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.<br/>
+You should have received a copy of the license along with this work. If not, see <http://creativecommons.org/licenses/by-nc/4.0/>.
+
 # Background
 The original Adhell was developed by Samsung's developer. After he was forced to remove the code from internet by Samsung, FiendFyre was stepped up by providing the Adhell2. But after a while, it is also discontinued.<br/>
 Adhell3 is an extension of previous discontinued Adhell2 app with more additional features.
