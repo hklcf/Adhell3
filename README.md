@@ -44,44 +44,9 @@ Backup the content of the database on internal storage so that later it can be u
 - DNS per application basis<br/>
 Set custom DNS for selected apps. Only user apps are supported.
 
-## Building APK (Windows)
-Assume that our working directory is in `C:\Users\admin\adhell3`
-
-### Java
-- Download and install JDK 8 from http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html
-- Don't use JDK 9 as there is issue with Gradle. See Issue #78.
-
-### Android SDK
-- Download Android SDK tools from https://developer.android.com/studio/#downloads (sdk-tools-windows-xxxxxx.zip)
-- Extract it to the working directory `C:\Users\admin\adhell3\tools`
-
-### Adhell3 Project
-- Download the project as a zip file from https://gitlab.com/fusionjack/adhell3/repository/master/archive.zip
-- Extract the content to the working directory `C:\Users\admin\adhell3\project`
-- Create `app.properties` file in `C:\Users\admin\adhell3\project\app` folder: `C:\Users\admin\adhell3\project\app\app.properties`
-- Put `package.name=your.package.name` in the first line of the file
-
-### Knox SDK
-- Download latest Knox SDK and supportlib from https://seap.samsung.com/sdk/knox-android
-- Extract `knoxsdk.jar` and `supportlib.jar` respectively from both zip files
-- Rename the supportlib jar file name to `supportlib.jar` if it is not the case
-- Create `libs` sub-folder in `C:\Users\admin\adhell3\project\app` folder: `C:\Users\admin\adhell3\project\app\libs`
-- Put both jar files to `C:\Users\admin\adhell3\project\app\libs` folder
-
-### Configuring Android SDK
-- Run these following commands in a Windows console:<br/>
-`cd C:\Users\admin\adhell3`<br/>
-`mkdir android-sdk`<br/>
-`cd tools\bin`<br/>
-`sdkmanager "platform-tools" --sdk_root=C:\Users\admin\adhell3\android-sdk`
-- Accept the license with `y`
-
-### Building APK
-- Run these following commands in a Windows console:<br/>
-`cd C:\Users\admin\adhell3\project`<br/>
-`set ANDROID_HOME=C:\Users\admin\adhell3\android-sdk`<br/>
-`gradlew clean assembleDebug`<br/>
-- Find the apk in `C:\Users\admin\adhell3\project\app\build\outputs\apk\debug`
+## Building APK
+- Download the script from `https://gitlab.com/fusionjack/adhell3-scripts`
+- Follow the instruction in the README
 
 ## Customization
 ### Change the default 15k domain limit
