@@ -8,6 +8,7 @@ The Knox SDK can be downloaded here: https://seap.samsung.com/sdk/knox-android <
 The Knox License key can be obtained here: https://seap.samsung.com/license-keys/create#section-knox-sdk <br/>
 The API can be found here: https://seap.samsung.com/api-references/android/reference/packages.html
 
+Official Discord: https://discord.gg/hfreZum
 
 # Background
 The original Adhell was developed by Samsung's developer. After he was forced to remove the code from internet by Samsung, FiendFyre was stepped up by providing the Adhell2. But after a while, it is also discontinued.<br/>
