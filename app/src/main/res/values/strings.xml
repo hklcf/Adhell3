@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name" translatable="false">Adhell 3</string>
+    <string name="app_name" translatable="false">Adhell3</string>
     <string name="domain_rules_enabled">Domain rules are enabled.</string>
     <string name="domain_rules_disabled">Domain rules are disabled.</string>
     <string name="domain_rules_info">
