@@ -5,7 +5,7 @@ These are Samsung's properties which are not available in this repository and th
 The developer is then responsible how this app will be used and I don't take any responsibilities of any damages caused by this app. <br/>
 
 The Knox SDK can be downloaded here: https://seap.samsung.com/sdk/knox-android <br/>
-The Knox License key can be obtained here: https://seap.samsung.com/license-keys/create#section-knox-sdk <br/>
+The ELM License key can be obtained here: https://seap.samsung.com/license-keys/generate/edu <br/>
 The API can be found here: https://seap.samsung.com/api-references/android/reference/packages.html
 
 Official Discord: https://discord.gg/hfreZum
@@ -82,7 +82,7 @@ An ability to disable app's permissions, services and receivers. Only user apps 
 
 
 ## Prerequisite for using Adhell3
-You need a ELM Development license key in order to use Adhell3. <br/>
+You need an ELM Development license key in order to use Adhell3. <br/>
 You need to enroll as a developer in order to get this license. As for developer, the license needs to be renewed every 3 months.<br/>
 When you receive a mail about license expiration, you usually cannot generate a new key immediately and you need to wait for some days.</br>
 During this time, Adhell3 is still working properly. Adhell3 will show an activation dialog if the key cannot be used anymore. This time you should be able to generate a new key.
