@@ -1,6 +1,6 @@
 # Disclaimer
 Adhell3 is merely an app that is using the Samsung Knox SDK APIs. <br/>
-In order to use these APIs, the Knox SDK and a KPE Development license key are needed. <br/>
+In order to use these APIs, the Knox SDK and an ELM Development license key are needed. <br/>
 These are Samsung's properties which are not available in this repository and therefore they need to be downloaded and obtained by the developer after accepting the agreement given by Samsung. <br/>
 The developer is then responsible how this app will be used and I don't take any responsibilities of any damages caused by this app. <br/>
 
@@ -56,9 +56,8 @@ Set custom DNS for selected apps. Only user apps are supported.
 ### Change the default 15k domain limit
 * Put `domain.limit` in `app.properties`, e.g. `domain.limit=50000`
 
-### Make license key and backwards-compatible key available when activating Adhell3
-* Put `skl.key` in `app.properties`, e.g. `skl.key=KLM06-XXXXX-XXXXX-XXXXX-XXXXX-XXXXX`
-* Put `backwards.key` in `app.properties`, e.g. `backwards.key=B6B2BXXXXXXXXXXXXXXXX`
+### Make license key available when activating Adhell3
+* Put `skl.key` in `app.properties`, e.g. `skl.key=XXXXXXXXXXXXXXXXXXXXXXXXXXXXX`
 * If you use these properties, beware when you distribute your app as the app contains the keys in plain text
 * This is just for convenience purpose so that you don't need to make your keys somewhere available when you are on the phone, hence this only works on a new installation
 
@@ -72,7 +71,7 @@ Set custom DNS for selected apps. Only user apps are supported.
 * nothing -> no prefix
 
 ### Hidden features
-* Beware that enabling some hidden features may cause the device to malfunction if they are not used with precaution, especially when disabling system apps. Enable them at your own risk. 
+* Beware that enabling some hidden features may cause the device to malfunction if they are not used with precaution, especially when disabling system apps. Enable them at your own risk.
 * Add `enable.disableApps=true` in `app.properties` -> to enable 'Disable Apps' feature: <br/>
 An ability to disable user or system applications entirely
 * Add `enable.appComponent=true` in `app.properties` -> to enable 'App Component' feature: <br/>
@@ -83,18 +82,15 @@ An ability to disable app's permissions, services and receivers. Only user apps 
 
 
 ## Prerequisite for using Adhell3
-You need a KPE Development license key in order to use Adhell3. <br/>
+You need a ELM Development license key in order to use Adhell3. <br/>
 You need to enroll as a developer in order to get this license. As for developer, the license needs to be renewed every 3 months.<br/>
 When you receive a mail about license expiration, you usually cannot generate a new key immediately and you need to wait for some days.</br>
 During this time, Adhell3 is still working properly. Adhell3 will show an activation dialog if the key cannot be used anymore. This time you should be able to generate a new key.
 
 - Enroll as a developer with this link: https://seap.samsung.com/enrollment
-- Generate a license key with this link: https://seap.samsung.com/license-keys/create#section-knox-sdk
+- Generate a license key with this link: https://seap.samsung.com/license-keys/generate/edu
 - Give an alias name, e.g. test
 - Click on `Generate License Key`
-- There will be two keys: KPE key and backwards-compatible key<br/>
-For devices with Knox 2.8 and newer, only KPE key is needed.<br/>
-For devices with Knox 2.7.1 or earlier, the backwards-compatible key additionally to the KPE key is needed.
 
 
 ## Credits

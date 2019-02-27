@@ -100,9 +100,14 @@ public class ActivationDialogFragment extends DialogFragment {
             public void onComplete() {
                 boolean knoxEnabled = deviceAdminInteractor.isKnoxEnabled(getContext());
                 if (knoxEnabled) {
-                    deviceAdminInteractor.deactivateKnoxKey(sharedPreferences, getContext());
+                    try {
+                        deviceAdminInteractor.deactivateKnoxKey(sharedPreferences, getContext());
+                    } catch (Exception ex) {
+                        Toast.makeText(getContext(), ex.getMessage(), Toast.LENGTH_LONG).show();
+                        handleError(null, getContext(), -1);
+                    }
                 } else {
-                    deviceAdminInteractor.activateKnoxKey(sharedPreferences, getContext());
+                    deviceAdminInteractor.activateKnoxKey(sharedPreferences, getContext(), DeviceAdminInteractor.KNOX_KEY_TYPE.ELM_KEY);
                 }
             }
 
@@ -137,13 +142,7 @@ public class ActivationDialogFragment extends DialogFragment {
         String knoxKey = deviceAdminInteractor.getKnoxKey(sharedPreferences);
         knoxKeyEditText.setText(knoxKey);
 
-        boolean useBackwardKey = deviceAdminInteractor.useBackwardCompatibleKey();
-        if (useBackwardKey) {
-            String backwardKey = deviceAdminInteractor.getBackwardKey(sharedPreferences);
-            backwardKeyEditText.setText(backwardKey);
-        } else {
-            backwardKeyEditText.setVisibility(View.GONE);
-        }
+        backwardKeyEditText.setVisibility(View.GONE);
 
         turnOnAdminButton.setOnClickListener(v ->
                 deviceAdminInteractor.forceEnableAdmin(this.getActivity())
@@ -174,7 +173,10 @@ public class ActivationDialogFragment extends DialogFragment {
         getActivity().unregisterReceiver(receiver);
 
         int result_type = intent.getIntExtra(KnoxEnterpriseLicenseManager.EXTRA_LICENSE_RESULT_TYPE, -1);
-        if (result_type == KnoxEnterpriseLicenseManager.LICENSE_RESULT_TYPE_ACTIVATION) {
+        if (result_type == -1) {
+            result_type = intent.getIntExtra(EnterpriseLicenseManager.EXTRA_LICENSE_RESULT_TYPE, -1);
+        }
+        if (result_type == EnterpriseLicenseManager.LICENSE_RESULT_TYPE_ACTIVATION) {
             setLicenseState(true);
             LogUtils.info("License activated");
             dismiss();
@@ -193,8 +195,10 @@ public class ActivationDialogFragment extends DialogFragment {
     private void handleError(Intent intent, Context context, int errorCode) {
         getActivity().unregisterReceiver(receiver);
 
-        String status = intent.getStringExtra(EnterpriseLicenseManager.EXTRA_LICENSE_STATUS);
-        Toast.makeText(context, "Status: " +  status + ". Error code: " + errorCode, Toast.LENGTH_LONG).show();
+        if (intent != null) {
+            String status = intent.getStringExtra(EnterpriseLicenseManager.EXTRA_LICENSE_STATUS);
+            Toast.makeText(context, "Status: " + status + ". Error code: " + errorCode, Toast.LENGTH_LONG).show();
+        }
 
         // Allow the user to try again
         setLicenseState(false);

@@ -78,6 +78,11 @@ public final class DeviceAdminInteractor {
         return instance;
     }
 
+    public enum KNOX_KEY_TYPE {
+        KLM_KEY,
+        ELM_KEY
+    }
+
     /**
      * Check if admin enabled
      *
@@ -97,16 +102,26 @@ public final class DeviceAdminInteractor {
         ((Activity) context).startActivityForResult(intent, RESULT_ENABLE);
     }
 
-    public void activateKnoxKey(SharedPreferences sharedPreferences, Context context) {
+    public void activateKnoxKey(SharedPreferences sharedPreferences, Context context, KNOX_KEY_TYPE keyType) {
         String knoxKey = getKnoxKey(sharedPreferences);
         if (knoxKey != null) {
-            KnoxEnterpriseLicenseManager.getInstance(context).activateLicense(knoxKey);
+            switch (keyType) {
+                case KLM_KEY:
+                    activateKLMKey(context, knoxKey);
+                    break;
+                case ELM_KEY:
+                    activateELMKey(context, knoxKey);
+                    break;
+            }
         }
     }
 
-    public void deactivateKnoxKey(SharedPreferences sharedPreferences, Context context) {
+    public void deactivateKnoxKey(SharedPreferences sharedPreferences, Context context) throws Exception {
         String knoxKey = getKnoxKey(sharedPreferences);
         if (knoxKey != null) {
+            if (!knoxKey.startsWith("KLM")) {
+                throw new Exception("You cannot deactivate ELm key");
+            }
             KnoxEnterpriseLicenseManager.getInstance(context).deActivateLicense(knoxKey);
         }
     }
@@ -114,8 +129,16 @@ public final class DeviceAdminInteractor {
     public void activateBackwardKey(SharedPreferences sharedPreferences, Context context) {
         String backwardKey = getBackwardKey(sharedPreferences);
         if (backwardKey != null) {
-            EnterpriseLicenseManager.getInstance(context).activateLicense(backwardKey);
+            activateELMKey(context, backwardKey);
         }
+    }
+
+    private void activateKLMKey(Context context, String key) {
+        KnoxEnterpriseLicenseManager.getInstance(context).activateLicense(key);
+    }
+
+    private void activateELMKey(Context context, String key) {
+        EnterpriseLicenseManager.getInstance(context).activateLicense(key);
     }
 
     /**
