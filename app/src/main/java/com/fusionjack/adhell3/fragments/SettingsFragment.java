@@ -11,7 +11,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v14.preference.SwitchPreference;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.preference.Preference;
@@ -36,6 +35,8 @@ import com.fusionjack.adhell3.utils.AdhellFactory;
 import com.fusionjack.adhell3.utils.AppPreferences;
 import com.fusionjack.adhell3.utils.LogUtils;
 import com.fusionjack.adhell3.utils.PasswordStorage;
+
+import java.lang.ref.WeakReference;
 
 public class SettingsFragment extends PreferenceFragmentCompat {
     private Context context;
@@ -106,7 +107,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 new AlertDialog.Builder(context)
                         .setView(dialogView)
                         .setPositiveButton(android.R.string.yes, (dialog, whichButton) ->
-                                new RestoreDatabaseAsyncTask(getActivity()).execute()
+                                new RestoreDatabaseAsyncTask(getActivity(), getContext()).execute()
                         )
                         .setNegativeButton(android.R.string.no, null).show();
                 break;
@@ -220,10 +221,12 @@ public class SettingsFragment extends PreferenceFragmentCompat {
     private static class RestoreDatabaseAsyncTask extends AsyncTask<Void, String, String> {
         private ProgressDialog dialog;
         private AlertDialog.Builder builder;
+        private WeakReference<Context> contextWeakReference;
 
-        RestoreDatabaseAsyncTask(Activity activity) {
+        RestoreDatabaseAsyncTask(Activity activity, Context context) {
             this.builder = new AlertDialog.Builder(activity);
             this.dialog = new ProgressDialog(activity);
+            this.contextWeakReference = new WeakReference<>(context);
         }
 
         @Override
@@ -243,8 +246,13 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
                 DatabaseFactory.getInstance().restoreDatabase();
 
-                publishProgress("Updating all providers...");
-                AdhellFactory.getInstance().updateAllProviders();
+                Context context = contextWeakReference.get();
+                if (context != null) {
+                    if (AdhellFactory.getInstance().hasInternetAccess(context)) {
+                        publishProgress("Updating all providers...");
+                        AdhellFactory.getInstance().updateAllProviders();
+                    }
+                }
 
                 return null;
             } catch (Exception e) {

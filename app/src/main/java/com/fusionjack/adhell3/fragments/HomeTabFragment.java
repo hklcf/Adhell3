@@ -421,6 +421,9 @@ public class HomeTabFragment extends Fragment {
                 if (isDomainRuleEmpty) {
                     SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(contextReference.get());
                     boolean updateProviders = preferences.getBoolean(SettingsFragment.UPDATE_PROVIDERS_PREFERENCE, false);
+                    if (!AdhellFactory.getInstance().hasInternetAccess(contextReference.get())) {
+                        updateProviders = false;
+                    }
                     contentBlocker.enableDomainRules(updateProviders);
                 } else {
                     contentBlocker.disableDomainRules();

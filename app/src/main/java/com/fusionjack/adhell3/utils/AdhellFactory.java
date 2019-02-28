@@ -4,6 +4,8 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
@@ -243,5 +245,16 @@ public final class AdhellFactory {
                 e.printStackTrace();
             }
         }
+    }
+
+    public boolean hasInternetAccess(Context context) {
+        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (cm != null) {
+            NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+            boolean isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
+            LogUtils.info( "Is internet connection exists: " + isConnected);
+            return isConnected;
+        }
+        return false;
     }
 }

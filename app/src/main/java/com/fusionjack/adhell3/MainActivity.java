@@ -1,9 +1,6 @@
 package com.fusionjack.adhell3;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.internal.BottomNavigationItemView;
@@ -182,14 +179,9 @@ public class MainActivity extends AppCompatActivity {
         if (!DeviceAdminInteractor.getInstance().isKnoxEnabled(this)) {
             LogUtils.info( "Knox is disabled, showing activation dialog");
             LogUtils.info( "Check if internet connection exists");
-            ConnectivityManager cm = (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
-            if (cm != null) {
-                NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-                boolean isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
-                LogUtils.info( "Is internet connection exists: " + isConnected);
-                if (!isConnected) {
-                    AdhellFactory.getInstance().createNoInternetConnectionDialog(this);
-                }
+            boolean hasInternetAccess = AdhellFactory.getInstance().hasInternetAccess(this);
+            if (!hasInternetAccess) {
+                AdhellFactory.getInstance().createNoInternetConnectionDialog(this);
             }
             if (!isActivationDialogVisible()) {
                 activationDialogFragment.show(fragmentManager, ActivationDialogFragment.DIALOG_TAG);

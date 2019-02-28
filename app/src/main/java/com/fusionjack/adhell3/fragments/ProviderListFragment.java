@@ -216,7 +216,12 @@ public class ProviderListFragment extends Fragment {
 
         @Override
         protected Void doInBackground(Void... voids) {
-            AdhellFactory.getInstance().updateAllProviders();
+            Context context = contextWeakReference.get();
+            if (context != null) {
+                if (AdhellFactory.getInstance().hasInternetAccess(context)) {
+                    AdhellFactory.getInstance().updateAllProviders();
+                }
+            }
             return null;
         }
 
