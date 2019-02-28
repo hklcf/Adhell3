@@ -104,7 +104,7 @@ public class ActivationDialogFragment extends DialogFragment {
                         deviceAdminInteractor.deactivateKnoxKey(sharedPreferences, getContext());
                     } catch (Exception ex) {
                         Toast.makeText(getContext(), ex.getMessage(), Toast.LENGTH_LONG).show();
-                        handleError(null, getContext(), -1);
+                        setLicenseState(true);
                     }
                 } else {
                     deviceAdminInteractor.activateKnoxKey(sharedPreferences, getContext(), DeviceAdminInteractor.KNOX_KEY_TYPE.ELM_KEY);
