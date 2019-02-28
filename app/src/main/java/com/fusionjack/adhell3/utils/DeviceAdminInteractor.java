@@ -120,7 +120,7 @@ public final class DeviceAdminInteractor {
         String knoxKey = getKnoxKey(sharedPreferences);
         if (knoxKey != null) {
             if (!knoxKey.startsWith("KLM")) {
-                throw new Exception("You cannot deactivate ELm key");
+                throw new Exception("You cannot deactivate ELM key");
             }
             KnoxEnterpriseLicenseManager.getInstance(context).deActivateLicense(knoxKey);
         }
