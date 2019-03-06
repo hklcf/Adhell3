@@ -5,6 +5,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.widget.ListView;
 
+import com.fusionjack.adhell3.BuildConfig;
 import com.fusionjack.adhell3.adapter.AppInfoAdapter;
 import com.fusionjack.adhell3.db.AppDatabase;
 import com.fusionjack.adhell3.db.entity.AppInfo;
@@ -82,10 +83,15 @@ public class LoadAppAsyncTask extends AsyncTask<Void, Void, List<AppInfo>> {
                 }
                 return appDatabase.applicationInfoDao().getAppsInWhitelistedOrder(filterText);
             case SORTED_COMPONENT:
+                boolean showSystemApps = BuildConfig.SHOW_SYSTEM_APP_COMPONENT;
                 if (text.length() == 0) {
-                    return appDatabase.applicationInfoDao().getUserApps();
+                    return showSystemApps ?
+                            appDatabase.applicationInfoDao().getEnabledAppsAlphabetically() :
+                            appDatabase.applicationInfoDao().getUserApps();
                 }
-                return appDatabase.applicationInfoDao().getUserApps(filterText);
+                return showSystemApps ?
+                        appDatabase.applicationInfoDao().getEnabledAppsAlphabetically(filterText) :
+                        appDatabase.applicationInfoDao().getUserApps(filterText);
             case SORTED_DNS:
                 if (text.length() == 0) {
                     return appDatabase.applicationInfoDao().getAppsInDnsOrder();

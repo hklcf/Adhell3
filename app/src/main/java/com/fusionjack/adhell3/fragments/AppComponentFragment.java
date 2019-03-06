@@ -19,6 +19,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.fusionjack.adhell3.BuildConfig;
 import com.fusionjack.adhell3.R;
 import com.fusionjack.adhell3.adapter.AppInfoAdapter;
 import com.fusionjack.adhell3.db.entity.AppInfo;
@@ -121,6 +122,17 @@ public class AppComponentFragment extends Fragment {
 
         AppCache.getInstance(context, null);
         new LoadAppAsyncTask("", appFlag, context).execute();
+
+        if (BuildConfig.SHOW_SYSTEM_APP_COMPONENT) {
+            View dialogView = LayoutInflater.from(getContext()).inflate(R.layout.dialog_question, (ViewGroup) getView(), false);
+            TextView titlTextView = dialogView.findViewById(R.id.titleTextView);
+            titlTextView.setText(R.string.dialog_system_app_components_title);
+            TextView questionTextView = dialogView.findViewById(R.id.questionTextView);
+            questionTextView.setText(R.string.dialog_system_app_components_info);
+            new AlertDialog.Builder(context)
+                    .setView(dialogView)
+                    .setPositiveButton(android.R.string.yes, null).show();
+        }
 
         return view;
     }
