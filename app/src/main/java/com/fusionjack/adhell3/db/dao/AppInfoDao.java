@@ -1,5 +1,6 @@
 package com.fusionjack.adhell3.db.dao;
 
+import android.arch.lifecycle.LiveData;
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.OnConflictStrategy;
@@ -111,6 +112,12 @@ public interface AppInfoDao {
     @Query("SELECT * FROM AppInfo WHERE (appName LIKE :str OR packageName LIKE :str) AND system = 0 AND disabled = 0 ORDER BY appName ASC")
     List<AppInfo> getUserApps(String str);
 
+    @Query("SELECT * FROM AppInfo WHERE system = 0 AND disabled = 0 ORDER BY appName ASC")
+    LiveData<List<AppInfo>> getLiveUserApps();
+
+    @Query("SELECT * FROM AppInfo WHERE (appName LIKE :str OR packageName LIKE :str) AND system = 0 AND disabled = 0 ORDER BY appName ASC")
+    LiveData<List<AppInfo>> getLiveUserApps(String str);
+
 
     // Enabled apps
     @Query("SELECT * FROM AppInfo WHERE disabled = 0 ORDER BY appName ASC")
@@ -118,6 +125,12 @@ public interface AppInfoDao {
 
     @Query("SELECT * FROM AppInfo WHERE (appName LIKE :str OR packageName LIKE :str) AND disabled = 0 ORDER BY appName ASC")
     List<AppInfo> getEnabledAppsAlphabetically(String str);
+
+    @Query("SELECT * FROM AppInfo WHERE disabled = 0 ORDER BY appName ASC")
+    LiveData<List<AppInfo>> getLiveEnabledAppsAlphabetically();
+
+    @Query("SELECT * FROM AppInfo WHERE (appName LIKE :str OR packageName LIKE :str) AND disabled = 0 ORDER BY appName ASC")
+    LiveData<List<AppInfo>> getLiveEnabledAppsAlphabetically(String str);
 
     @Query("SELECT * FROM AppInfo WHERE disabled = 0 ORDER BY installTime DESC")
     List<AppInfo> getEnabledAppsInTimeOrder();

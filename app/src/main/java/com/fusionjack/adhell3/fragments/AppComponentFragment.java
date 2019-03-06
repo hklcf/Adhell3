@@ -1,5 +1,6 @@
 package com.fusionjack.adhell3.fragments;
 
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -24,18 +25,51 @@ import com.fusionjack.adhell3.R;
 import com.fusionjack.adhell3.adapter.AppInfoAdapter;
 import com.fusionjack.adhell3.db.entity.AppInfo;
 import com.fusionjack.adhell3.model.AppFlag;
-import com.fusionjack.adhell3.tasks.LoadAppAsyncTask;
 import com.fusionjack.adhell3.tasks.RefreshAppAsyncTask;
 import com.fusionjack.adhell3.utils.AdhellFactory;
 import com.fusionjack.adhell3.utils.AppCache;
+import com.fusionjack.adhell3.viewmodel.AppViewModel;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class AppComponentFragment extends Fragment {
     private Context context;
+    private AppViewModel viewModel;
+    private AppInfoAdapter adapter;
+    private List<AppInfo> appInfoList;
+    private AppFlag appFlag;
+    private String searchText;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.context = getContext();
+        this.searchText = "";
+
+        AppCache.getInstance(context, null);
+
+        appFlag = AppFlag.createComponentFlag();
+        appInfoList = new ArrayList<>();
+        adapter = new AppInfoAdapter(appInfoList, appFlag, false, context);
+
+        viewModel = ViewModelProviders.of(this).get(AppViewModel.class);
+        viewModel.getAppList("", appFlag).observe(this, appInfos -> {
+            appInfoList.clear();
+            appInfoList.addAll(appInfos);
+            adapter.notifyDataSetChanged();
+        });
+
+        if (BuildConfig.SHOW_SYSTEM_APP_COMPONENT) {
+            View dialogView = LayoutInflater.from(getContext()).inflate(R.layout.dialog_question, (ViewGroup) getView(), false);
+            TextView titlTextView = dialogView.findViewById(R.id.titleTextView);
+            titlTextView.setText(R.string.dialog_system_app_components_title);
+            TextView questionTextView = dialogView.findViewById(R.id.questionTextView);
+            questionTextView.setText(R.string.dialog_system_app_components_info);
+            new AlertDialog.Builder(context)
+                    .setView(dialogView)
+                    .setPositiveButton(android.R.string.yes, null).show();
+        }
     }
 
     @Override
@@ -43,10 +77,15 @@ public class AppComponentFragment extends Fragment {
         super.onCreateOptionsMenu(menu, inflater);
 
         inflater.inflate(R.menu.app_menu, menu);
-        AppFlag appFlag = AppFlag.createComponentFlag();
 
         SearchView searchView = (SearchView) menu.findItem(R.id.search).getActionView();
         searchView.setMaxWidth(Integer.MAX_VALUE);
+        if (!searchText.isEmpty()) {
+            searchView.setQuery(searchText, false);
+            searchView.setIconified(false);
+            searchView.requestFocus();
+        }
+
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -55,10 +94,12 @@ public class AppComponentFragment extends Fragment {
 
             @Override
             public boolean onQueryTextChange(String text) {
-                if (searchView.isIconified()) {
-                    return false;
-                }
-                new LoadAppAsyncTask(text, appFlag, getContext()).execute();
+                searchText = text;
+                viewModel.getAppList(text, appFlag).observe(getActivity(), appInfos -> {
+                    appInfoList.clear();
+                    appInfoList.addAll(appInfos);
+                    adapter.notifyDataSetChanged();
+                });
                 return false;
             }
         });
@@ -98,6 +139,7 @@ public class AppComponentFragment extends Fragment {
 
         AppFlag appFlag = AppFlag.createComponentFlag();
         ListView listView = view.findViewById(appFlag.getLoadLayout());
+        listView.setAdapter(adapter);
         listView.setOnItemClickListener((AdapterView<?> adView, View view2, int position, long id) -> {
             AppInfoAdapter adapter = (AppInfoAdapter) adView.getAdapter();
 
@@ -119,20 +161,6 @@ public class AppComponentFragment extends Fragment {
         swipeContainer.setOnRefreshListener(() ->
                 new RefreshAppAsyncTask(appFlag, context).execute()
         );
-
-        AppCache.getInstance(context, null);
-        new LoadAppAsyncTask("", appFlag, context).execute();
-
-        if (BuildConfig.SHOW_SYSTEM_APP_COMPONENT) {
-            View dialogView = LayoutInflater.from(getContext()).inflate(R.layout.dialog_question, (ViewGroup) getView(), false);
-            TextView titlTextView = dialogView.findViewById(R.id.titleTextView);
-            titlTextView.setText(R.string.dialog_system_app_components_title);
-            TextView questionTextView = dialogView.findViewById(R.id.questionTextView);
-            questionTextView.setText(R.string.dialog_system_app_components_info);
-            new AlertDialog.Builder(context)
-                    .setView(dialogView)
-                    .setPositiveButton(android.R.string.yes, null).show();
-        }
 
         return view;
     }
