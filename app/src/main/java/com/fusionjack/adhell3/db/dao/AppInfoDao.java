@@ -107,30 +107,21 @@ public interface AppInfoDao {
 
     // User apps
     @Query("SELECT * FROM AppInfo WHERE system = 0 AND disabled = 0 ORDER BY appName ASC")
-    List<AppInfo> getUserApps();
-
-    @Query("SELECT * FROM AppInfo WHERE (appName LIKE :str OR packageName LIKE :str) AND system = 0 AND disabled = 0 ORDER BY appName ASC")
-    List<AppInfo> getUserApps(String str);
+    LiveData<List<AppInfo>> getUserApps();
 
     @Query("SELECT * FROM AppInfo WHERE system = 0 AND disabled = 0 ORDER BY appName ASC")
-    LiveData<List<AppInfo>> getLiveUserApps();
+    List<AppInfo> getUserApps2();
 
     @Query("SELECT * FROM AppInfo WHERE (appName LIKE :str OR packageName LIKE :str) AND system = 0 AND disabled = 0 ORDER BY appName ASC")
-    LiveData<List<AppInfo>> getLiveUserApps(String str);
+    LiveData<List<AppInfo>> getUserApps(String str);
 
 
     // Enabled apps
     @Query("SELECT * FROM AppInfo WHERE disabled = 0 ORDER BY appName ASC")
-    List<AppInfo> getEnabledAppsAlphabetically();
+    LiveData<List<AppInfo>> getEnabledAppsAlphabetically();
 
     @Query("SELECT * FROM AppInfo WHERE (appName LIKE :str OR packageName LIKE :str) AND disabled = 0 ORDER BY appName ASC")
-    List<AppInfo> getEnabledAppsAlphabetically(String str);
-
-    @Query("SELECT * FROM AppInfo WHERE disabled = 0 ORDER BY appName ASC")
-    LiveData<List<AppInfo>> getLiveEnabledAppsAlphabetically();
-
-    @Query("SELECT * FROM AppInfo WHERE (appName LIKE :str OR packageName LIKE :str) AND disabled = 0 ORDER BY appName ASC")
-    LiveData<List<AppInfo>> getLiveEnabledAppsAlphabetically(String str);
+    LiveData<List<AppInfo>> getEnabledAppsAlphabetically(String str);
 
     @Query("SELECT * FROM AppInfo WHERE disabled = 0 ORDER BY installTime DESC")
     List<AppInfo> getEnabledAppsInTimeOrder();
@@ -144,10 +135,10 @@ public interface AppInfoDao {
     List<AppInfo> getDnsApps();
 
     @Query("SELECT * FROM AppInfo WHERE disabled = 0 ORDER BY hasCustomDns DESC, appName ASC")
-    List<AppInfo> getAppsInDnsOrder();
+    LiveData<List<AppInfo>> getAppsInDnsOrder();
 
     @Query("SELECT * FROM AppInfo WHERE (appName LIKE :str OR packageName LIKE :str) AND disabled = 0 ORDER BY hasCustomDns DESC, appName ASC")
-    List<AppInfo> getAppsInDnsOrder(String str);
+    LiveData<List<AppInfo>> getAppsInDnsOrder(String str);
 
     @Query("SELECT * FROM AppInfo WHERE adhellWhitelisted = 1 OR disabled = 1 OR mobileRestricted = 1 OR wifiRestricted = 1 OR hasCustomDns = 1")
     List<AppInfo> getModifiedApps();

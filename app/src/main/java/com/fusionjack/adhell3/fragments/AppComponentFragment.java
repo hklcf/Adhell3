@@ -1,18 +1,12 @@
 package com.fusionjack.adhell3.fragments;
 
-import android.arch.lifecycle.ViewModelProviders;
-import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,40 +20,15 @@ import com.fusionjack.adhell3.adapter.AppInfoAdapter;
 import com.fusionjack.adhell3.db.entity.AppInfo;
 import com.fusionjack.adhell3.db.repository.AppRepository;
 import com.fusionjack.adhell3.model.AppFlag;
-import com.fusionjack.adhell3.tasks.RefreshAppAsyncTask;
 import com.fusionjack.adhell3.utils.AdhellFactory;
-import com.fusionjack.adhell3.utils.AppCache;
-import com.fusionjack.adhell3.viewmodel.AppViewModel;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class AppComponentFragment extends Fragment {
-    private Context context;
-    private AppViewModel viewModel;
-    private AppInfoAdapter adapter;
-    private List<AppInfo> appInfoList;
-    private AppRepository.Type type;
-    private String searchText;
+public class AppComponentFragment extends AppFragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.context = getContext();
-        this.searchText = "";
-        this.type = AppRepository.Type.COMPONENT;
 
-        AppCache.getInstance(context, null);
-
-        appInfoList = new ArrayList<>();
-        adapter = new AppInfoAdapter(appInfoList, type, false, context);
-
-        viewModel = ViewModelProviders.of(this).get(AppViewModel.class);
-        viewModel.getAppList("", type).observe(this, appInfos -> {
-            appInfoList.clear();
-            appInfoList.addAll(appInfos);
-            adapter.notifyDataSetChanged();
-        });
+        initAppModel(AppRepository.Type.COMPONENT);
 
         if (BuildConfig.SHOW_SYSTEM_APP_COMPONENT) {
             View dialogView = LayoutInflater.from(getContext()).inflate(R.layout.dialog_question, (ViewGroup) getView(), false);
@@ -71,39 +40,6 @@ public class AppComponentFragment extends Fragment {
                     .setView(dialogView)
                     .setPositiveButton(android.R.string.yes, null).show();
         }
-    }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-
-        inflater.inflate(R.menu.app_menu, menu);
-
-        SearchView searchView = (SearchView) menu.findItem(R.id.search).getActionView();
-        searchView.setMaxWidth(Integer.MAX_VALUE);
-        if (!searchText.isEmpty()) {
-            searchView.setQuery(searchText, false);
-            searchView.setIconified(false);
-            searchView.requestFocus();
-        }
-
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String text) {
-                searchText = text;
-                viewModel.getAppList(text, type).observe(getActivity(), appInfos -> {
-                    appInfoList.clear();
-                    appInfoList.addAll(appInfos);
-                    adapter.notifyDataSetChanged();
-                });
-                return false;
-            }
-        });
     }
 
     @Override
@@ -159,9 +95,11 @@ public class AppComponentFragment extends Fragment {
         });
 
         SwipeRefreshLayout swipeContainer = view.findViewById(appFlag.getRefreshLayout());
-        swipeContainer.setOnRefreshListener(() ->
-                new RefreshAppAsyncTask(appFlag, context).execute()
-        );
+        swipeContainer.setOnRefreshListener(() -> {
+            getAppList("", type);
+            swipeContainer.setRefreshing(false);
+            resetSearchView();
+        });
 
         return view;
     }

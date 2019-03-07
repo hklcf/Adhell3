@@ -32,12 +32,17 @@ public class AppRepository {
                 boolean showSystemApps = BuildConfig.SHOW_SYSTEM_APP_COMPONENT;
                 if (text.length() == 0) {
                     return showSystemApps ?
-                            appDatabase.applicationInfoDao().getLiveEnabledAppsAlphabetically() :
-                            appDatabase.applicationInfoDao().getLiveUserApps();
+                            appDatabase.applicationInfoDao().getEnabledAppsAlphabetically() :
+                            appDatabase.applicationInfoDao().getUserApps();
                 }
                 return showSystemApps ?
-                        appDatabase.applicationInfoDao().getLiveEnabledAppsAlphabetically(filterText) :
-                        appDatabase.applicationInfoDao().getLiveUserApps(filterText);
+                        appDatabase.applicationInfoDao().getEnabledAppsAlphabetically(filterText) :
+                        appDatabase.applicationInfoDao().getUserApps(filterText);
+            case DNS:
+                if (text.length() == 0) {
+                    return appDatabase.applicationInfoDao().getAppsInDnsOrder();
+                }
+                return appDatabase.applicationInfoDao().getAppsInDnsOrder(filterText);
         }
         return null;
     }

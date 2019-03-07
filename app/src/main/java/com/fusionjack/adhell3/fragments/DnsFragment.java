@@ -1,18 +1,13 @@
 package com.fusionjack.adhell3.fragments;
 
-import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,52 +22,24 @@ import com.fusionjack.adhell3.adapter.AppInfoAdapter;
 import com.fusionjack.adhell3.db.AppDatabase;
 import com.fusionjack.adhell3.db.entity.AppInfo;
 import com.fusionjack.adhell3.db.entity.DnsPackage;
+import com.fusionjack.adhell3.db.repository.AppRepository;
 import com.fusionjack.adhell3.model.AppFlag;
-import com.fusionjack.adhell3.tasks.LoadAppAsyncTask;
-import com.fusionjack.adhell3.tasks.RefreshAppAsyncTask;
 import com.fusionjack.adhell3.tasks.SetAppAsyncTask;
 import com.fusionjack.adhell3.utils.AdhellAppIntegrity;
 import com.fusionjack.adhell3.utils.AdhellFactory;
-import com.fusionjack.adhell3.utils.AppCache;
 import com.fusionjack.adhell3.utils.AppPreferences;
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
 
 import java.util.List;
 
-public class DnsFragment extends Fragment {
-    private Context context;
+public class DnsFragment extends AppFragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.context = getContext();
-    }
 
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-
-        inflater.inflate(R.menu.app_menu, menu);
-        AppFlag appFlag = AppFlag.createDnsFlag();
-
-        SearchView searchView = (SearchView) menu.findItem(R.id.search).getActionView();
-        searchView.setMaxWidth(Integer.MAX_VALUE);
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String text) {
-                if (searchView.isIconified()) {
-                    return false;
-                }
-                new LoadAppAsyncTask(text, appFlag, getContext()).execute();
-                return false;
-            }
-        });
+        initAppModel(AppRepository.Type.DNS);
     }
 
     @Override
@@ -106,7 +73,7 @@ public class DnsFragment extends Fragment {
                         appDatabase.dnsPackageDao().deleteAll();
                     } else {
                         appDatabase.dnsPackageDao().deleteAll();
-                        List<AppInfo> userApps = appDatabase.applicationInfoDao().getUserApps();
+                        List<AppInfo> userApps = appDatabase.applicationInfoDao().getUserApps2();
                         for (AppInfo app : userApps) {
                             app.hasCustomDns = true;
                             appDatabase.applicationInfoDao().update(app);
@@ -119,8 +86,7 @@ public class DnsFragment extends Fragment {
 
                     AppPreferences.getInstance().setDnsAllApps(!isAllEnabled);
 
-                    AppFlag appFlag = AppFlag.createDnsFlag();
-                    new LoadAppAsyncTask("", appFlag, getContext()).execute();
+                    getAppList("", type);
                 })
             )
             .setNegativeButton(android.R.string.no, null).show();
@@ -134,6 +100,7 @@ public class DnsFragment extends Fragment {
 
         AppFlag appFlag = AppFlag.createDnsFlag();
         ListView listView = view.findViewById(R.id.dns_apps_list);
+        listView.setAdapter(adapter);
         if (AppPreferences.getInstance().isDnsNotEmpty()) {
             listView.setOnItemClickListener((AdapterView<?> adView, View view2, int position, long id) -> {
                 AppInfoAdapter adapter = (AppInfoAdapter) adView.getAdapter();
@@ -142,12 +109,11 @@ public class DnsFragment extends Fragment {
         }
 
         SwipeRefreshLayout dnsSwipeContainer = view.findViewById(R.id.dnsSwipeContainer);
-        dnsSwipeContainer.setOnRefreshListener(() ->
-                new RefreshAppAsyncTask(appFlag, context).execute()
-        );
-
-        AppCache.getInstance(context, null);
-        new LoadAppAsyncTask("", appFlag, context).execute();
+        dnsSwipeContainer.setOnRefreshListener(() -> {
+                getAppList("", type);
+                dnsSwipeContainer.setRefreshing(false);
+                resetSearchView();
+        });
 
         FloatingActionsMenu dnsFloatMenu = view.findViewById(R.id.dns_actions);
         FloatingActionButton actionSetDns = view.findViewById(R.id.action_set_dns);
