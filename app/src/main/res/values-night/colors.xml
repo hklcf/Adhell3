@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#e5e5e5</color>
-    <color name="colorPrimaryDark">#ffffff</color>
-    <color name="colorPrimaryLight">#999999</color>
+    <color name="colorPrimary">#000000</color>
+    <color name="colorPrimaryDark">#222222</color>
+    <color name="colorPrimaryLight">#aaaaaa</color>
     <color name="colorAccent">#448AFF</color>
-    <color name="colorText">#000000</color>
+    <color name="colorText">#ffffff</color>
     <color name="colorStatus">@color/colorPrimary</color>
-    <color name="colorBorder">#cccccc</color>
+    <color name="colorBorder">#333</color>
     <color name="colorSelector">@color/colorPrimaryDark</color>
     <color name="colorFab">@color/colorAccent</color>
     <color name="colorButton">@color/colorAccent</color>
     <color name="colorBottomNavSelected">@color/colorAccent</color>
-    <color name="colorBottomNavUnselected">@android:color/black</color>
+    <color name="colorBottomNavUnselected">@android:color/white</color>
     <color name="colorRed">#F44336</color>
 </resources>

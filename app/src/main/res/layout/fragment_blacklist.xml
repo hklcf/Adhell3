@@ -28,8 +28,8 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
         fab:fab_addButtonColorNormal="@color/colorFab"
-        fab:fab_addButtonColorPressed="@color/colorSelector"
-        fab:fab_addButtonPlusIconColor="@color/colorPrimaryLight"
+        fab:fab_addButtonColorPressed="@color/colorFab"
+        fab:fab_addButtonPlusIconColor="@android:color/white"
         fab:fab_labelStyle="@style/menu_labels_style"
         android:layout_marginBottom="5dp"
         android:layout_marginRight="5dp"
@@ -41,7 +41,7 @@
             android:layout_height="wrap_content"
             fab:fab_colorNormal="@color/colorFab"
             fab:fab_title="@string/dialog_blacklist_domain_title"
-            fab:fab_colorPressed="@color/colorSelector"/>
+            fab:fab_colorPressed="@color/colorFab"/>
 
         <com.getbase.floatingactionbutton.FloatingActionButton
             android:id="@+id/action_add_firewall_rule"
@@ -49,7 +49,7 @@
             android:layout_height="wrap_content"
             fab:fab_colorNormal="@color/colorFab"
             fab:fab_title="@string/dialog_blacklist_rule_title"
-            fab:fab_colorPressed="@color/colorSelector"/>
+            fab:fab_colorPressed="@color/colorFab"/>
 
     </com.getbase.floatingactionbutton.FloatingActionsMenu>
 

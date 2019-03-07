@@ -21,6 +21,12 @@
         android:summary="@string/restore_database_summary" />
 
     <SwitchPreference
+        android:key="set_night_mode_preference"
+        android:title="@string/set_night_mode"
+        android:summary="@string/set_night_mode_summary"
+        android:defaultValue="false"/>
+
+    <SwitchPreference
         android:key="update_provider_preference"
         android:title="@string/update_provider_title"
         android:summary="@string/update_provider_summary"

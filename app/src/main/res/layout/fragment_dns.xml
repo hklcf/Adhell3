@@ -32,13 +32,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
         fab:fab_addButtonColorNormal="@color/colorFab"
-        fab:fab_addButtonColorPressed="@color/colorSelector"
-        fab:fab_addButtonPlusIconColor="@color/colorPrimaryLight"
+        fab:fab_addButtonColorPressed="@color/colorFab"
+        fab:fab_addButtonPlusIconColor="@android:color/white"
         fab:fab_labelStyle="@style/menu_labels_style"
-        fab:fab_labelsPosition="right"
+        fab:fab_labelsPosition="left"
         android:layout_marginBottom="5dp"
         android:layout_marginLeft="5dp"
         android:layout_marginStart="5dp">
@@ -49,7 +49,7 @@
             android:layout_height="wrap_content"
             fab:fab_colorNormal="@color/colorFab"
             fab:fab_title="@string/dialog_set_dns_title"
-            fab:fab_colorPressed="@color/colorSelector"/>
+            fab:fab_colorPressed="@color/colorFab"/>
 
     </com.getbase.floatingactionbutton.FloatingActionsMenu>
 

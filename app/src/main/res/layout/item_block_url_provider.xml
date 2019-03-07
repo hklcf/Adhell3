@@ -29,7 +29,6 @@
 
     <CheckBox
         android:id="@+id/urlProviderCheckBox"
-        android:button="@drawable/checkbox"
         android:layout_width="wrap_content"
         android:layout_height="24dp"
         android:layout_margin="5dp"
@@ -48,6 +47,7 @@
         android:layout_toStartOf="@+id/urlProviderCheckBox"
         android:layout_centerVertical="true"
         android:contentDescription="@string/delete_url"
+        android:tint="@color/colorRed"
         android:scaleX="1.50"
         android:scaleY="1.50"
         android:src="@drawable/ic_delete_black_24dp" />

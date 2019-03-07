@@ -13,6 +13,7 @@ import android.support.v14.preference.SwitchPreference;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceFragmentCompat;
 import android.support.v7.preference.PreferenceManager;
@@ -25,6 +26,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.fusionjack.adhell3.BuildConfig;
+import com.fusionjack.adhell3.MainActivity;
 import com.fusionjack.adhell3.R;
 import com.fusionjack.adhell3.blocker.ContentBlocker;
 import com.fusionjack.adhell3.blocker.ContentBlocker56;
@@ -46,6 +48,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
     private static final String RESTORE_PREFERENCE = "restore_preference";
     public static final String UPDATE_PROVIDERS_PREFERENCE = "update_provider_preference";
     public static final String SET_PASSWORD_PREFERENCE = "set_password_preference";
+    public static final String SET_NIGHT_MODE_PREFERENCE = "set_night_mode_preference";
     public static final String CREATE_LOGCAT_PREFERENCE = "create_logcat_preference";
     public static final String CHANGE_KEY_PREFERENCE = "change_key_preference";
 
@@ -150,6 +153,24 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                     passwordDialog.show();
                 } else {
                     AppPreferences.getInstance().resetPassword();
+                }
+                break;
+            }
+            case SET_NIGHT_MODE_PREFERENCE: {
+                PreferenceManager preferenceManager = getPreferenceManager();
+                if (preferenceManager.getSharedPreferences().getBoolean(SET_NIGHT_MODE_PREFERENCE, false)) {
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+                    Intent intent = new Intent(getActivity(), MainActivity.class);
+                    intent.putExtra("settingsFragment", SET_NIGHT_MODE_PREFERENCE);
+                    startActivity(intent);
+                    getActivity().finish();
+                }
+                else {
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+                    Intent intent = new Intent(getActivity(), MainActivity.class);
+                    intent.putExtra("settingsFragment", SET_NIGHT_MODE_PREFERENCE);
+                    startActivity(intent);
+                    getActivity().finish();
                 }
                 break;
             }
