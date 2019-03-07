@@ -101,7 +101,7 @@ public class ProviderListFragment extends Fragment {
 
         FloatingActionsMenu providerFloatMenu = view.findViewById(R.id.provider_actions);
         FloatingActionButton actionAddProvider = view.findViewById(R.id.action_add_provider);
-        actionAddProvider.setIcon(R.drawable.ic_event_note_black_24dp);
+        actionAddProvider.setIcon(R.drawable.ic_event_note_white_24dp);
         actionAddProvider.setOnClickListener(v -> {
             providerFloatMenu.collapse();
             View dialogView = inflater.inflate(R.layout.dialog_add_provider, container, false);

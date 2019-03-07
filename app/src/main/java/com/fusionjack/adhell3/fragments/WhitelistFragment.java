@@ -53,7 +53,7 @@ public class WhitelistFragment extends UserListFragment {
 
         FloatingActionsMenu whiteFloatMenu = view.findViewById(R.id.whitelist_actions);
         FloatingActionButton actionAddWhiteDomain = view.findViewById(R.id.action_add_domain);
-        actionAddWhiteDomain.setIcon(R.drawable.ic_public_black_24dp);
+        actionAddWhiteDomain.setIcon(R.drawable.ic_public_white_24dp);
         actionAddWhiteDomain.setOnClickListener(v -> {
             whiteFloatMenu.collapse();
             View dialogView = inflater.inflate(R.layout.dialog_whitelist_domain, container, false);

@@ -1,15 +1,24 @@
 <resources>
 
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppTheme" parent="Theme.AppCompat.DayNight">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="actionBarSize">70dp</item>
+        <item name="android:statusBarColor">@color/colorStatus</item>
         <item name="android:textColor">@color/colorText</item>
         <item name="android:windowNoTitle">true</item>
         <item name="windowActionBar">true</item>
+        <item name="android:windowAnimationStyle">@style/WindowAnimationTransition</item>
+        <item name="android:titleTextColor">@color/colorText</item>
         <item name="android:listViewStyle">@style/ListViewStyle</item>
         <item name="android:buttonStyle">@style/buttonStyle</item>
         <item name="preferenceTheme">@style/PreferenceThemeOverlay.v14.Material</item>
+    </style>
+
+    <style name="WindowAnimationTransition">
+        <item name="android:windowEnterAnimation">@android:anim/fade_in</item>
+        <item name="android:windowExitAnimation">@android:anim/fade_out</item>
     </style>
 
     <style name="ManagementTabLayout" parent="Widget.Design.TabLayout">
@@ -19,7 +28,7 @@
         <item name="tabPaddingStart">5dp</item>
         <item name="tabPaddingEnd">5dp</item>
         <item name="tabTextAppearance">@style/ManagementTabTextAppearance</item>
-        <item name="tabSelectedTextColor">@color/colorPrimaryDark</item>
+        <item name="tabSelectedTextColor">@color/colorText</item>
     </style>
 
     <style name="ManagementTabTextAppearance" parent="TextAppearance.Design.Tab">
@@ -40,7 +49,7 @@
     </style>
 
     <style name="menu_labels_style">
-        <item name="android:background">@drawable/fab_label_background</item>
+        <!--<item name="android:background">@drawable/fab_label_background</item>-->
         <item name="android:textColor">@color/colorText</item>
     </style>
 

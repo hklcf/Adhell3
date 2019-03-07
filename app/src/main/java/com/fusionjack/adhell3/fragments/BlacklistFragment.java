@@ -54,7 +54,7 @@ public class BlacklistFragment extends UserListFragment {
 
         FloatingActionsMenu blackFloatMenu = view.findViewById(R.id.blacklist_actions);
         FloatingActionButton actionAddBlackDomain = view.findViewById(R.id.action_add_domain);
-        actionAddBlackDomain.setIcon(R.drawable.ic_public_black_24dp);
+        actionAddBlackDomain.setIcon(R.drawable.ic_public_white_24dp);
         actionAddBlackDomain.setOnClickListener(v -> {
             blackFloatMenu.collapse();
             View dialogView = inflater.inflate(R.layout.dialog_blacklist_domain, container, false);
@@ -73,7 +73,7 @@ public class BlacklistFragment extends UserListFragment {
         });
 
         FloatingActionButton actionAddFirewallRule = view.findViewById(R.id.action_add_firewall_rule);
-        actionAddFirewallRule.setIcon(R.drawable.ic_whatshot_black_24dp);
+        actionAddFirewallRule.setIcon(R.drawable.ic_whatshot_white_24dp);
         actionAddFirewallRule.setOnClickListener(v -> {
             blackFloatMenu.collapse();
             View dialogView = inflater.inflate(R.layout.dialog_blacklist_rule, container, false);
