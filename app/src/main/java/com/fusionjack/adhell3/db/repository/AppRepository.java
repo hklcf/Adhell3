@@ -28,6 +28,26 @@ public class AppRepository {
         AppDatabase appDatabase = AdhellFactory.getInstance().getAppDatabase();
         String filterText = '%' + text + '%';
         switch (type) {
+            case DISABLER:
+                if (text.length() == 0) {
+                    return appDatabase.applicationInfoDao().getAppsInDisabledOrder();
+                }
+                return appDatabase.applicationInfoDao().getAppsInDisabledOrder(filterText);
+            case MOBILE_RESTRICTED:
+                if (text.length() == 0) {
+                    return appDatabase.applicationInfoDao().getAppsInMobileRestrictedOrder();
+                }
+                return appDatabase.applicationInfoDao().getAppsInMobileRestrictedOrder(filterText);
+            case WIFI_RESTRICTED:
+                if (text.length() == 0) {
+                    return appDatabase.applicationInfoDao().getAppsInWifiRestrictedOrder();
+                }
+                return appDatabase.applicationInfoDao().getAppsInWifiRestrictedOrder(filterText);
+            case WHITELISTED:
+                if (text.length() == 0) {
+                    return appDatabase.applicationInfoDao().getAppsInWhitelistedOrder();
+                }
+                return appDatabase.applicationInfoDao().getAppsInWhitelistedOrder(filterText);
             case COMPONENT:
                 boolean showSystemApps = BuildConfig.SHOW_SYSTEM_APP_COMPONENT;
                 if (text.length() == 0) {

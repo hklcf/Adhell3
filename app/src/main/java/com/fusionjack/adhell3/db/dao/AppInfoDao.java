@@ -66,10 +66,10 @@ public interface AppInfoDao {
     List<AppInfo> getDisabledApps();
 
     @Query("SELECT * FROM AppInfo ORDER BY disabled DESC, appName ASC")
-    List<AppInfo> getAppsInDisabledOrder();
+    LiveData<List<AppInfo>> getAppsInDisabledOrder();
 
     @Query("SELECT * FROM AppInfo WHERE (appName LIKE :str OR packageName LIKE :str) ORDER BY disabled DESC, appName ASC")
-    List<AppInfo> getAppsInDisabledOrder(String str);
+    LiveData<List<AppInfo>> getAppsInDisabledOrder(String str);
 
 
     // Mobile restricted apps (only enabled apps)
@@ -77,10 +77,10 @@ public interface AppInfoDao {
     List<AppInfo> getMobileRestrictedApps();
 
     @Query("SELECT * FROM AppInfo WHERE disabled = 0 ORDER BY mobileRestricted DESC, appName ASC")
-    List<AppInfo> getAppsInMobileRestrictedOrder();
+    LiveData<List<AppInfo>> getAppsInMobileRestrictedOrder();
 
     @Query("SELECT * FROM AppInfo WHERE (appName LIKE :str OR packageName LIKE :str) AND disabled = 0 ORDER BY mobileRestricted DESC, appName ASC")
-    List<AppInfo> getAppsInMobileRestrictedOrder(String str);
+    LiveData<List<AppInfo>> getAppsInMobileRestrictedOrder(String str);
 
 
     // Wifi restricted apps (only enabled apps)
@@ -88,10 +88,10 @@ public interface AppInfoDao {
     List<AppInfo> getWifiRestrictedApps();
 
     @Query("SELECT * FROM AppInfo WHERE disabled = 0 ORDER BY wifiRestricted DESC, appName ASC")
-    List<AppInfo> getAppsInWifiRestrictedOrder();
+    LiveData<List<AppInfo>> getAppsInWifiRestrictedOrder();
 
     @Query("SELECT * FROM AppInfo WHERE (appName LIKE :str OR packageName LIKE :str) AND disabled = 0 ORDER BY wifiRestricted DESC, appName ASC")
-    List<AppInfo> getAppsInWifiRestrictedOrder(String str);
+    LiveData<List<AppInfo>> getAppsInWifiRestrictedOrder(String str);
 
 
     // Whitelisted apps (only enabled apps)
@@ -99,10 +99,10 @@ public interface AppInfoDao {
     List<AppInfo> getWhitelistedApps();
 
     @Query("SELECT * FROM AppInfo WHERE disabled = 0 ORDER BY adhellWhitelisted DESC, appName ASC")
-    List<AppInfo> getAppsInWhitelistedOrder();
+    LiveData<List<AppInfo>> getAppsInWhitelistedOrder();
 
     @Query("SELECT * FROM AppInfo WHERE (appName LIKE :str OR packageName LIKE :str) AND disabled = 0 ORDER BY adhellWhitelisted DESC, appName ASC")
-    List<AppInfo> getAppsInWhitelistedOrder(String str);
+    LiveData<List<AppInfo>> getAppsInWhitelistedOrder(String str);
 
 
     // User apps

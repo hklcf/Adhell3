@@ -1,15 +1,10 @@
 package com.fusionjack.adhell3.fragments;
 
-import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,22 +18,19 @@ import com.fusionjack.adhell3.adapter.AppInfoAdapter;
 import com.fusionjack.adhell3.db.AppDatabase;
 import com.fusionjack.adhell3.db.DatabaseFactory;
 import com.fusionjack.adhell3.db.entity.AppInfo;
+import com.fusionjack.adhell3.db.repository.AppRepository;
 import com.fusionjack.adhell3.model.AppFlag;
-import com.fusionjack.adhell3.tasks.LoadAppAsyncTask;
-import com.fusionjack.adhell3.tasks.RefreshAppAsyncTask;
 import com.fusionjack.adhell3.tasks.SetAppAsyncTask;
 import com.fusionjack.adhell3.utils.AdhellFactory;
-import com.fusionjack.adhell3.utils.AppCache;
 import com.fusionjack.adhell3.utils.AppPreferences;
 import com.samsung.android.knox.application.ApplicationPolicy;
 
 import java.util.List;
 
-public class AppTabPageFragment extends Fragment {
+public class AppTabPageFragment extends AppFragment {
     private static final String ARG_PAGE = "page";
     private int page;
     private AppFlag appFlag;
-    private Context context;
 
     public static final int PACKAGE_DISABLER_PAGE = 0;
     public static final int MOBILE_RESTRICTER_PAGE = 1;
@@ -57,7 +49,30 @@ public class AppTabPageFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.page = getArguments().getInt(ARG_PAGE);
-        this.context = getContext();
+
+        AppRepository.Type type;
+        switch (page) {
+            case PACKAGE_DISABLER_PAGE:
+                type = AppRepository.Type.DISABLER;
+                break;
+
+            case MOBILE_RESTRICTER_PAGE:
+                type = AppRepository.Type.MOBILE_RESTRICTED;
+                break;
+
+            case WIFI_RESTRICTER_PAGE:
+                type = AppRepository.Type.WIFI_RESTRICTED;
+                break;
+
+            case WHITELIST_PAGE:
+                type = AppRepository.Type.WHITELISTED;
+                break;
+
+            default:
+                type = AppRepository.Type.DISABLER;
+                break;
+        }
+        initAppModel(type);
     }
 
     @Override
@@ -88,6 +103,7 @@ public class AppTabPageFragment extends Fragment {
 
         if (view != null) {
             ListView listView = view.findViewById(appFlag.getLoadLayout());
+            listView.setAdapter(adapter);
             if (page != PACKAGE_DISABLER_PAGE || AppPreferences.getInstance().isAppDisablerToggleEnabled()) {
                 listView.setOnItemClickListener((AdapterView<?> adView, View view2, int position, long id) -> {
                     AppInfoAdapter adapter = (AppInfoAdapter) adView.getAdapter();
@@ -96,54 +112,16 @@ public class AppTabPageFragment extends Fragment {
             }
 
             SwipeRefreshLayout swipeContainer = view.findViewById(appFlag.getRefreshLayout());
-            swipeContainer.setOnRefreshListener(() ->
-                    new RefreshAppAsyncTask(appFlag, context).execute()
-            );
+            swipeContainer.setOnRefreshListener(() -> {
+                    getAppList("", type);
+                    swipeContainer.setRefreshing(false);
+                    resetSearchView();
+            });
 
-            AppCache.getInstance(context, null);
-            new LoadAppAsyncTask("", appFlag, context).execute();
+            getAppList("", type);
         }
 
         return view;
-    }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.app_menu, menu);
-
-        SearchView searchView = (SearchView) menu.findItem(R.id.search).getActionView();
-        searchView.setMaxWidth(Integer.MAX_VALUE);
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String text) {
-                if (searchView.isIconified()) {
-                    return false;
-                }
-                AppFlag appFlag = null;
-                switch (page) {
-                    case PACKAGE_DISABLER_PAGE:
-                        appFlag = AppFlag.createDisablerFlag();
-                        break;
-                    case MOBILE_RESTRICTER_PAGE:
-                        appFlag = AppFlag.createMobileRestrictedFlag();
-                        break;
-                    case WIFI_RESTRICTER_PAGE:
-                        appFlag = AppFlag.createWifiRestrictedFlag();
-                        break;
-                    case WHITELIST_PAGE:
-                        appFlag = AppFlag.createWhitelistedFlag();
-                        break;
-                }
-                new LoadAppAsyncTask(text, appFlag, getContext()).execute();
-                return false;
-            }
-        });
     }
 
     @Override
@@ -167,11 +145,9 @@ public class AppTabPageFragment extends Fragment {
             .setPositiveButton(android.R.string.yes, (dialog, whichButton) -> {
                 Toast.makeText(getContext(), getString(R.string.enabled_all_apps), Toast.LENGTH_SHORT).show();
                 AsyncTask.execute(() -> {
-                    AppFlag appFlag = null;
                     AppDatabase appDatabase = AdhellFactory.getInstance().getAppDatabase();
                     switch (page) {
                         case PACKAGE_DISABLER_PAGE:
-                            appFlag = AppFlag.createDisablerFlag();
                             ApplicationPolicy appPolicy = AdhellFactory.getInstance().getAppPolicy();
                             List<AppInfo> disabledAppList = appDatabase.applicationInfoDao().getDisabledApps();
                             for (AppInfo app : disabledAppList) {
@@ -185,7 +161,6 @@ public class AppTabPageFragment extends Fragment {
                             break;
 
                         case MOBILE_RESTRICTER_PAGE:
-                            appFlag = AppFlag.createMobileRestrictedFlag();
                             List<AppInfo> mobileAppList = appDatabase.applicationInfoDao().getMobileRestrictedApps();
                             for (AppInfo app : mobileAppList) {
                                 app.mobileRestricted = false;
@@ -195,7 +170,6 @@ public class AppTabPageFragment extends Fragment {
                             break;
 
                         case WIFI_RESTRICTER_PAGE:
-                            appFlag = AppFlag.createWifiRestrictedFlag();
                             List<AppInfo> wifiAppList = appDatabase.applicationInfoDao().getWifiRestrictedApps();
                             for (AppInfo app : wifiAppList) {
                                 app.wifiRestricted = false;
@@ -205,7 +179,6 @@ public class AppTabPageFragment extends Fragment {
                             break;
 
                         case WHITELIST_PAGE:
-                            appFlag = AppFlag.createWhitelistedFlag();
                             List<AppInfo> whitelistedAppList = appDatabase.applicationInfoDao().getWhitelistedApps();
                             for (AppInfo app : whitelistedAppList) {
                                 app.adhellWhitelisted = false;
@@ -214,7 +187,7 @@ public class AppTabPageFragment extends Fragment {
                             appDatabase.firewallWhitelistedPackageDao().deleteAll();
                             break;
                     }
-                    new LoadAppAsyncTask("", appFlag, getContext()).execute();
+                    getAppList("", type);
                 });
             })
             .setNegativeButton(android.R.string.no, null).show();
