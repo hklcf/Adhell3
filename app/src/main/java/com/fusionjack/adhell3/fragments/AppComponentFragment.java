@@ -24,6 +24,7 @@ import com.fusionjack.adhell3.BuildConfig;
 import com.fusionjack.adhell3.R;
 import com.fusionjack.adhell3.adapter.AppInfoAdapter;
 import com.fusionjack.adhell3.db.entity.AppInfo;
+import com.fusionjack.adhell3.db.repository.AppRepository;
 import com.fusionjack.adhell3.model.AppFlag;
 import com.fusionjack.adhell3.tasks.RefreshAppAsyncTask;
 import com.fusionjack.adhell3.utils.AdhellFactory;
@@ -38,7 +39,7 @@ public class AppComponentFragment extends Fragment {
     private AppViewModel viewModel;
     private AppInfoAdapter adapter;
     private List<AppInfo> appInfoList;
-    private AppFlag appFlag;
+    private AppRepository.Type type;
     private String searchText;
 
     @Override
@@ -46,15 +47,15 @@ public class AppComponentFragment extends Fragment {
         super.onCreate(savedInstanceState);
         this.context = getContext();
         this.searchText = "";
+        this.type = AppRepository.Type.COMPONENT;
 
         AppCache.getInstance(context, null);
 
-        appFlag = AppFlag.createComponentFlag();
         appInfoList = new ArrayList<>();
-        adapter = new AppInfoAdapter(appInfoList, appFlag, false, context);
+        adapter = new AppInfoAdapter(appInfoList, type, false, context);
 
         viewModel = ViewModelProviders.of(this).get(AppViewModel.class);
-        viewModel.getAppList("", appFlag).observe(this, appInfos -> {
+        viewModel.getAppList("", type).observe(this, appInfos -> {
             appInfoList.clear();
             appInfoList.addAll(appInfos);
             adapter.notifyDataSetChanged();
@@ -95,7 +96,7 @@ public class AppComponentFragment extends Fragment {
             @Override
             public boolean onQueryTextChange(String text) {
                 searchText = text;
-                viewModel.getAppList(text, appFlag).observe(getActivity(), appInfos -> {
+                viewModel.getAppList(text, type).observe(getActivity(), appInfos -> {
                     appInfoList.clear();
                     appInfoList.addAll(appInfos);
                     adapter.notifyDataSetChanged();

@@ -15,7 +15,7 @@ import android.widget.TextView;
 
 import com.fusionjack.adhell3.R;
 import com.fusionjack.adhell3.db.entity.AppInfo;
-import com.fusionjack.adhell3.model.AppFlag;
+import com.fusionjack.adhell3.db.repository.AppRepository;
 import com.fusionjack.adhell3.utils.AppCache;
 import com.fusionjack.adhell3.utils.AppPreferences;
 
@@ -27,13 +27,13 @@ public class AppInfoAdapter extends BaseAdapter {
 
     private List<AppInfo> applicationInfoList;
     private WeakReference<Context> contextReference;
-    private AppFlag appFlag;
+    private AppRepository.Type appType;
     private Map<String, Drawable> appIcons;
 
-    public AppInfoAdapter(List<AppInfo> appInfoList, AppFlag appFlag, boolean reload, Context context) {
+    public AppInfoAdapter(List<AppInfo> appInfoList, AppRepository.Type appType, boolean reload, Context context) {
         this.applicationInfoList = appInfoList;
         this.contextReference = new WeakReference<>(context);
-        this.appFlag = appFlag;
+        this.appType = appType;
         Handler handler = new Handler(Looper.getMainLooper()) {
             @Override
             public void handleMessage(Message msg) {
@@ -82,24 +82,24 @@ public class AppInfoAdapter extends BaseAdapter {
         holder.nameH.setText(appInfo.appName);
         holder.packageH.setText(appInfo.packageName);
         boolean checked = false;
-        switch (appFlag.getFlag()) {
-            case DISABLER_FLAG:
+        switch (appType) {
+            case DISABLER:
                 checked = !appInfo.disabled;
                 boolean enabled = AppPreferences.getInstance().isAppDisablerToggleEnabled();
                 holder.switchH.setEnabled(enabled);
                 break;
-            case MOBILE_RESTRICTED_FLAG:
+            case MOBILE_RESTRICTED:
                 checked = !appInfo.mobileRestricted;
                 break;
-            case WIFI_RESTRICTED_FLAG:
+            case WIFI_RESTRICTED:
                 checked = !appInfo.wifiRestricted;
                 break;
-            case WHITELISTED_FLAG:
+            case WHITELISTED:
                 checked = appInfo.adhellWhitelisted;
                 break;
-            case COMPONENT_FLAG:
+            case COMPONENT:
                 holder.switchH.setVisibility(View.GONE);
-            case DNS_FLAG:
+            case DNS:
                 boolean isDnsNotEmpty = AppPreferences.getInstance().isDnsNotEmpty();
                 if (isDnsNotEmpty) {
                     holder.switchH.setEnabled(true);

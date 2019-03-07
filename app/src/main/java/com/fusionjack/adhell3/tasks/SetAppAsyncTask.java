@@ -40,8 +40,8 @@ public class SetAppAsyncTask extends AsyncTask<Void, Void, Void> {
 
         AppDatabase appDatabase = AdhellFactory.getInstance().getAppDatabase();
         String packageName = appInfo.packageName;
-        switch (appFlag.getFlag()) {
-            case DISABLER_FLAG:
+        switch (appFlag.getType()) {
+            case DISABLER:
                 appInfo.disabled = !appInfo.disabled;
                 if (appInfo.disabled) {
                     DisabledPackage disabledPackage = new DisabledPackage();
@@ -59,7 +59,7 @@ public class SetAppAsyncTask extends AsyncTask<Void, Void, Void> {
                 }
                 break;
 
-            case MOBILE_RESTRICTED_FLAG:
+            case MOBILE_RESTRICTED:
                 appInfo.mobileRestricted = !appInfo.mobileRestricted;
                 if (appInfo.mobileRestricted) {
                     RestrictedPackage restrictedPackage = new RestrictedPackage();
@@ -72,7 +72,7 @@ public class SetAppAsyncTask extends AsyncTask<Void, Void, Void> {
                 }
                 break;
 
-            case WIFI_RESTRICTED_FLAG:
+            case WIFI_RESTRICTED:
                 appInfo.wifiRestricted = !appInfo.wifiRestricted;
                 if (appInfo.wifiRestricted) {
                     RestrictedPackage restrictedPackage = new RestrictedPackage();
@@ -85,7 +85,7 @@ public class SetAppAsyncTask extends AsyncTask<Void, Void, Void> {
                 }
                 break;
 
-            case WHITELISTED_FLAG:
+            case WHITELISTED:
                 appInfo.adhellWhitelisted = !appInfo.adhellWhitelisted;
                 if (appInfo.adhellWhitelisted) {
                     FirewallWhitelistedPackage whitelistedPackage = new FirewallWhitelistedPackage();
@@ -97,7 +97,7 @@ public class SetAppAsyncTask extends AsyncTask<Void, Void, Void> {
                 }
                 break;
 
-            case DNS_FLAG:
+            case DNS:
                 appInfo.hasCustomDns = !appInfo.hasCustomDns;
                 if (appInfo.hasCustomDns) {
                     DnsPackage dnsPackage = new DnsPackage();
