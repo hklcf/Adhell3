@@ -113,12 +113,12 @@ public class AppTabPageFragment extends AppFragment {
 
             SwipeRefreshLayout swipeContainer = view.findViewById(appFlag.getRefreshLayout());
             swipeContainer.setOnRefreshListener(() -> {
-                    getAppList("", type);
+                    loadAppList(type);
                     swipeContainer.setRefreshing(false);
                     resetSearchView();
             });
 
-            getAppList("", type);
+            loadAppList(type);
         }
 
         return view;
@@ -187,7 +187,7 @@ public class AppTabPageFragment extends AppFragment {
                             appDatabase.firewallWhitelistedPackageDao().deleteAll();
                             break;
                     }
-                    getAppList("", type);
+                    loadAppList(type);
                 });
             })
             .setNegativeButton(android.R.string.no, null).show();

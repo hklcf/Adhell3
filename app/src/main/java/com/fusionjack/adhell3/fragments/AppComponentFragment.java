@@ -96,7 +96,7 @@ public class AppComponentFragment extends AppFragment {
 
         SwipeRefreshLayout swipeContainer = view.findViewById(appFlag.getRefreshLayout());
         swipeContainer.setOnRefreshListener(() -> {
-            getAppList("", type);
+            loadAppList(type);
             swipeContainer.setRefreshing(false);
             resetSearchView();
         });

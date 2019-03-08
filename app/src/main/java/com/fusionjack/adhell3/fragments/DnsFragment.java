@@ -73,7 +73,7 @@ public class DnsFragment extends AppFragment {
                         appDatabase.dnsPackageDao().deleteAll();
                     } else {
                         appDatabase.dnsPackageDao().deleteAll();
-                        List<AppInfo> userApps = appDatabase.applicationInfoDao().getUserApps2();
+                        List<AppInfo> userApps = appDatabase.applicationInfoDao().getUserApps();
                         for (AppInfo app : userApps) {
                             app.hasCustomDns = true;
                             appDatabase.applicationInfoDao().update(app);
@@ -86,7 +86,7 @@ public class DnsFragment extends AppFragment {
 
                     AppPreferences.getInstance().setDnsAllApps(!isAllEnabled);
 
-                    getAppList("", type);
+                    loadAppList(type);
                 })
             )
             .setNegativeButton(android.R.string.no, null).show();
@@ -110,7 +110,7 @@ public class DnsFragment extends AppFragment {
 
         SwipeRefreshLayout dnsSwipeContainer = view.findViewById(R.id.dnsSwipeContainer);
         dnsSwipeContainer.setOnRefreshListener(() -> {
-                getAppList("", type);
+                loadAppList(type);
                 dnsSwipeContainer.setRefreshing(false);
                 resetSearchView();
         });

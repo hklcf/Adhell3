@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.SearchView;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.widget.Toast;
 
 import com.fusionjack.adhell3.R;
 import com.fusionjack.adhell3.adapter.AppInfoAdapter;
@@ -17,36 +18,55 @@ import com.fusionjack.adhell3.viewmodel.AppViewModel;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.reactivex.SingleObserver;
+import io.reactivex.disposables.Disposable;
+
 public class AppFragment extends Fragment {
 
     protected Context context;
-    protected AppInfoAdapter adapter;
     protected AppRepository.Type type;
     private AppViewModel viewModel;
-    private List<AppInfo> appInfoList;
     private String searchText;
     private SearchView searchView;
+    private SingleObserver observer;
+
+    private List<AppInfo> appList;
+    protected AppInfoAdapter adapter;
 
     protected void initAppModel(AppRepository.Type type) {
         this.context = getContext();
         this.type = type;
         this.searchText = "";
 
+        appList = new ArrayList<>();
+        adapter = new AppInfoAdapter(appList, type, false, context);
+        viewModel = ViewModelProviders.of(this).get(AppViewModel.class);
+
+        observer = new SingleObserver<List<AppInfo>>() {
+            @Override
+            public void onSubscribe(Disposable d) {
+            }
+
+            @Override
+            public void onSuccess(List<AppInfo> list) {
+                appList.clear();
+                appList.addAll(list);
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        };
+
         AppCache.getInstance(context, null);
 
-        appInfoList = new ArrayList<>();
-        adapter = new AppInfoAdapter(appInfoList, type, false, context);
-
-        viewModel = ViewModelProviders.of(this).get(AppViewModel.class);
-        getAppList("", type);
+        loadAppList(type);
     }
 
-    protected void getAppList(String text, AppRepository.Type type) {
-        viewModel.getAppList(text, type).observe(this, appInfos -> {
-            appInfoList.clear();
-            appInfoList.addAll(appInfos);
-            adapter.notifyDataSetChanged();
-        });
+    protected void loadAppList(AppRepository.Type type) {
+        viewModel.loadAppList(type, observer);
     }
 
     @Override
@@ -72,7 +92,7 @@ public class AppFragment extends Fragment {
             @Override
             public boolean onQueryTextChange(String text) {
                 searchText = text;
-                getAppList(text, type);
+                viewModel.loadAppList(text, type, observer);
                 return false;
             }
         });
