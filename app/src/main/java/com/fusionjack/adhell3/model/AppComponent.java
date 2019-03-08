@@ -53,14 +53,14 @@ public class AppComponent {
     }
 
     public static List<IComponentInfo> getServices(String packageName) {
-        Set<String> serviceNameList = new HashSet<>();
+        Set<String> serviceNameSet = new HashSet<>();
         PackageManager packageManager = AdhellFactory.getInstance().getPackageManager();
 
         // Disabled services won't be appear in the package manager anymore
         AppDatabase appDatabase = AdhellFactory.getInstance().getAppDatabase();
         List<AppPermission> storedServices = appDatabase.appPermissionDao().getServices(packageName);
         for (AppPermission storedService : storedServices) {
-            serviceNameList.add(storedService.permissionName);
+            serviceNameSet.add(storedService.permissionName);
         }
 
         try {
@@ -69,13 +69,15 @@ public class AppComponent {
                 android.content.pm.ServiceInfo[] services = packageInfo.services;
                 if (services != null) {
                     for (android.content.pm.ServiceInfo serviceInfo : services) {
-                        serviceNameList.add(serviceInfo.name);
+                        serviceNameSet.add(serviceInfo.name);
                     }
                 }
             }
         } catch (PackageManager.NameNotFoundException ignored) {
         }
 
+        List<String> serviceNameList = new ArrayList<>(serviceNameSet);
+        Collections.sort(serviceNameList);
         List<IComponentInfo> serviceInfoList = new ArrayList<>();
         for (String serviceName : serviceNameList) {
             serviceInfoList.add(new ServiceInfo(packageName, serviceName));
@@ -85,7 +87,7 @@ public class AppComponent {
     }
 
     public static List<IComponentInfo> getReceivers(String packageName) {
-        Set<ReceiverPair> receiverNameList = new HashSet<>();
+        Set<ReceiverPair> receiverNameSet = new HashSet<>();
         PackageManager packageManager = AdhellFactory.getInstance().getPackageManager();
 
         // Disabled services won't be appear in the package manager anymore
@@ -95,7 +97,7 @@ public class AppComponent {
             StringTokenizer tokenizer = new StringTokenizer(storedReceiver.permissionName, "|");
             String name = tokenizer.nextToken();
             String permission = tokenizer.nextToken();
-            receiverNameList.add(new ReceiverPair(name, permission));
+            receiverNameSet.add(new ReceiverPair(name, permission));
         }
 
         try {
@@ -104,13 +106,15 @@ public class AppComponent {
                 ActivityInfo[] receivers = packageInfo.receivers;
                 if (receivers != null) {
                     for (ActivityInfo activityInfo : receivers) {
-                        receiverNameList.add(new ReceiverPair(activityInfo.name, activityInfo.permission));
+                        receiverNameSet.add(new ReceiverPair(activityInfo.name, activityInfo.permission));
                     }
                 }
             }
         } catch (PackageManager.NameNotFoundException ignored) {
         }
 
+        List<ReceiverPair> receiverNameList = new ArrayList<>(receiverNameSet);
+        Collections.sort(receiverNameList, (r1, r2) -> r1.name.compareToIgnoreCase(r2.name));
         List<IComponentInfo> receiverInfoList = new ArrayList<>();
         for (ReceiverPair pair : receiverNameList) {
             receiverInfoList.add(new ReceiverInfo(packageName, pair.getName(), pair.getPermission()));
