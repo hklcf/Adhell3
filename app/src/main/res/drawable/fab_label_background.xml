@@ -7,5 +7,5 @@
         android:right="16dp"
         android:bottom="4dp"/>
     <corners
-        android:radius="2dp"/>
+        android:radius="14dp"/>
 </shape>

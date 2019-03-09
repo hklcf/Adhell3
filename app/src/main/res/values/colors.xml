@@ -6,7 +6,7 @@
     <color name="colorAccent">#448AFF</color>
     <color name="colorText">#000000</color>
     <color name="colorStatus">@color/colorPrimary</color>
-    <color name="colorBorder">#cccccc</color>
+    <color name="colorBorder">@color/colorPrimary</color>
     <color name="colorSelector">@color/colorPrimaryDark</color>
     <color name="colorFab">@color/colorAccent</color>
     <color name="colorButton">@color/colorAccent</color>
