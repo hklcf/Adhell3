@@ -28,7 +28,7 @@ public class AppFragment extends Fragment {
     private AppViewModel viewModel;
     private String searchText;
     private SearchView searchView;
-    private SingleObserver observer;
+    private SingleObserver<List<AppInfo>> observer;
 
     private List<AppInfo> appList;
     protected AppInfoAdapter adapter;
