@@ -3,6 +3,7 @@ package com.fusionjack.adhell3.utils;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
@@ -35,15 +36,17 @@ public class AppCache {
     private static AppCache instance;
     private Map<String, Drawable> appsIcons;
     private Map<String, String> appsNames;
+    private Map<String, String> versionNames;
 
     private AppCache(Context context, Handler handler) {
         this.appsIcons = new HashMap<>();
         this.appsNames = new HashMap<>();
+        this.versionNames = new HashMap<>();
         loadApps(context, handler);
     }
 
     private void loadApps(Context context, Handler handler) {
-        new AppCacheAsyncTask(context, handler, appsIcons, appsNames).execute();
+        new AppCacheAsyncTask(context, handler, appsIcons, appsNames, versionNames).execute();
     }
 
     public static synchronized AppCache getInstance(Context context, Handler handler) {
@@ -67,16 +70,23 @@ public class AppCache {
         return appsNames;
     }
 
+    public Map<String, String> getVersionNames() {
+        return versionNames;
+    }
+
     private static class AppCacheAsyncTask extends AsyncTask<Void, Void, Throwable> {
         private ProgressDialog dialog;
         private Map<String, Drawable> appsIcons;
         private Map<String, String> appsNames;
+        private Map<String, String> versionNames;
         private Handler handler;
         private WeakReference<Context> contextWeakReference;
 
-        AppCacheAsyncTask(Context context, Handler handler, Map<String, Drawable> appsIcons, Map<String, String> appsNames) {
+        AppCacheAsyncTask(Context context, Handler handler, Map<String, Drawable> appsIcons,
+                          Map<String, String> appsNames, Map<String, String> versionNames) {
             this.appsIcons = appsIcons;
             this.appsNames = appsNames;
+            this.versionNames = versionNames;
             this.handler = handler;
             this.contextWeakReference = new WeakReference<>(context);
 
@@ -124,6 +134,7 @@ public class AppCache {
                     AppInfoResult result = task.get();
                     appsIcons.putAll(result.getAppsIcons());
                     appsNames.putAll(result.getAppsNames());
+                    versionNames.putAll(result.getVersionNames());
                 }
 
                 executorService.shutdown();
@@ -251,7 +262,9 @@ public class AppCache {
                 appInfo.packageName = app.packageName;
                 appInfo.system = (app.flags & mask) != 0;
                 try {
-                    appInfo.installTime = packageManager.getPackageInfo(app.packageName, 0).firstInstallTime;
+                    PackageInfo packageInfo = packageManager.getPackageInfo(app.packageName, 0);
+                    appInfo.installTime = packageInfo.firstInstallTime;
+                    appInfoResult.putVersionName(app.packageName, packageInfo.versionName);
                 } catch (PackageManager.NameNotFoundException e) {
                     e.printStackTrace();
                     appInfo.installTime = 0;
@@ -267,10 +280,12 @@ public class AppCache {
     private static class AppInfoResult {
         private Map<String, Drawable> appsIcons;
         private Map<String, String> appsNames;
+        private Map<String, String> versionNames;
 
         AppInfoResult() {
             this.appsIcons = new HashMap<>();
             this.appsNames = new HashMap<>();
+            this.versionNames = new HashMap<>();
         }
 
         public void putAppIcon(String packageName, Drawable icon) {
@@ -281,12 +296,20 @@ public class AppCache {
             appsNames.put(packageName, appName);
         }
 
+        public void putVersionName(String packageName, String versionName) {
+            versionNames.put(packageName, versionName);
+        }
+
         public Map<String, Drawable> getAppsIcons() {
             return appsIcons;
         }
 
         public Map<String, String> getAppsNames() {
             return appsNames;
+        }
+
+        public Map<String, String> getVersionNames() {
+            return versionNames;
         }
     }
 }

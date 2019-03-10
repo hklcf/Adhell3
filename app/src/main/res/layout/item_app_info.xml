@@ -53,8 +53,7 @@
         android:layout_toEndOf="@id/appIcon"
         android:layout_toRightOf="@id/appIcon"
         android:text="System"
-        android:textSize="12sp"
-        android:textStyle="italic"/>
+        android:textSize="12sp"/>
 
     <TextView
         android:id="@+id/packName"

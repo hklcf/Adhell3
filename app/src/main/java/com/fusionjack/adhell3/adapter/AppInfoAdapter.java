@@ -29,6 +29,7 @@ public class AppInfoAdapter extends BaseAdapter {
     private WeakReference<Context> contextReference;
     private AppRepository.Type appType;
     private Map<String, Drawable> appIcons;
+    private Map<String, String> versionNames;
 
     public AppInfoAdapter(List<AppInfo> appInfoList, AppRepository.Type appType, boolean reload, Context context) {
         this.applicationInfoList = appInfoList;
@@ -44,6 +45,7 @@ public class AppInfoAdapter extends BaseAdapter {
             this.appIcons = AppCache.reload(context, handler).getIcons();
         } else {
             this.appIcons = AppCache.getInstance(context, handler).getIcons();
+            this.versionNames = AppCache.getInstance(context, handler).getVersionNames();
         }
     }
 
@@ -71,6 +73,7 @@ public class AppInfoAdapter extends BaseAdapter {
             holder = new ViewHolder();
             holder.nameH = convertView.findViewById(R.id.appName);
             holder.packageH = convertView.findViewById(R.id.packName);
+            holder.infoH = convertView.findViewById(R.id.systemOrNot);
             holder.switchH = convertView.findViewById(R.id.switchDisable);
             holder.imageH = convertView.findViewById(R.id.appIcon);
             convertView.setTag(holder);
@@ -111,23 +114,22 @@ public class AppInfoAdapter extends BaseAdapter {
         }
         holder.switchH.setChecked(checked);
 
-        if (appInfo.system) {
-            convertView.findViewById(R.id.systemOrNot).setVisibility(View.VISIBLE);
-        } else {
-            convertView.findViewById(R.id.systemOrNot).setVisibility(View.GONE);
-        }
+        String info = appInfo.system ? "System" : "User";
+        holder.infoH.setText(String.format("%s (%s)", info, versionNames.get(appInfo.packageName)));
 
         Drawable icon = appIcons.get(appInfo.packageName);
         if (icon == null) {
             icon = context.getResources().getDrawable(android.R.drawable.sym_def_app_icon);
         }
         holder.imageH.setImageDrawable(icon);
+
         return convertView;
     }
 
     private static class ViewHolder {
         TextView nameH;
         TextView packageH;
+        TextView infoH;
         Switch switchH;
         ImageView imageH;
     }
