@@ -172,6 +172,12 @@
     <string name="settings_fragment_title">Settings</string>
     <string name="enable_apps_dialog_title">Enable All Apps</string>
     <string name="enable_apps_dialog_text">Do you really want to enable all apps?</string>
+    <string name="delete_provider_dialog_title">Delete Provider</string>
+    <string name="delete_provider_dialog_text">Do you really want to delete the provider?</string>
+    <string name="delete_domain_dialog_title">Delete Domain</string>
+    <string name="delete_domain_dialog_text">Do you really want to delete the domain?</string>
+    <string name="delete_domain_firewall_dialog_title">Delete Domain or Firewall Rule</string>
+    <string name="delete_domain_firewall_dialog_text">Do you really want to delete the domain or firewall rule?</string>
     <string name="backup_database_dialog_title">Backup Database</string>
     <string name="backup_database_dialog_text">Do you really want to backup the database and replace any existing backup?</string>
     <string name="restore_database_dialog_title">Restore Database</string>

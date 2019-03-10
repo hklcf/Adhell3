@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -71,9 +72,20 @@ public class BlockUrlProviderAdapter extends ArrayAdapter<BlockUrlProvider> {
             deleteUrlImageView.setVisibility(View.GONE);
         }
         deleteUrlImageView.setOnClickListener(imageView -> {
-            int position2 = (Integer) imageView.getTag();
-            BlockUrlProvider provider = getItem(position2);
-            new DeleteProviderAsyncTask(provider, this).execute();
+            View dialogView = LayoutInflater.from(getContext()).inflate(R.layout.dialog_question, parent, false);
+            TextView titlTextView = dialogView.findViewById(R.id.titleTextView);
+            titlTextView.setText(R.string.delete_provider_dialog_title);
+            TextView questionTextView = dialogView.findViewById(R.id.questionTextView);
+            questionTextView.setText(R.string.delete_provider_dialog_text);
+
+            new AlertDialog.Builder(getContext())
+                    .setView(dialogView)
+                    .setPositiveButton(android.R.string.yes, (dialog, whichButton) -> {
+                        int position2 = (Integer) imageView.getTag();
+                        BlockUrlProvider provider = getItem(position2);
+                        new DeleteProviderAsyncTask(provider, this).execute();
+                    })
+                    .setNegativeButton(android.R.string.no, null).show();
         });
 
         return convertView;

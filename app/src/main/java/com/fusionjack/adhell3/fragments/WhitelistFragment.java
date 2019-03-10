@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.fusionjack.adhell3.R;
@@ -47,8 +48,19 @@ public class WhitelistFragment extends UserListFragment {
         ListView whiteListView = view.findViewById(R.id.whiteListView);
         whiteListView.setAdapter(adapter);
         whiteListView.setOnItemClickListener((parent, view1, position, id) -> {
-            String item = (String) parent.getItemAtPosition(position);
-            viewModel.removeItem(item, deleteObserver);
+            View dialogView = LayoutInflater.from(context).inflate(R.layout.dialog_question, parent, false);
+            TextView titlTextView = dialogView.findViewById(R.id.titleTextView);
+            titlTextView.setText(R.string.delete_domain_dialog_title);
+            TextView questionTextView = dialogView.findViewById(R.id.questionTextView);
+            questionTextView.setText(R.string.delete_domain_dialog_text);
+
+            new AlertDialog.Builder(context)
+                    .setView(dialogView)
+                    .setPositiveButton(android.R.string.yes, (dialog, whichButton) -> {
+                        String item = (String) parent.getItemAtPosition(position);
+                        viewModel.removeItem(item, deleteObserver);
+                    })
+                    .setNegativeButton(android.R.string.no, null).show();
         });
 
         FloatingActionsMenu whiteFloatMenu = view.findViewById(R.id.whitelist_actions);
