@@ -1,13 +1,10 @@
 package com.fusionjack.adhell3;
 
-import android.annotation.SuppressLint;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
-import android.support.design.internal.BottomNavigationItemView;
-import android.support.design.internal.BottomNavigationMenuView;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -32,8 +29,6 @@ import com.fusionjack.adhell3.utils.CrashHandler;
 import com.fusionjack.adhell3.utils.DeviceAdminInteractor;
 import com.fusionjack.adhell3.utils.LogUtils;
 import com.fusionjack.adhell3.utils.PasswordStorage;
-
-import java.lang.reflect.Field;
 
 import static com.fusionjack.adhell3.fragments.SettingsFragment.SET_NIGHT_MODE_PREFERENCE;
 
@@ -113,9 +108,6 @@ public class MainActivity extends AppCompatActivity {
             onTabSelected(item.getItemId());
             return true;
         });
-
-        // Nasty workaround to show text and icon if the tab count more than 3
-        removeShiftMode(bottomBar);
     }
 
     @Override
@@ -279,28 +271,5 @@ public class MainActivity extends AppCompatActivity {
         });
 
         return passwordDialog;
-    }
-
-    @SuppressLint("RestrictedApi")
-    private void removeShiftMode(BottomNavigationView view) {
-        BottomNavigationMenuView menuView = (BottomNavigationMenuView) view.getChildAt(0);
-        try {
-            Field shiftingMode = menuView.getClass().getDeclaredField("mShiftingMode");
-            shiftingMode.setAccessible(true);
-            shiftingMode.setBoolean(menuView, false);
-            shiftingMode.setAccessible(false);
-            for (int i = 0; i < menuView.getChildCount(); i++) {
-                BottomNavigationItemView item = (BottomNavigationItemView) menuView.getChildAt(i);
-                //noinspection RestrictedApi
-                item.setShiftingMode(false);
-                // set once again checked value, so view will be updated
-                //noinspection RestrictedApi
-                item.setChecked(item.getItemData().isChecked());
-            }
-        } catch (NoSuchFieldException e) {
-            LogUtils.error( "Unable to get shift mode field", e);
-        } catch (IllegalAccessException e) {
-            LogUtils.error( "Unable to change value of shift mode", e);
-        }
     }
 }

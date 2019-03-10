@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.preference.PreferenceScreen
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_height="match_parent"
     android:layout_width="match_parent"
     android:title="@string/settings_fragment_title">
@@ -8,44 +9,52 @@
     <android.support.v7.preference.Preference
         android:key="delete_preference"
         android:title="@string/delete_app"
-        android:summary="@string/delete_app_summary" />
+        android:summary="@string/delete_app_summary"
+        app:iconSpaceReserved="false" />
 
     <android.support.v7.preference.Preference
         android:key="backup_preference"
         android:title="@string/backup_database"
-        android:summary="@string/backup_database_summary" />
+        android:summary="@string/backup_database_summary"
+        app:iconSpaceReserved="false" />
 
     <android.support.v7.preference.Preference
         android:key="restore_preference"
         android:title="@string/restore_database"
-        android:summary="@string/restore_database_summary" />
+        android:summary="@string/restore_database_summary"
+        app:iconSpaceReserved="false" />
 
     <SwitchPreference
         android:key="set_night_mode_preference"
         android:title="@string/set_night_mode"
         android:summary="@string/set_night_mode_summary"
-        android:defaultValue="false"/>
+        android:defaultValue="false"
+        app:iconSpaceReserved="false"/>
 
     <SwitchPreference
         android:key="update_provider_preference"
         android:title="@string/update_provider_title"
         android:summary="@string/update_provider_summary"
-        android:defaultValue="false"/>
+        android:defaultValue="false"
+        app:iconSpaceReserved="false"/>
 
     <SwitchPreference
         android:key="set_password_preference"
         android:title="@string/set_password_title"
         android:summary="@string/set_password_summary"
-        android:defaultValue="false"/>
+        android:defaultValue="false"
+        app:iconSpaceReserved="false"/>
 
     <android.support.v7.preference.Preference
         android:key="create_logcat_preference"
         android:title="@string/create_logcat_title"
-        android:summary="@string/create_logcat_summary" />
+        android:summary="@string/create_logcat_summary"
+        app:iconSpaceReserved="false" />
 
     <android.support.v7.preference.Preference
         android:key="change_key_preference"
         android:title="@string/change_key_title"
-        android:summary="@string/change_key_summary" />
+        android:summary="@string/change_key_summary"
+        app:iconSpaceReserved="false" />
 
 </android.support.v7.preference.PreferenceScreen>
