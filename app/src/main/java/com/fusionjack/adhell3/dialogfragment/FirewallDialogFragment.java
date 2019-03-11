@@ -1,5 +1,6 @@
 package com.fusionjack.adhell3.dialogfragment;
 
+import android.app.Dialog;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
@@ -27,6 +28,18 @@ public class FirewallDialogFragment extends DialogFragment {
         return fragment;
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        Dialog dialog = getDialog();
+        if (dialog != null) {
+            int width = (int)(getResources().getDisplayMetrics().widthPixels * 0.9);
+            int height = (int)(getResources().getDisplayMetrics().heightPixels * 0.9);
+            dialog.getWindow().setLayout(width, height);
+        }
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
@@ -50,6 +63,9 @@ public class FirewallDialogFragment extends DialogFragment {
             dismiss();
         });
         closeButton.setEnabled(false);
+
+        int height = (int)(getResources().getDisplayMetrics().heightPixels * 0.675);
+        scrollView.getLayoutParams().height = height;
     }
 
     public void appendText(String text) {

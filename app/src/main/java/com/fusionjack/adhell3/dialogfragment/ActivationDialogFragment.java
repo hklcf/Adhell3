@@ -128,6 +128,17 @@ public class ActivationDialogFragment extends DialogFragment {
         };
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        Dialog dialog = getDialog();
+        if (dialog != null) {
+            int width = (int)(getResources().getDisplayMetrics().widthPixels * 0.9);
+            dialog.getWindow().setLayout(width, ViewGroup.LayoutParams.WRAP_CONTENT);
+        }
+    }
+
     @android.support.annotation.NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
