@@ -74,7 +74,35 @@
         android:layout_below="@+id/backwardKeyEditText"
         android:layout_centerInParent="true"
         android:layout_marginTop="10dp"
-        android:layout_marginBottom="20dp"
         android:text="@string/activate_license" />
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/activateKnoxButton">
+
+        <Button
+            android:id="@+id/backupButton"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:layout_weight="1.0"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="20dp"
+            android:text="@string/backup" />
+
+        <Button
+            android:id="@+id/deleteButton"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:layout_weight="1.0"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="20dp"
+            android:text="@string/uninstall" />
+
+    </LinearLayout>
 
 </RelativeLayout>

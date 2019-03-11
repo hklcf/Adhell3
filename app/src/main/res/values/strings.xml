@@ -158,6 +158,8 @@
         \nSamsung Knox doesn\'t have an API to list disabled receivers.
         \nTherefore, if the disabled receivers don\'t appear below, you need to reinstall the app.
     </string>
+    <string name="backup">Backup</string>
+    <string name="uninstall">Uninstall</string>
     <string name="backup_database">Backup Database</string>
     <string name="backup_database_summary">Backup all settings into a backup file in internal storage.</string>
     <string name="restore_database">Restore Database</string>
