@@ -17,6 +17,7 @@ import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceFragmentCompat;
 import android.support.v7.preference.PreferenceManager;
+import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -52,6 +53,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
     public static final String SET_NIGHT_MODE_PREFERENCE = "set_night_mode_preference";
     public static final String CREATE_LOGCAT_PREFERENCE = "create_logcat_preference";
     public static final String CHANGE_KEY_PREFERENCE = "change_key_preference";
+    public static final String ABOUT_PREFERENCE = "about_preference";
 
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
@@ -192,6 +194,19 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                     ActivationDialogFragment fragment = new ActivationDialogFragment();
                     fragment.show(fragmentManager, ActivationDialogFragment.DIALOG_TAG);
                 }
+                break;
+            }
+
+            case ABOUT_PREFERENCE: {
+                View dialogView = LayoutInflater.from(getContext()).inflate(R.layout.dialog_question, (ViewGroup) getView(), false);
+                TextView titlTextView = dialogView.findViewById(R.id.titleTextView);
+                titlTextView.setText(R.string.about_title);
+                TextView questionTextView = dialogView.findViewById(R.id.questionTextView);
+                questionTextView.setText(R.string.about_content);
+                questionTextView.setMovementMethod(LinkMovementMethod.getInstance());
+                new AlertDialog.Builder(context)
+                        .setView(dialogView)
+                        .setPositiveButton(android.R.string.yes, null).show();
                 break;
             }
         }
