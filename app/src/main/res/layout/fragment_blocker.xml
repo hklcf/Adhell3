@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:orientation="vertical"
-              android:background="@drawable/border"
-              android:showDividers="middle">
+    xmlns:fab="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/border"
+    android:showDividers="middle">
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/domainRulesLayout"
@@ -181,26 +182,56 @@
         android:layout_gravity="right"
         android:background="@color/colorBorder"/>
 
-    <TextView
-        android:id="@+id/infoTextView"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:padding="10dp"
-        android:text="@string/last_day_blocked"
-        android:background="@drawable/border"/>
-
-    <android.support.v4.widget.SwipeRefreshLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/swipeContainer"
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/blockedDomainLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="5dp">
+        android:background="@drawable/border">
 
-        <ListView
-            android:id="@+id/blockedDomainsListView"
+        <TextView
+            android:id="@+id/infoTextView"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:text="@string/last_day_blocked"
+            android:background="@drawable/border"/>
+
+        <android.support.v4.widget.SwipeRefreshLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/swipeContainer"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/infoTextView"
+            android:layout_marginTop="5dp">
 
-    </android.support.v4.widget.SwipeRefreshLayout>
+            <ListView
+                android:id="@+id/blockedDomainsListView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+        </android.support.v4.widget.SwipeRefreshLayout>
+
+        <com.getbase.floatingactionbutton.FloatingActionsMenu
+            android:id="@+id/domain_actions"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            fab:fab_addButtonColorNormal="@color/colorFab"
+            fab:fab_addButtonColorPressed="@color/colorFab"
+            fab:fab_addButtonPlusIconColor="@android:color/white"
+            fab:fab_labelStyle="@style/menu_labels_style"
+            android:layout_marginBottom="5dp"
+            android:layout_marginEnd="5dp">
+
+            <com.getbase.floatingactionbutton.FloatingActionButton
+                android:id="@+id/action_export_domains"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                fab:fab_colorNormal="@color/colorFab"
+                fab:fab_title="@string/export_domains_title"
+                fab:fab_colorPressed="@color/colorFab"/>
+
+        </com.getbase.floatingactionbutton.FloatingActionsMenu>
+    </RelativeLayout>
 </LinearLayout>

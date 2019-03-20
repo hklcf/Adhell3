@@ -156,9 +156,9 @@ public final class FirewallUtils {
             return reportBlockedUrls;
         }
 
-        long yesterday = yesterday();
+        long time = tree_days();
         AppDatabase appDatabase = AdhellFactory.getInstance().getAppDatabase();
-        appDatabase.reportBlockedUrlDao().deleteBefore(yesterday);
+        appDatabase.reportBlockedUrlDao().deleteBefore(time);
 
         ReportBlockedUrl lastBlockedUrl = appDatabase.reportBlockedUrlDao().getLastBlockedDomain();
         long lastBlockedTimestamp = 0;
@@ -175,12 +175,12 @@ public final class FirewallUtils {
         }
         appDatabase.reportBlockedUrlDao().insertAll(reportBlockedUrls);
 
-        return appDatabase.reportBlockedUrlDao().getReportBlockUrlBetween(yesterday, System.currentTimeMillis());
+        return appDatabase.reportBlockedUrlDao().getReportBlockUrlBetween(time, System.currentTimeMillis());
     }
 
-    private long yesterday() {
+    private long tree_days() {
         final Calendar cal = Calendar.getInstance();
-        cal.add(Calendar.DATE, -1);
+        cal.add(Calendar.DATE, -3);
         return cal.getTimeInMillis();
     }
 

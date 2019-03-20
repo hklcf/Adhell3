@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
@@ -24,6 +25,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.fusionjack.adhell3.BuildConfig;
 import com.fusionjack.adhell3.R;
@@ -40,10 +42,17 @@ import com.fusionjack.adhell3.utils.AdhellFactory;
 import com.fusionjack.adhell3.utils.AppPreferences;
 import com.fusionjack.adhell3.utils.FirewallUtils;
 import com.fusionjack.adhell3.utils.LogUtils;
+import com.getbase.floatingactionbutton.FloatingActionButton;
+import com.getbase.floatingactionbutton.FloatingActionsMenu;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class HomeTabFragment extends Fragment {
 
@@ -123,6 +132,14 @@ public class HomeTabFragment extends Fragment {
         appComponentSwitch.setOnClickListener(v -> {
             LogUtils.info( "App component switch button has been clicked");
             new AppComponentAsyncTask(this, getActivity()).execute();
+        });
+
+        FloatingActionsMenu domainFloatMenu = view.findViewById(R.id.domain_actions);
+        FloatingActionButton actionAddWhiteDomain = view.findViewById(R.id.action_export_domains);
+        actionAddWhiteDomain.setIcon(R.drawable.ic_public_white_24dp);
+        actionAddWhiteDomain.setOnClickListener(v -> {
+            domainFloatMenu.collapse();
+            new ExportDomainsAsyncTask(getContext()).execute();
         });
 
         AsyncTask.execute(() -> {
@@ -503,6 +520,45 @@ public class HomeTabFragment extends Fragment {
                 if (swipeContainer != null) {
                     swipeContainer.setRefreshing(false);
                 }
+            }
+        }
+    }
+
+    private static class ExportDomainsAsyncTask extends AsyncTask<Void, Void, Void> {
+
+        private WeakReference<Context> contextReference;
+
+        ExportDomainsAsyncTask(Context context) {
+            this.contextReference = new WeakReference<>(context);
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            List<ReportBlockedUrl> domains = FirewallUtils.getInstance().getReportBlockedUrl();
+            try {
+                Set<String> set = new HashSet<>();
+                for (ReportBlockedUrl domain : domains) {
+                    set.add(domain.url);
+                }
+
+                File file = new File(Environment.getExternalStorageDirectory(), "adhell_exported_domains.txt");
+                FileWriter writer = new FileWriter(file);
+                for (String domain : set) {
+                    writer.write(domain);
+                    writer.write(System.lineSeparator());
+                }
+                writer.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            Context context = contextReference.get();
+            if (context != null) {
+                Toast.makeText(context, "Blocked domains have been exported!", Toast.LENGTH_LONG).show();
             }
         }
     }
