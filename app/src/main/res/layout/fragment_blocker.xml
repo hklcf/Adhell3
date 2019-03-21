@@ -54,7 +54,6 @@
         android:id="@+id/firewallRulesLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
         android:padding="10dp"
         android:background="@drawable/border">
 
@@ -98,7 +97,6 @@
         android:id="@+id/appDisablerLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
         android:padding="10dp"
         android:background="@drawable/border">
 
@@ -142,7 +140,6 @@
         android:id="@+id/appComponentLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
         android:padding="10dp"
         android:background="@drawable/border">
 
@@ -201,8 +198,7 @@
             android:id="@+id/swipeContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/infoTextView"
-            android:layout_marginTop="5dp">
+            android:layout_below="@+id/infoTextView">
 
             <ListView
                 android:id="@+id/blockedDomainsListView"
