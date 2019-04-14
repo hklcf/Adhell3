@@ -1,8 +1,8 @@
 # Disclaimer
 Adhell3 is merely an app that is using the Samsung Knox SDK APIs. <br/>
 In order to use these APIs, the Knox SDK and an ELM Development license key are needed. <br/>
-These are Samsung's properties which are not available in this repository and therefore they need to be downloaded and obtained by the developer after accepting the agreement given by Samsung. <br/>
-The developer is then responsible how this app will be used and I don't take any responsibilities of any damages caused by this app. <br/>
+These are Samsung's properties which are not available in this repository and therefore they need to be downloaded and obtained by the developer after accepting the agreement with by Samsung. <br/>
+I am only making adhell3 available as a source code project. When a developer assembles/compiles an apk from this project, the developer is then responsible for how that apk and the proprietary material it contains will be used and distributed. I don't take any responsibilities for any damages caused by this app. <br/>
 
 The Knox SDK can be downloaded here: https://seap.samsung.com/sdk/knox-android <br/>
 The ELM License key can be obtained here: https://seap.samsung.com/license-keys/generate/edu <br/>
@@ -14,42 +14,41 @@ Adhell3 is licensed under a Creative Commons Attribution-NonCommercial 4.0 Inter
 You should have received a copy of the license along with this work. If not, see <http://creativecommons.org/licenses/by-nc/4.0/>.
 
 # Background
-The original Adhell was developed by Samsung's developer. After he was forced to remove the code from internet by Samsung, FiendFyre was stepped up by providing the Adhell2. But after a while, it is also discontinued.<br/>
-Adhell3 is an extension of previous discontinued Adhell2 app with more additional features.
+The original Adhell was developed by a Samsung employee. After he was forced to remove the code from the internet by Samsung, FiendFyre and others stepped up by providing Adhell2, SABS, and similar projects but since they were distributed as apks containing proprietary Samsung material, they had to be discontinued.<br/>
+Adhell3 is an extension of the former Adhell2 apps with additional features, and available publicly as source code for use by any Samsung developer.
 
 
 ## Features
 - Mobile and Wi-Fi access disabler<br/>
-Disable internet access when on mobile or/and Wi-Fi for specific apps. This can be useful to avoid watching video accidentally by using mobile data.
+Disable internet access when on mobile or/and Wi-Fi for specific apps. This can be useful to avoid watching videos accidentally by using mobile data.
 
 - Custom deny firewall rule<br/>
-This can be used for example to define a custom firewall rule to block ads for Chrome app on port 53 for all ip addresses:<br/>
-    `com.android.chrome|*|53`
+This can be used for example to define a custom firewall rule to block ads for Chrome-based apps on port 53 for all IP addresses:<br/>
+    `com.android.chrome|*|53` for Chrome, `com.sec.android.app.sbrowser|*|53` for Samsung Internet, etc.
 
-- Whitelist URL for a specific app<br/>
-When you have a domain that you want to block system wide, but you need this domain on a particular app. Otherwise, the app won't work.<br/>
-Instead whitelist-ing this app, you can just whitelist that domain for this app.<br/>
-Example: Block the domain `graph.facebook.com` system wide, but allows it for Facebook Messenger so that it can be used for login:<br/>
+- Whitelist a domain for a specific app<br/>
+For when you want to block a domain systemwide, but you still need this domain for a particular app that won't work without it.<br/>
+Instead of whitelisting the app, you can just whitelist that domain for this app.<br/>
+Example: Block the domain `graph.facebook.com` systemwide, but allows it for Facebook Messenger so that it can be used for login:<br/>
     `com.facebook.orca|graph.facebook.com`
 
 - Support local host source<br/>
-The host file can be located on internal or external storage.<br/>
-An example to use host.txt file which is located at internal storage:<br/>
-    `file:///mnt/sdcard/hosts.txt`
+A domains lists (provider) file can be located in internal or external storage on your device.<br/>
+For example:<br/>
+    `file:///mnt/sdcard/hosts.txt`, `file:///storage/FFFF-FFFF/hosts.txt`, etc.
 
 - Show the content of host source<br/>
-Show the list of domains of individual host source or the list of all blocked domains from all host sources.<br/>
-This can be useful to check whether particular domain is in the list.<br/>
-The list contains of unique domains.
+Show the list of all potentially blocked domains from all active host sources combined.<br/>
+This can be useful to check whether a particular domain is in the list.<br/>
 
 - Backup and restore database<br/>
-Backup the content of the database on internal storage so that later it can be used to restore the database if the database is somehow damage.
+Backup the content of the database on internal storage so that later it can be used to restore the database if the database is somehow damaged.
 
 - DNS per application basis<br/>
 Set custom DNS for selected apps. Only user apps are supported.
 
 ## Building APK
-- Download the script from `https://gitlab.com/fusionjack/adhell3-scripts`
+- Download the script from https://gitlab.com/fusionjack/adhell3-scripts
 - Follow the instruction in the README
 
 ## Customization
@@ -58,8 +57,8 @@ Set custom DNS for selected apps. Only user apps are supported.
 
 ### Make license key available when activating Adhell3
 * Put `skl.key` in `app.properties`, e.g. `skl.key=XXXXXXXXXXXXXXXXXXXXXXXXXXXXX`
-* If you use these properties, beware when you distribute your app as the app contains the keys in plain text
-* This is just for convenience purpose so that you don't need to make your keys somewhere available when you are on the phone, hence this only works on a new installation
+* If you use this option, beware that when you distribute your app, the keys will be in plain text
+* This is just for convenience so that you don't need to transfer your keys to your phone manually, and is only useful on a new installation
 
 ### Domain prefix
 * Prefix all domains (with the exception of Filter Lists) with * or nothing.
@@ -68,7 +67,7 @@ Set custom DNS for selected apps. Only user apps are supported.
 * Put `domain.prefix` in `app.properties`
 * `domain.prefix=true` -> prefix all domains with `*`
 * `domain.prefix=false` -> don't prefix anything, keep domains as they are
-* nothing -> no prefix
+* The default is: nothing -> no prefix
 
 ### Hidden features
 * Beware that enabling some hidden features may cause the device to malfunction if they are not used with precaution, especially when disabling system apps. Enable them at your own risk.
@@ -89,7 +88,7 @@ When you receive a mail about license expiration, you usually cannot generate a 
 During this time, Adhell3 is still working properly. Adhell3 will show an activation dialog if the key cannot be used anymore. This time you should be able to generate a new key.
 
 - Enroll as a developer with this link: https://seap.samsung.com/enrollment
-- Generate a license key with this link: https://seap.samsung.com/license-keys/generate/edu
+- Generate a license key from this EXACT link: https://seap.samsung.com/license-keys/generate/edu
 - Give an alias name, e.g. test
 - Click on `Generate License Key`
 
