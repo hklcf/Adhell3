@@ -1,3 +1,9 @@
+# Announcement
+The generation of ELM key is now limited only for SEAP partner account. <br/>
+Therefore, if you don't already have a working ELM key you cannot activate Adhell3. <br/>
+For alternative, visit our Discord channel: https://discord.gg/hfreZum <br/>
+The development of Adhell3 is hereby stopped until further notice.
+
 # Disclaimer
 Adhell3 is merely an app that is using the Samsung Knox SDK APIs. <br/>
 In order to use these APIs, the Knox SDK and an ELM Development license key are needed. <br/>
