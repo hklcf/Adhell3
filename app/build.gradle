@@ -20,7 +20,6 @@ android {
         def domainLimit = "15000"
         def domainPrefix = "false"
         def sklKey = ""
-        def backwardsKey = ""
         def disableApps = "false"
         def appComponent = "false"
         def showSystemAppComponent = "false"
@@ -37,9 +36,6 @@ android {
             }
             if (appProps['skl.key'] != null) {
                 sklKey = appProps['skl.key']
-            }
-            if (appProps['backwards.key'] != null) {
-                backwardsKey = appProps['backwards.key']
             }
             if (appProps['domain.prefix'] != null) {
                 domainPrefix = appProps['domain.prefix']
@@ -67,7 +63,6 @@ android {
         buildConfigField("int", "DOMAIN_LIMIT", domainLimit)
         buildConfigField("boolean", "DOMAIN_PREFIX", domainPrefix)
         buildConfigField("String", "SKL_KEY", '"' + sklKey + '"')
-        buildConfigField("String", "BACKWARDS_KEY", '"' + backwardsKey + '"')
         buildConfigField("boolean", "DISABLE_APPS", disableApps)
         buildConfigField("boolean", "APP_COMPONENT", appComponent)
         buildConfigField("boolean", "SHOW_SYSTEM_APP_COMPONENT", showSystemAppComponent)
@@ -97,7 +92,6 @@ android {
 
 dependencies {
     compileOnly files('libs/knoxsdk.jar')
-    runtimeOnly files('libs/supportlib.jar')
 
     implementation 'com.android.support:appcompat-v7:28.0.0'
     implementation 'com.android.support:support-v4:28.0.0'

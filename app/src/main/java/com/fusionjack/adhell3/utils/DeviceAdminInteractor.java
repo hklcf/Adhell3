@@ -38,7 +38,6 @@ public final class DeviceAdminInteractor {
     private static DeviceAdminInteractor instance;
 
     private final String KNOX_KEY = "knox_key";
-    private final String BACKWARD_KEY = "backward_key";
 
     private static final String KNOX_FIREWALL_PERMISSION = "com.samsung.android.knox.permission.KNOX_FIREWALL";
     private static final String KNOX_APP_MGMT_PERMISSION = "com.samsung.android.knox.permission.KNOX_APP_MGMT";
@@ -127,13 +126,6 @@ public final class DeviceAdminInteractor {
         }
     }
 
-    public void activateBackwardKey(SharedPreferences sharedPreferences, Context context) {
-        String backwardKey = getBackwardKey(sharedPreferences);
-        if (backwardKey != null) {
-            activateELMKey(context, backwardKey);
-        }
-    }
-
     private void activateKLMKey(Context context, String key) {
         KnoxEnterpriseLicenseManager.getInstance(context).activateLicense(key);
     }
@@ -158,10 +150,6 @@ public final class DeviceAdminInteractor {
         return sharedPreferences.getString(KNOX_KEY, BuildConfig.SKL_KEY);
     }
 
-    public String getBackwardKey(SharedPreferences sharedPreferences) {
-        return sharedPreferences.getString(BACKWARD_KEY, BuildConfig.BACKWARDS_KEY);
-    }
-
     private String getKey(String prefName, String configKey, SharedPreferences sharedPreferences) {
         String storedKey = sharedPreferences.getString(prefName, configKey);
         if (!configKey.isEmpty() && !configKey.equalsIgnoreCase(storedKey)) {
@@ -174,12 +162,6 @@ public final class DeviceAdminInteractor {
     public void setKnoxKey(SharedPreferences sharedPreferences, String key) {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString(KNOX_KEY, key);
-        editor.apply();
-    }
-
-    public void setBackwardKey(SharedPreferences sharedPreferences, String key) {
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString(BACKWARD_KEY, key);
         editor.apply();
     }
 
@@ -245,21 +227,6 @@ public final class DeviceAdminInteractor {
         }
         LogUtils.info( "Knox is supported");
         return true;
-    }
-
-    public boolean useBackwardCompatibleKey() {
-        switch (EnterpriseDeviceManager.getAPILevel()) {
-            case KNOX_2_8:
-            case KNOX_2_9:
-            case KNOX_3_0:
-            case KNOX_3_1:
-            case KNOX_3_2:
-            case KNOX_3_2_1:
-            case KNOX_3_3:
-                return false;
-            default:
-                return true;
-        }
     }
 
     private boolean isKnox26() {

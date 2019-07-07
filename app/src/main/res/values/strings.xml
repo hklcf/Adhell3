@@ -32,7 +32,6 @@
         \nA developer license key needs to be renewed every 3 months.
     </string>
     <string name="license_key">ELM Development key</string>
-    <string name="license_backward_key">Backwards-compatible key</string>
     <string name="activate_license">Activate License</string>
     <string name="deactivate_license">Deactivate License</string>
     <string name="license_activated">License Activated</string>
