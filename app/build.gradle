@@ -58,7 +58,7 @@ android {
         minSdkVersion 23
         targetSdkVersion 28
         versionCode 1
-        versionName "3.1.1." + buildNumber
+        versionName "3.2." + buildNumber
 
         buildConfigField("int", "DOMAIN_LIMIT", domainLimit)
         buildConfigField("boolean", "DOMAIN_PREFIX", domainPrefix)
