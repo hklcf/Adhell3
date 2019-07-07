@@ -1,28 +1,22 @@
 # Announcement
-The generation of ELM key is now limited only for SEAP partner account. <br/>
-Therefore, if you don't already have a working ELM key you cannot activate Adhell3. <br/>
+The generation of KPE and ELM license key is now limited only for SEAP partner account. <br/>
+Therefore, if you don't already have a working license key you cannot activate Adhell3. <br/>
 For alternative, visit our Discord channel: https://discord.gg/hfreZum <br/>
 The development of Adhell3 is hereby stopped until further notice.
 
 # Disclaimer
 Adhell3 is merely an app that is using the Samsung Knox SDK APIs. <br/>
-In order to use these APIs, the Knox SDK and an ELM Development license key are needed. <br/>
+In order to use these APIs, the Knox SDK and a KPE or ELM license key are needed. <br/>
 These are Samsung's properties which are not available in this repository and therefore they need to be downloaded and obtained by the developer after accepting the agreement with by Samsung. <br/>
 I am only making adhell3 available as a source code project. When a developer assembles/compiles an apk from this project, the developer is then responsible for how that apk and the proprietary material it contains will be used and distributed. I don't take any responsibilities for any damages caused by this app. <br/>
 
 The Knox SDK can be downloaded here: https://seap.samsung.com/sdk/knox-android <br/>
-The ELM License key can be obtained here: https://seap.samsung.com/license-keys/generate/edu <br/>
 The API can be found here: https://seap.samsung.com/api-references/android/reference/packages.html
 
 Official Discord: https://discord.gg/hfreZum
 
 Adhell3 is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.<br/>
 You should have received a copy of the license along with this work. If not, see <http://creativecommons.org/licenses/by-nc/4.0/>.
-
-# Background
-The original Adhell was developed by a Samsung employee. After he was forced to remove the code from the internet by Samsung, FiendFyre and others stepped up by providing Adhell2, SABS, and similar projects but since they were distributed as apks containing proprietary Samsung material, they had to be discontinued.<br/>
-Adhell3 is an extension of the former Adhell2 apps with additional features, and available publicly as source code for use by any Samsung developer.
-
 
 ## Features
 - Mobile and Wi-Fi access disabler<br/>
@@ -85,19 +79,6 @@ An ability to disable app's permissions, services and receivers. Only user apps 
 
 ### Override default host with your own compiled host
 * Put `default.host` in `app.properties`, e.g. `default.host=https://gitlab.com/fusionjack/hosts/raw/master/hosts`
-
-
-## Prerequisite for using Adhell3
-You need an ELM Development license key in order to use Adhell3. <br/>
-You need to enroll as a developer in order to get this license. As for developer, the license needs to be renewed every 3 months.<br/>
-When you receive a mail about license expiration, you usually cannot generate a new key immediately and you need to wait for some days.</br>
-During this time, Adhell3 is still working properly. Adhell3 will show an activation dialog if the key cannot be used anymore. This time you should be able to generate a new key.
-
-- Enroll as a developer with this link: https://seap.samsung.com/enrollment
-- Generate a license key from this EXACT link: https://seap.samsung.com/license-keys/generate/edu
-- Give an alias name, e.g. test
-- Click on `Generate License Key`
-
 
 ## Credits
 * Adhell3 is based on FiendFyre's Adhell2 which is heavily modified by me.<br/>

@@ -78,11 +78,6 @@ public final class DeviceAdminInteractor {
         return instance;
     }
 
-    public enum KNOX_KEY_TYPE {
-        KLM_KEY,
-        ELM_KEY
-    }
-
     /**
      * Check if admin enabled
      *
@@ -102,16 +97,13 @@ public final class DeviceAdminInteractor {
         ((Activity) context).startActivityForResult(intent, RESULT_ENABLE);
     }
 
-    public void activateKnoxKey(SharedPreferences sharedPreferences, Context context, KNOX_KEY_TYPE keyType) {
+    public void activateKnoxKey(SharedPreferences sharedPreferences, Context context) {
         String knoxKey = getKnoxKey(sharedPreferences);
         if (knoxKey != null) {
-            switch (keyType) {
-                case KLM_KEY:
-                    activateKLMKey(context, knoxKey);
-                    break;
-                case ELM_KEY:
-                    activateELMKey(context, knoxKey);
-                    break;
+            if (knoxKey.startsWith("KLM")) {
+                activateKLMKey(context, knoxKey);
+            } else {
+                activateELMKey(context, knoxKey);
             }
         }
     }
@@ -148,15 +140,6 @@ public final class DeviceAdminInteractor {
 
     public String getKnoxKey(SharedPreferences sharedPreferences) {
         return sharedPreferences.getString(KNOX_KEY, BuildConfig.SKL_KEY);
-    }
-
-    private String getKey(String prefName, String configKey, SharedPreferences sharedPreferences) {
-        String storedKey = sharedPreferences.getString(prefName, configKey);
-        if (!configKey.isEmpty() && !configKey.equalsIgnoreCase(storedKey)) {
-            // The key might be newer than the stored one
-            return configKey;
-        }
-        return storedKey;
     }
 
     public void setKnoxKey(SharedPreferences sharedPreferences, String key) {

@@ -110,7 +110,7 @@ public class ActivationDialogFragment extends DialogFragment {
                         setLicenseState(true);
                     }
                 } else {
-                    deviceAdminInteractor.activateKnoxKey(sharedPreferences, getContext(), DeviceAdminInteractor.KNOX_KEY_TYPE.ELM_KEY);
+                    deviceAdminInteractor.activateKnoxKey(sharedPreferences, getContext());
                 }
             }
 
@@ -224,22 +224,35 @@ public class ActivationDialogFragment extends DialogFragment {
         getActivity().unregisterReceiver(receiver);
 
         int result_type = intent.getIntExtra(KnoxEnterpriseLicenseManager.EXTRA_LICENSE_RESULT_TYPE, -1);
-        if (result_type == -1) {
-            result_type = intent.getIntExtra(EnterpriseLicenseManager.EXTRA_LICENSE_RESULT_TYPE, -1);
+        if (result_type != -1) {
+            if (result_type == KnoxEnterpriseLicenseManager.LICENSE_RESULT_TYPE_ACTIVATION) {
+                setLicenseState(true);
+                LogUtils.info("License activated");
+                dismiss();
+                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                fragmentManager
+                        .beginTransaction()
+                        .replace(R.id.fragmentContainer, new HomeTabFragment(), HomeTabFragment.class.getCanonicalName())
+                        .commit();
+            } else if (result_type == KnoxEnterpriseLicenseManager.LICENSE_RESULT_TYPE_DEACTIVATION) {
+                setLicenseState(false);
+                LogUtils.info("License deactivated");
+                setCancelable(false);
+            }
         }
-        if (result_type == EnterpriseLicenseManager.LICENSE_RESULT_TYPE_ACTIVATION) {
-            setLicenseState(true);
-            LogUtils.info("License activated");
-            dismiss();
-            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-            fragmentManager
-                    .beginTransaction()
-                    .replace(R.id.fragmentContainer, new HomeTabFragment(), HomeTabFragment.class.getCanonicalName())
-                    .commit();
-        } else if (result_type == KnoxEnterpriseLicenseManager.LICENSE_RESULT_TYPE_DEACTIVATION) {
-            setLicenseState(false);
-            LogUtils.info("License deactivated");
-            setCancelable(false);
+
+        result_type = intent.getIntExtra(EnterpriseLicenseManager.EXTRA_LICENSE_RESULT_TYPE, -1);
+        if (result_type != -1) {
+            if (result_type == EnterpriseLicenseManager.LICENSE_RESULT_TYPE_ACTIVATION) {
+                setLicenseState(true);
+                LogUtils.info("License activated");
+                dismiss();
+                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                fragmentManager
+                        .beginTransaction()
+                        .replace(R.id.fragmentContainer, new HomeTabFragment(), HomeTabFragment.class.getCanonicalName())
+                        .commit();
+            }
         }
     }
 
@@ -247,7 +260,10 @@ public class ActivationDialogFragment extends DialogFragment {
         getActivity().unregisterReceiver(receiver);
 
         if (intent != null) {
-            String status = intent.getStringExtra(EnterpriseLicenseManager.EXTRA_LICENSE_STATUS);
+            String status = intent.getStringExtra(KnoxEnterpriseLicenseManager.EXTRA_LICENSE_STATUS);
+            if (status == null || status.isEmpty()) {
+                status = intent.getStringExtra(EnterpriseLicenseManager.EXTRA_LICENSE_STATUS);
+            }
             Toast.makeText(context, "Status: " + status + ". Error code: " + errorCode, Toast.LENGTH_LONG).show();
         }
 

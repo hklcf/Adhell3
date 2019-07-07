@@ -28,10 +28,9 @@
     </string>
     <string name="turn_on_admin">Turn On Admin</string>
     <string name="license_key_info">
-        Adhell utilizes Knox SDK which requires ELM Development key.
-        \nA developer license key needs to be renewed every 3 months.
+        Adhell utilizes Knox SDK which requires KPE or ELM license key.
     </string>
-    <string name="license_key">ELM Development key</string>
+    <string name="license_key">KPE or ELM license key</string>
     <string name="activate_license">Activate License</string>
     <string name="deactivate_license">Deactivate License</string>
     <string name="license_activated">License Activated</string>
