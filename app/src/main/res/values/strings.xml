@@ -20,15 +20,15 @@
     <string name="app_component_toggle_info">
         %1$d permissions, %2$d services and %3$d receivers are disabled.
     </string>
-    <string name="adhell_not_supported">Adhell is not yet supported on your device.</string>
-    <string name="enable_adhell_title">Enable Adhell</string>
+    <string name="adhell_not_supported">Adhell3 is not yet supported on your device.</string>
+    <string name="enable_adhell_title">Enable adhell3</string>
     <string name="enable_adhell_info">
-        To enable Adhell, you must activate Admin mode for this app.
-        \nAdhell uses Knox APIs which require device administrator permission.
+        To enable adhell3, you must activate admin mode for this app.
+        \nAdhell3 uses Knox APIs which require device administrator permission.
     </string>
     <string name="turn_on_admin">Turn On Admin</string>
     <string name="license_key_info">
-        Adhell utilizes Knox SDK which requires KPE or ELM license key.
+        Adhell3 utilizes Knox SDK which requires KPE or ELM license key.
     </string>
     <string name="license_key">KPE or ELM license key</string>
     <string name="activate_license">Activate License</string>
@@ -45,10 +45,10 @@
         Whitelist domains to bypass the firewall.
         \nToggle Domain rules to apply changes.
     </string>
-    <string name="delete_app">Disable and Delete Adhell</string>
-    <string name="delete_app_summary">Disable all features and uninstall Adhell</string>
-    <string name="delete_app_dialog_title">Delete Adhell</string>
-    <string name="delete_app_dialog_text">Do you really want to uninstall Adhell and enable all disabled apps?</string>
+    <string name="delete_app">Disable and delete adhell3</string>
+    <string name="delete_app_summary">Disable all features and uninstall adhell3</string>
+    <string name="delete_app_dialog_title">Delete adhell3</string>
+    <string name="delete_app_dialog_text">Do you really want to uninstall adhell3 and enable all disabled apps?</string>
     <string name="dns_1_address">DNS 1 Address</string>
     <string name="dns_2_address">DNS 2 Address</string>
     <string name="set_dns_button_text">Set DNS</string>
@@ -86,7 +86,7 @@
     <string name="dialog_enable_components_info">
         This will enable all apps\' permissions, services and receivers.
         \nSamsung Knox doesn\'t have an API to clear disabled components.
-        \nTherefore, if they are still disabled after this operation, you need to uninstall Adhell to enable them.
+        \nTherefore, if they are still disabled after this operation, you need to uninstall adhell3 to enable them.
         \n\nDo you really want to enable all apps\' components?
     </string>
     <string name="dialog_system_app_components_title">System apps are listed</string>
@@ -111,8 +111,8 @@
     <string name="restored_dns">DNS has been restored to defaults. Toggle Domain rules to apply changes.</string>
     <string name="delete_url">Delete URL</string>
     <string name="provider_info">
-        In addition to Adhell\'s standard package, you can add links to remote and local hosts lists.
-        \nAdhell can block up to %1$d unique domains.
+        In addition to adhell3\'s standard package, you can add links to remote and local hosts lists.
+        \nAdhell3 can block up to %1$d unique domains.
         \nToggle Domain rules to apply changes.
     </string>
     <string name="total_unique_domains">Total unique domains: %1$d</string>
@@ -202,10 +202,10 @@
     <string name="dialog_enter_password_summary">Enter the password to use this app</string>
     <string name="dialog_wrong_password">The password is wrong!</string>
     <string name="dialog_empty_password">The password cannot be empty!</string>
-    <string name="set_password_title">Protect Adhell3 with a password</string>
-    <string name="set_password_summary">If you forget the password, you need to uninstall Adhell3.</string>
+    <string name="set_password_title">Protect adhell3 with a password</string>
+    <string name="set_password_summary">If you forget the password, you need to uninstall adhell3.</string>
     <string name="set_night_mode">Night Mode</string>
-    <string name="set_night_mode_summary">Enable dark theme for Adhell3</string>
+    <string name="set_night_mode_summary">Enable dark theme for adhell3</string>
     <string name="create_logcat_title">Create logcat</string>
     <string name="create_logcat_summary">Create logcat on internal storage for debugging purpose.</string>
     <string name="logcat_created">Logcat \'%1$s\' has been created.</string>
