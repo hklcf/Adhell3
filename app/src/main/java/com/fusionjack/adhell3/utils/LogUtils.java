@@ -48,6 +48,10 @@ public final class LogUtils {
         Log.i(getCallerInfo(), text);
     }
 
+    public static void error(String text) {
+        Log.e(getCallerInfo(), text);
+    }
+
     public static void error(String text, Throwable e) {
         Log.e(getCallerInfo(), text, e);
     }
