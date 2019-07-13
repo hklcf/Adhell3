@@ -30,26 +30,30 @@ public class AppRepository {
                 case DISABLER:
                     if (text.length() == 0) {
                         list = appDatabase.applicationInfoDao().getAppsInDisabledOrder();
+                    } else {
+                        list = appDatabase.applicationInfoDao().getAppsInDisabledOrder(filterText);
                     }
-                    list = appDatabase.applicationInfoDao().getAppsInDisabledOrder(filterText);
                     break;
                 case MOBILE_RESTRICTED:
                     if (text.length() == 0) {
                         list = appDatabase.applicationInfoDao().getAppsInMobileRestrictedOrder();
+                    } else {
+                        list = appDatabase.applicationInfoDao().getAppsInMobileRestrictedOrder(filterText);
                     }
-                    list = appDatabase.applicationInfoDao().getAppsInMobileRestrictedOrder(filterText);
                     break;
                 case WIFI_RESTRICTED:
                     if (text.length() == 0) {
                         list = appDatabase.applicationInfoDao().getAppsInWifiRestrictedOrder();
+                    } else {
+                        list = appDatabase.applicationInfoDao().getAppsInWifiRestrictedOrder(filterText);
                     }
-                    list = appDatabase.applicationInfoDao().getAppsInWifiRestrictedOrder(filterText);
                     break;
                 case WHITELISTED:
                     if (text.length() == 0) {
                         list = appDatabase.applicationInfoDao().getAppsInWhitelistedOrder();
+                    } else {
+                        list = appDatabase.applicationInfoDao().getAppsInWhitelistedOrder(filterText);
                     }
-                    list = appDatabase.applicationInfoDao().getAppsInWhitelistedOrder(filterText);
                     break;
                 case COMPONENT:
                     boolean showSystemApps = BuildConfig.SHOW_SYSTEM_APP_COMPONENT;
@@ -57,16 +61,18 @@ public class AppRepository {
                         list = showSystemApps ?
                                 appDatabase.applicationInfoDao().getEnabledAppsAlphabetically() :
                                 appDatabase.applicationInfoDao().getUserApps();
+                    } else {
+                        list = showSystemApps ?
+                                appDatabase.applicationInfoDao().getEnabledAppsAlphabetically(filterText) :
+                                appDatabase.applicationInfoDao().getUserApps(filterText);
                     }
-                    list = showSystemApps ?
-                            appDatabase.applicationInfoDao().getEnabledAppsAlphabetically(filterText) :
-                            appDatabase.applicationInfoDao().getUserApps(filterText);
                     break;
                 case DNS:
                     if (text.length() == 0) {
                         list = appDatabase.applicationInfoDao().getAppsInDnsOrder();
+                    } else {
+                        list = appDatabase.applicationInfoDao().getAppsInDnsOrder(filterText);
                     }
-                    list = appDatabase.applicationInfoDao().getAppsInDnsOrder(filterText);
                     break;
             }
             emitter.onSuccess(list);
