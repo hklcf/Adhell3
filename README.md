@@ -1,7 +1,6 @@
 # Announcement
 The generation of KPE and ELM license key is now limited only for SEAP partner account. <br/>
 Therefore, if you don't already have a working license key you cannot activate Adhell3. <br/>
-For alternative, visit our Discord channel: https://discord.gg/hfreZum <br/>
 The development of Adhell3 is hereby stopped until further notice.
 
 # Disclaimer
@@ -12,8 +11,6 @@ I am only making adhell3 available as a source code project. When a developer as
 
 The Knox SDK can be downloaded here: https://seap.samsung.com/sdk/knox-android <br/>
 The API can be found here: https://seap.samsung.com/api-references/android/reference/packages.html
-
-Official Discord: https://discord.gg/hfreZum
 
 Adhell3 is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.<br/>
 You should have received a copy of the license along with this work. If not, see <http://creativecommons.org/licenses/by-nc/4.0/>.
