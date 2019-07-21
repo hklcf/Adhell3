@@ -2,11 +2,8 @@ package com.fusionjack.adhell3.fragments;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
-import android.app.admin.DevicePolicyManager;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v14.preference.SwitchPreference;
@@ -26,14 +23,12 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.fusionjack.adhell3.BuildConfig;
 import com.fusionjack.adhell3.MainActivity;
 import com.fusionjack.adhell3.R;
 import com.fusionjack.adhell3.blocker.ContentBlocker;
 import com.fusionjack.adhell3.blocker.ContentBlocker56;
 import com.fusionjack.adhell3.db.DatabaseFactory;
 import com.fusionjack.adhell3.dialogfragment.ActivationDialogFragment;
-import com.fusionjack.adhell3.receiver.CustomDeviceAdminReceiver;
 import com.fusionjack.adhell3.tasks.BackupDatabaseAsyncTask;
 import com.fusionjack.adhell3.utils.AdhellFactory;
 import com.fusionjack.adhell3.utils.AppPreferences;
@@ -73,18 +68,8 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
                 new AlertDialog.Builder(context)
                         .setView(dialogView)
-                        .setPositiveButton(android.R.string.yes, (dialog, whichButton) -> {
-                            ContentBlocker contentBlocker = ContentBlocker56.getInstance();
-                            contentBlocker.disableDomainRules();
-                            contentBlocker.disableFirewallRules();
-                            ComponentName devAdminReceiver = new ComponentName(context, CustomDeviceAdminReceiver.class);
-                            DevicePolicyManager dpm = (DevicePolicyManager) context.getSystemService(Context.DEVICE_POLICY_SERVICE);
-                            dpm.removeActiveAdmin(devAdminReceiver);
-                            Intent intent = new Intent(Intent.ACTION_DELETE);
-                            String packageName = "package:" + BuildConfig.APPLICATION_ID;
-                            intent.setData(Uri.parse(packageName));
-                            startActivity(intent);
-                        })
+                        .setPositiveButton(android.R.string.yes, (dialog, whichButton) ->
+                                AdhellFactory.uninstall(context, this))
                         .setNegativeButton(android.R.string.no, null).show();
                 break;
             }

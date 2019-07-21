@@ -1,25 +1,33 @@
 package com.fusionjack.adhell3.utils;
 
+import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.util.Patterns;
 
 import com.fusionjack.adhell3.App;
+import com.fusionjack.adhell3.BuildConfig;
 import com.fusionjack.adhell3.R;
+import com.fusionjack.adhell3.blocker.ContentBlocker;
+import com.fusionjack.adhell3.blocker.ContentBlocker56;
 import com.fusionjack.adhell3.db.AppDatabase;
 import com.fusionjack.adhell3.db.entity.AppInfo;
 import com.fusionjack.adhell3.db.entity.AppPermission;
 import com.fusionjack.adhell3.db.entity.BlockUrl;
 import com.fusionjack.adhell3.db.entity.BlockUrlProvider;
 import com.fusionjack.adhell3.db.entity.DisabledPackage;
+import com.fusionjack.adhell3.receiver.CustomDeviceAdminReceiver;
 import com.samsung.android.knox.AppIdentity;
 import com.samsung.android.knox.EnterpriseDeviceManager;
 import com.samsung.android.knox.application.ApplicationPolicy;
@@ -256,5 +264,20 @@ public final class AdhellFactory {
             return isConnected;
         }
         return false;
+    }
+
+    public static void uninstall(Context context, Fragment fragment) {
+        if (DeviceAdminInteractor.getInstance().isKnoxEnabled(context)) {
+            ContentBlocker contentBlocker = ContentBlocker56.getInstance();
+            contentBlocker.disableDomainRules();
+            contentBlocker.disableFirewallRules();
+        }
+        ComponentName devAdminReceiver = new ComponentName(context, CustomDeviceAdminReceiver.class);
+        DevicePolicyManager dpm = (DevicePolicyManager) context.getSystemService(Context.DEVICE_POLICY_SERVICE);
+        dpm.removeActiveAdmin(devAdminReceiver);
+        Intent intent = new Intent(Intent.ACTION_DELETE);
+        String packageName = "package:" + BuildConfig.APPLICATION_ID;
+        intent.setData(Uri.parse(packageName));
+        fragment.startActivity(intent);
     }
 }
