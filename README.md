@@ -72,7 +72,7 @@ Set custom DNS for selected apps. Only user apps are supported.
 An ability to disable user or system applications entirely
 * Add `enable.appComponent=true` in `app.properties` -> to enable 'App Component' feature: <br/>
 An ability to disable app's permissions, services and receivers. Only user apps are supported.
-* Add `appComponent.showSytemApps=true` in `app.properties` -> to list system apps in 'App Component'
+* Add `appComponent.showSystemApps=true` in `app.properties` -> to list system apps in 'App Component'
 
 ### Override default host with your own compiled host
 * Put `default.host` in `app.properties`, e.g. `default.host=https://gitlab.com/fusionjack/hosts/raw/master/hosts`

@@ -46,8 +46,8 @@ android {
             if (appProps['enable.appComponent'] != null) {
                 appComponent = appProps['enable.appComponent']
             }
-            if (appProps['appComponent.showSytemApps'] != null) {
-                showSystemAppComponent = appProps['appComponent.showSytemApps']
+            if (appProps['appComponent.showSystemApps'] != null) {
+                showSystemAppComponent = appProps['appComponent.showSystemApps']
             }
             if (appProps['default.host'] != null) {
                 defaultHost = appProps['default.host']
