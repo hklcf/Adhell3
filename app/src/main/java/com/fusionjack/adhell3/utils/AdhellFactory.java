@@ -280,4 +280,13 @@ public final class AdhellFactory {
         intent.setData(Uri.parse(packageName));
         fragment.startActivity(intent);
     }
+
+    public boolean getComponentState(String packageName, String name) {
+        if (appPolicy == null) {
+            return false;
+        }
+
+        ComponentName componentName = new ComponentName(packageName, name);
+        return appPolicy.getApplicationComponentState(componentName);
+    }
 }

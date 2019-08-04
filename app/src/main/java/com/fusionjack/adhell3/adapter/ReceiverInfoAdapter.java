@@ -47,22 +47,12 @@ public class ReceiverInfoAdapter extends ComponentAdapter {
             Switch permissionSwitch = convertView.findViewById(R.id.switchDisable);
             receiverNameTextView.setText(receiverName);
             receiverPermissionTextView.setText(permission);
-            permissionSwitch.setChecked(getComponentState(packageName, receiverName));
+            permissionSwitch.setChecked(AdhellFactory.getInstance().getComponentState(packageName, receiverName));
 
             boolean enabled = AppPreferences.getInstance().isAppComponentToggleEnabled();
             permissionSwitch.setEnabled(enabled);
         }
 
         return convertView;
-    }
-
-    private boolean getComponentState(String packageName, String serviceName) {
-        ApplicationPolicy appPolicy = AdhellFactory.getInstance().getAppPolicy();
-        if (appPolicy == null) {
-            return false;
-        }
-
-        ComponentName componentName = new ComponentName(packageName, serviceName);
-        return appPolicy.getApplicationComponentState(componentName);
     }
 }

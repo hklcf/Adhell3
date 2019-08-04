@@ -73,7 +73,7 @@ public class ComponentTabPageFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.enable_all_menu, menu);
+        inflater.inflate(R.menu.appcomponent_menu, menu);
     }
 
     @Override
@@ -272,7 +272,7 @@ public class ComponentTabPageFragment extends Fragment {
                     ServiceInfo serviceInfo = (ServiceInfo) componentInfo;
                     String serviceName = serviceInfo.getName();
                     ComponentName serviceCompName = new ComponentName(packageName, serviceName);
-                    boolean state = !getComponentState(packageName, serviceName);
+                    boolean state = !AdhellFactory.getInstance().getComponentState(packageName, serviceName);
                     try {
                         boolean success = appPolicy.setApplicationComponentState(serviceCompName, state);
                         if (success) {
@@ -300,7 +300,7 @@ public class ComponentTabPageFragment extends Fragment {
                     String receiverName = receiverInfo.getName();
                     String receiverPermission = receiverInfo.getPermission();
                     ComponentName receiverCompName = new ComponentName(packageName, receiverName);
-                    boolean receiverState = !getComponentState(packageName, receiverName);
+                    boolean receiverState = !AdhellFactory.getInstance().getComponentState(packageName, receiverName);
                     try {
                         String receiverPair = receiverName + "|" + receiverPermission;
                         boolean success = appPolicy.setApplicationComponentState(receiverCompName, receiverState);
@@ -349,16 +349,6 @@ public class ComponentTabPageFragment extends Fragment {
                     }
                 }
             }
-        }
-
-        private boolean getComponentState(String packageName, String serviceName) {
-            ApplicationPolicy appPolicy = AdhellFactory.getInstance().getAppPolicy();
-            if (appPolicy == null) {
-                return false;
-            }
-
-            ComponentName componentName = new ComponentName(packageName, serviceName);
-            return appPolicy.getApplicationComponentState(componentName);
         }
     }
 

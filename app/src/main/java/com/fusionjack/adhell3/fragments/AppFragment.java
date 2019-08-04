@@ -75,6 +75,10 @@ public class AppFragment extends Fragment {
 
         inflater.inflate(R.menu.app_menu, menu);
 
+        initSearchView(menu);
+    }
+
+    protected void initSearchView(Menu menu) {
         searchView = (SearchView) menu.findItem(R.id.search).getActionView();
         searchView.setMaxWidth(Integer.MAX_VALUE);
         if (!searchText.isEmpty()) {
@@ -97,7 +101,6 @@ public class AppFragment extends Fragment {
             }
         });
     }
-
     protected void resetSearchView() {
         if (searchView != null) {
             searchText = "";
