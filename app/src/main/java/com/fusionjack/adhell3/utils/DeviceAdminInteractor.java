@@ -186,21 +186,7 @@ public final class DeviceAdminInteractor {
 
         int apiLevel = EnterpriseDeviceManager.getAPILevel();
         LogUtils.info( "Knox API level: " + apiLevel);
-        switch (apiLevel) {
-            case KNOX_2_6:
-            case KNOX_2_7:
-            case KNOX_2_7_1:
-            case KNOX_2_8:
-            case KNOX_2_9:
-            case KNOX_3_0:
-            case KNOX_3_1:
-            case KNOX_3_2:
-            case KNOX_3_2_1:
-            case KNOX_3_3:
-                return true;
-            default:
-                return false;
-        }
+        return apiLevel >= KNOX_2_6;
     }
 
     private boolean isKnoxSupported() {
