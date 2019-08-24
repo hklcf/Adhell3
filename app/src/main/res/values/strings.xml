@@ -29,6 +29,7 @@
     <string name="turn_on_admin">Turn On Admin</string>
     <string name="license_key_info">
         Adhell3 utilizes Knox SDK which requires KPE or ELM license key.
+        \nKPE Development Limited cannot be used as it doesn't have needed permissions.
     </string>
     <string name="license_key">KPE or ELM license key</string>
     <string name="activate_license">Activate License</string>
