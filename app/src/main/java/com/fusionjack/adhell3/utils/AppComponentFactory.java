@@ -89,7 +89,7 @@ public final class AppComponentFactory {
     }
 
     private void enableServices(Set<String> compNames) {
-        List<AppInfo> apps = appDatabase.applicationInfoDao().getUserApps();
+        List<AppInfo> apps = appDatabase.applicationInfoDao().getUserAndDisabledApps();
         for (AppInfo app : apps) {
             String packageName = app.packageName;
             Set<String> availableServiceNames = AppComponent.getServiceNames(packageName);
@@ -109,7 +109,7 @@ public final class AppComponentFactory {
     }
 
     private void disableServices(Set<String> compNames) {
-        List<AppInfo> apps = appDatabase.applicationInfoDao().getUserApps();
+        List<AppInfo> apps = appDatabase.applicationInfoDao().getUserAndDisabledApps();
         for (AppInfo app : apps) {
             String packageName = app.packageName;
             Set<String> availableServiceNames = AppComponent.getServiceNames(packageName);
@@ -134,7 +134,7 @@ public final class AppComponentFactory {
     }
 
     private void enableReceivers(Set<String> compNames) {
-        List<AppInfo> apps = appDatabase.applicationInfoDao().getUserApps();
+        List<AppInfo> apps = appDatabase.applicationInfoDao().getUserAndDisabledApps();
         for (AppInfo app : apps) {
             String packageName = app.packageName;
             Set<String> availableServiceNames = AppComponent.getReceiverNames(packageName);
@@ -155,7 +155,7 @@ public final class AppComponentFactory {
     }
 
     private void disableReceivers(Set<String> compNames) {
-        List<AppInfo> apps = appDatabase.applicationInfoDao().getUserApps();
+        List<AppInfo> apps = appDatabase.applicationInfoDao().getUserAndDisabledApps();
         for (AppInfo app : apps) {
             String packageName = app.packageName;
             Set<String> availableServiceNames = AppComponent.getReceiverNames(packageName);

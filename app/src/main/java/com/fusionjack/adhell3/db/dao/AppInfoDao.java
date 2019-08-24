@@ -111,6 +111,9 @@ public interface AppInfoDao {
     @Query("SELECT * FROM AppInfo WHERE (appName LIKE :str OR packageName LIKE :str) AND system = 0 AND disabled = 0 ORDER BY appName ASC")
     List<AppInfo> getUserApps(String str);
 
+    @Query("SELECT * FROM AppInfo WHERE system = 0 ORDER BY appName ASC")
+    List<AppInfo> getUserAndDisabledApps();
+
 
     // Enabled apps
     @Query("SELECT * FROM AppInfo WHERE disabled = 0 ORDER BY appName ASC")
