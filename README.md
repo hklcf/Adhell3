@@ -1,7 +1,6 @@
 # Announcement
-The generation of KPE and ELM license key is now limited only for SEAP partner account. <br/>
+The generation of KPE and ELM license key is now limited only for KPP partner account. <br/>
 Therefore, if you don't already have a working license key you cannot activate Adhell3. <br/>
-The development of Adhell3 is hereby stopped until further notice.
 
 # Disclaimer
 Adhell3 is merely an app that is using the Samsung Knox SDK APIs. <br/>
@@ -9,8 +8,8 @@ In order to use these APIs, the Knox SDK and a KPE or ELM license key are needed
 These are Samsung's properties which are not available in this repository and therefore they need to be downloaded and obtained by the developer after accepting the agreement with by Samsung. <br/>
 I am only making adhell3 available as a source code project. When a developer assembles/compiles an apk from this project, the developer is then responsible for how that apk and the proprietary material it contains will be used and distributed. I don't take any responsibilities for any damages caused by this app. <br/>
 
-The Knox SDK can be downloaded here: https://seap.samsung.com/sdk/knox-android <br/>
-The API can be found here: https://seap.samsung.com/api-references/android/reference/packages.html
+The Knox SDK can be downloaded here: https://partner.samsungknox.com/dashboard/download (only available for KPP partners) <br/>
+The API can be found here: https://docs.samsungknox.com/devref/knox-sdk/reference/packages.html
 
 Adhell3 is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.<br/>
 You should have received a copy of the license along with this work. If not, see <http://creativecommons.org/licenses/by-nc/4.0/>.
